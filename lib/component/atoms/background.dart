@@ -3,8 +3,14 @@ import 'package:flutter/material.dart';
 class Background extends StatelessWidget {
   final Widget child;
   final PreferredSizeWidget? appBar;
+  final bool? disabledTopPadding;
 
-  const Background({super.key, required this.child, this.appBar});
+  const Background({
+    super.key,
+    required this.child,
+    this.appBar,
+    this.disabledTopPadding,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +44,17 @@ class Background extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
+          // color: Color.fromARGB(255, 40, 40, 43)
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.only(right: 35, left: 35, top: 40),
+            padding: EdgeInsets.only(
+              right: 35,
+              left: 35,
+              top: disabledTopPadding == true
+                  ? 10.0
+                  : 40.0, // Apply padding conditionally
+            ),
             child: child,
           ),
         ),

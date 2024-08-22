@@ -7,16 +7,24 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  final int initialIndex;
+  
+  const Home({super.key, this.initialIndex = 0}); // Default index is 0 (LockMain)
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
 
-  void _navigateBottomBar(int index){
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialIndex; // Initialize with the passed index
+  }
+
+  void _navigateBottomBar(int index) {
     setState(() {
       _selectedIndex = index;
     });
@@ -34,19 +42,16 @@ class _HomeState extends State<Home> {
       extendBody: true,
       body: _pages[_selectedIndex],
       bottomNavigationBar: CurvedNavigationBar(
-          backgroundColor: Colors.transparent,
-          buttonBackgroundColor: Colors.transparent,
-          color: Color.fromARGB(255, 23, 55, 102),
-          onTap: _navigateBottomBar,
-          items: [
-            //Lock Management
-            Icon(CupertinoIcons.padlock_solid, color: Colors.white, size: 30),
-            //Notifications
-            Icon(CupertinoIcons.bell_fill, color: Colors.white, size: 30),
-            //Settings
-            Icon(CupertinoIcons.person_fill, color: Colors.white, size: 30),
-          ],
-        ),
+        backgroundColor: Colors.transparent,
+        buttonBackgroundColor: Colors.transparent,
+        color: const Color.fromARGB(255, 23, 55, 102),
+        onTap: _navigateBottomBar,
+        items: const [
+          Icon(CupertinoIcons.padlock_solid, color: Colors.white, size: 30),
+          Icon(CupertinoIcons.bell_fill, color: Colors.white, size: 30),
+          Icon(CupertinoIcons.person_fill, color: Colors.white, size: 30),
+        ],
+      ),
     );
   }
 }

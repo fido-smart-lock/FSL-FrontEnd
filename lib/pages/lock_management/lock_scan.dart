@@ -10,7 +10,10 @@ import 'package:gap/gap.dart';
 // import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 
 class LockScan extends StatelessWidget {
-  const LockScan({super.key});
+  final String? option;
+
+  const LockScan({super.key, this.option});
+
 
   // Future<void> _handleNfcScan(BuildContext context) async {
   //   // Start the NFC scan with a 5-second delay
@@ -90,10 +93,11 @@ class LockScan extends StatelessWidget {
                       isBold: true,
                     ),
                     SubLabel(
-                        label: 'Hold your phone near to the lock, using NFC'),
+                      label: 'Hold your phone near to the lock, using NFC',
+                      color: Colors.grey[400]),
                     SubLabel(
                       label: 'phone will automatically connect to the lock.',
-                      color: Color.fromARGB(255, 248, 248, 255),
+                      color: Colors.grey[400],
                     )
                   ])
             ],
@@ -108,7 +112,8 @@ class LockScan extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => LockSetting(
-                          appBarTitle: 'Create New Lock',
+                          appBarTitle: option == 'register' ? 'Create New Lock' : 'Set Up Lock',
+                          option: option,
                         ),
                       ),
                     );

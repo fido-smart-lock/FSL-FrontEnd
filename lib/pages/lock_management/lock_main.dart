@@ -2,10 +2,9 @@ import 'package:fido_smart_lock/component/atoms/background.dart';
 import 'package:fido_smart_lock/component/atoms/dropdown_capsule.dart';
 import 'package:fido_smart_lock/component/atoms/label.dart';
 import 'package:fido_smart_lock/component/atoms/lock_card.dart';
-import 'package:fido_smart_lock/pages/lock_management/lock_create.dart';
+import 'package:fido_smart_lock/pages/lock_management/create_new_lock/lock_create.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 
 class LockMain extends StatelessWidget {

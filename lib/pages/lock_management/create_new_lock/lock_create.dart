@@ -25,14 +25,14 @@ class LockCreate extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => LockScan(),
+                      builder: (context) => LockScan(option: 'register'),
                     ),
                   );
                 },
                 child: Container(
                     padding: EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 63, 63, 63),
+                        color: Colors.grey[800],
                         borderRadius: BorderRadius.circular(13.0)),
                     child: Column(
                       children: [
@@ -41,7 +41,7 @@ class LockCreate extends StatelessWidget {
                           padding: EdgeInsets.all(15),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Color.fromARGB(255, 115, 115, 115),
+                            color: Colors.grey[600],
                           ),
                           child: Center(
                               child: Icon(
@@ -60,19 +60,19 @@ class LockCreate extends StatelessWidget {
                             alignment: Alignment.topLeft,
                             child: SubLabel(
                               label: 'recommend for',
-                              color: Color.fromARGB(255, 146, 148, 153),
+                              color: Colors.grey,
                             )),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             SubLabel(
                                 label: '• ',
-                                color: Color.fromARGB(255, 146, 148, 153)),
+                                color: Colors.grey),
                             Expanded(
                               child: SubLabel(
                                   label:
                                       'new lock that never registered by any user',
-                                  color: Color.fromARGB(255, 146, 148, 153)),
+                                  color: Colors.grey),
                             ),
                           ],
                         ),
@@ -81,12 +81,12 @@ class LockCreate extends StatelessWidget {
                           children: <Widget>[
                             SubLabel(
                                 label: '• ',
-                                color: Color.fromARGB(255, 146, 148, 153)),
+                                color: Colors.grey),
                             Expanded(
                               child: SubLabel(
                                   label:
                                       'lock that needs your full management',
-                                  color: Color.fromARGB(255, 146, 148, 153)),
+                                  color: Colors.grey),
                             ),
                           ],
                         )
@@ -99,14 +99,14 @@ class LockCreate extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => LockScan(),
+                      builder: (context) => LockScan(option: 'request'),
                     ),
                   );
                 },
                 child: Container(
                     padding: EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 63, 63, 63),
+                        color: Colors.grey[800],
                         borderRadius: BorderRadius.circular(13.0)),
                     child: Column(
                       children: [
@@ -115,7 +115,7 @@ class LockCreate extends StatelessWidget {
                           padding: EdgeInsets.all(15),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Color.fromARGB(255, 115, 115, 115),
+                            color: Colors.grey[600],
                           ),
                           child: Center(
                               child: Icon(
@@ -134,19 +134,19 @@ class LockCreate extends StatelessWidget {
                             alignment: Alignment.topLeft,
                             child: SubLabel(
                               label: 'recommend for',
-                              color: Color.fromARGB(255, 146, 148, 153),
+                              color: Colors.grey,
                             )),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             SubLabel(
                                 label: '• ',
-                                color: Color.fromARGB(255, 146, 148, 153)),
+                                color: Colors.grey),
                             Expanded(
                               child: SubLabel(
                                   label:
                                       'lock that other user own, but you need an access (as an invited guest)',
-                                  color: Color.fromARGB(255, 146, 148, 153)),
+                                  color: Colors.grey),
                             ),
                           ],
                         ),

@@ -4,13 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 
 class LockCard extends StatelessWidget {
-  final String img;
+  final String? img;
   final String name;
   final VoidCallback onTap;
   final bool? isBadged;
 
-  const LockCard(
-      {super.key, required this.img, required this.name, required this.onTap, this.isBadged});
+  const LockCard({
+    super.key,
+    this.img,
+    required this.name,
+    required this.onTap,
+    this.isBadged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +27,23 @@ class LockCard extends StatelessWidget {
           color: Colors.white,
         ),
         showBadge: isBadged ?? false,
+        badgeStyle: badges.BadgeStyle(
+          badgeColor: Colors.blue,
+          padding: EdgeInsets.all(5),
+        ),
         child: Container(
+          width: 200,
+          height: 200,
           decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(img),
-              fit: BoxFit.cover,
-            ),
+            color: img == null
+                ? Colors.grey // Default background color
+                : null, // No color if image is provided
+            image: img != null
+                ? DecorationImage(
+                    image: NetworkImage(img!),
+                    fit: BoxFit.cover,
+                  )
+                : null,
             borderRadius: BorderRadius.circular(13.0),
           ),
           child: Center(
@@ -75,7 +91,7 @@ class AddLockCard extends StatelessWidget {
         dashPattern: [13, 13],
         strokeWidth: 2,
         radius: Radius.circular(13.0),
-        color: Color.fromARGB(255, 146, 148, 153),
+        color: Colors.grey,
         child: Center(
           child: Container(
             decoration: BoxDecoration(
@@ -84,7 +100,7 @@ class AddLockCard extends StatelessWidget {
             child: Icon(
               CupertinoIcons.add,
               size: 30,
-              color: Color.fromARGB(255, 146, 148, 153),
+              color: Colors.grey,
             ),
           ),
         ),
