@@ -1,4 +1,5 @@
 import 'package:fido_smart_lock/component/atoms/label.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Button extends StatelessWidget {
@@ -78,6 +79,35 @@ class CapsuleButton extends StatelessWidget {
                   : Colors.white,
         ),
       ),
+    );
+  }
+}
+
+class ScanButton extends StatelessWidget {
+  const ScanButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Icon(
+          CupertinoIcons.viewfinder,
+          size: 70,
+          color: Colors.white,
+          shadows: <Shadow>[
+            Shadow(color: Colors.black.withOpacity(0.50), blurRadius: 15.0)
+          ],
+        ),
+        Icon(
+          CupertinoIcons.lock_fill,
+          size: 30,
+          color: Colors.white,
+          shadows: <Shadow>[
+            Shadow(color: Colors.black.withOpacity(0.50), blurRadius: 15.0)
+          ],
+        )
+      ],
     );
   }
 }

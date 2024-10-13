@@ -1,4 +1,3 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:fido_smart_lock/pages/lock_management/lock_main.dart';
 import 'package:fido_smart_lock/pages/notification/noti_main.dart';
 import 'package:fido_smart_lock/pages/user_settings/setting_main.dart';
@@ -8,8 +7,9 @@ import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
   final int initialIndex;
-  
-  const Home({super.key, this.initialIndex = 0}); // Default index is 0 (LockMain)
+
+  const Home(
+      {super.key, this.initialIndex = 0}); // Default index is 0 (LockMain)
 
   @override
   State<Home> createState() => _HomeState();
@@ -41,15 +41,30 @@ class _HomeState extends State<Home> {
     return Scaffold(
       extendBody: true,
       body: _pages[_selectedIndex],
-      bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.transparent,
-        buttonBackgroundColor: Colors.transparent,
-        color: const Color.fromARGB(255, 23, 55, 102),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        backgroundColor: Color.fromARGB(255, 23, 55, 102),
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey,
+        // buttonBackgroundColor: Colors.transparent,
+        // color: const Color.fromARGB(255, 23, 55, 102),
         onTap: _navigateBottomBar,
         items: const [
-          Icon(CupertinoIcons.padlock_solid, color: Colors.white, size: 30),
-          Icon(CupertinoIcons.bell_fill, color: Colors.white, size: 30),
-          Icon(CupertinoIcons.person_fill, color: Colors.white, size: 30),
+          BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.padlock_solid, size: 30),
+              label: 'Lock Management'),
+          BottomNavigationBarItem(
+              icon:
+                  Icon(CupertinoIcons.bell_fill, size: 30),
+              label: 'Notification'),
+          BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.person_fill, size: 30),
+              label: 'Profile')
+          // Icon(CupertinoIcons.padlock_solid, color: Colors.white, size: 30),
+          // Icon(CupertinoIcons.bell_fill, color: Colors.white, size: 30),
+          // Icon(CupertinoIcons.person_fill, color: Colors.white, size: 30),
         ],
       ),
     );
