@@ -1,7 +1,7 @@
-import 'package:fido_smart_lock/component/atoms/background.dart';
-import 'package:fido_smart_lock/component/atoms/dropdown_capsule.dart';
-import 'package:fido_smart_lock/component/atoms/label.dart';
-import 'package:fido_smart_lock/component/atoms/lock_card.dart';
+import 'package:fido_smart_lock/component/background.dart';
+import 'package:fido_smart_lock/component/dropdown_capsule.dart';
+import 'package:fido_smart_lock/component/label.dart';
+import 'package:fido_smart_lock/component/lock_card.dart';
 import 'package:fido_smart_lock/pages/lock_management/create_new_lock/lock_create.dart';
 import 'package:fido_smart_lock/pages/lock_management/lock_detail/lock_detail.dart';
 import 'package:flutter/material.dart';
@@ -16,13 +16,11 @@ class LockMain extends StatelessWidget {
   final String name = 'Jonathan';
   static final List<Map<String, String>> data = [
     {
-      'img':
-          'https://i.postimg.cc/1tD3M3D2/front-Door.png',
+      'img': 'https://i.postimg.cc/1tD3M3D2/front-Door.png',
       'lockName': 'Front Door',
     },
     {
-      'img':
-          'https://i.postimg.cc/BbMswLbY/living-Room.png',
+      'img': 'https://i.postimg.cc/BbMswLbY/living-Room.png',
       'lockName': 'Living Room',
     },
     // Add more data as needed
@@ -41,8 +39,8 @@ class LockMain extends StatelessWidget {
             children: <Widget>[
               CircleAvatar(
                   radius: 35,
-                  backgroundImage: NetworkImage
-                      ('https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png')),
+                  backgroundImage: NetworkImage(
+                      'https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png')),
               DropdownCapsule(items: dropdownItems),
             ],
           ),
@@ -75,7 +73,10 @@ class LockMain extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => LockDetail(name: item['lockName']!, img:item['img'], location: 'Home'),
+                          builder: (context) => LockDetail(
+                              lockName: item['lockName']!,
+                              lockImg: item['img'],
+                              lockLocation: 'Home'),
                         ),
                       );
                     },

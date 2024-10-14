@@ -1,9 +1,9 @@
-import 'package:fido_smart_lock/component/atoms/background.dart';
-import 'package:fido_smart_lock/component/atoms/button.dart';
-import 'package:fido_smart_lock/component/atoms/capsule.dart';
-import 'package:fido_smart_lock/component/atoms/label.dart';
-import 'package:fido_smart_lock/component/atoms/lock_card.dart';
-import 'package:fido_smart_lock/component/atoms/textfield_input.dart';
+import 'package:fido_smart_lock/component/background.dart';
+import 'package:fido_smart_lock/component/button.dart';
+import 'package:fido_smart_lock/component/capsule.dart';
+import 'package:fido_smart_lock/component/label.dart';
+import 'package:fido_smart_lock/component/lock_card.dart';
+import 'package:fido_smart_lock/component/textfield_input.dart';
 import 'package:fido_smart_lock/pages/home.dart';
 import 'package:fido_smart_lock/pages/lock_management/create_new_lock/lock_location_customize.dart';
 import 'package:fido_smart_lock/pages/lock_management/create_new_lock/lock_request.dart';

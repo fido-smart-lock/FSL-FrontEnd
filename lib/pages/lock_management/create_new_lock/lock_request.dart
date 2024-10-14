@@ -1,7 +1,7 @@
-import 'package:fido_smart_lock/component/atoms/background.dart';
-import 'package:fido_smart_lock/component/atoms/button.dart';
-import 'package:fido_smart_lock/component/atoms/label.dart';
-import 'package:fido_smart_lock/component/atoms/people.dart';
+import 'package:fido_smart_lock/component/background.dart';
+import 'package:fido_smart_lock/component/button.dart';
+import 'package:fido_smart_lock/component/label.dart';
+import 'package:fido_smart_lock/component/person_card.dart';
 import 'package:fido_smart_lock/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -52,6 +52,7 @@ class RequestAccess extends StatelessWidget {
                   name: item['name']!,
                   img: item['img']!,
                   role: item['role']!,
+                  lockName: '',
                 );
               },
             ),

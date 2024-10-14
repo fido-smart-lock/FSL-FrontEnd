@@ -1,4 +1,4 @@
-import 'package:fido_smart_lock/component/atoms/label.dart';
+import 'package:fido_smart_lock/component/label.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -51,8 +51,15 @@ class Button extends StatelessWidget {
 class CapsuleButton extends StatelessWidget {
   final String label;
   final VoidCallback? onTap;
+  final Color? buttonColor;
+  final Color? labelColor;
 
-  const CapsuleButton({super.key, required this.label, this.onTap});
+  const CapsuleButton(
+      {super.key,
+      required this.label,
+      this.onTap,
+      this.buttonColor = Colors.transparent,
+      this.labelColor, });
 
   @override
   Widget build(BuildContext context) {
@@ -61,13 +68,14 @@ class CapsuleButton extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
         decoration: BoxDecoration(
+          color: buttonColor,
           borderRadius: BorderRadius.circular(20.0),
           border: Border.all(
             color: label == 'Remove'
                 ? Colors.red.shade600
                 : label == 'Invite'
                     ? Colors.green
-                    : Colors.white,
+                    : Colors.transparent,
           ),
         ),
         child: SubLabel(
@@ -76,7 +84,7 @@ class CapsuleButton extends StatelessWidget {
               ? Colors.red.shade600
               : label == 'Invite'
                   ? Colors.green
-                  : Colors.white,
+                  : labelColor,
         ),
       ),
     );

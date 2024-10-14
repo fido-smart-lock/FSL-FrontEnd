@@ -1,40 +1,41 @@
-import 'package:fido_smart_lock/component/atoms/background_lock_detail.dart';
-import 'package:fido_smart_lock/component/atoms/button.dart';
-import 'package:fido_smart_lock/component/atoms/label.dart';
-import 'package:fido_smart_lock/component/atoms/lock_detail_card.dart';
-import 'package:fido_smart_lock/component/atoms/security_status.dart';
+import 'package:fido_smart_lock/component/background_lock_detail.dart';
+import 'package:fido_smart_lock/component/button.dart';
+import 'package:fido_smart_lock/component/label.dart';
+import 'package:fido_smart_lock/component/lock_detail_card.dart';
+import 'package:fido_smart_lock/component/security_status.dart';
+import 'package:fido_smart_lock/pages/lock_management/admin_setting/admin_setting_main.dart';
 import 'package:fido_smart_lock/pages/lock_management/lock_setting.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 class LockDetail extends StatelessWidget {
-  final String name;
-  final String? img;
-  final String location;
+  final String lockName;
+  final String? lockImg;
+  final String lockLocation;
 
   const LockDetail({
     super.key,
-    required this.name,
-    this.img,
-    required this.location,
+    required this.lockName,
+    this.lockImg,
+    required this.lockLocation,
   });
 
   @override
   Widget build(BuildContext context) {
     return BackgroundLockDetail(
-      imageUrl: img,
+      imageUrl: lockImg,
       appBar: AppBar(
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             MainHeaderLabel(
-              label: name,
+              label: lockName,
               isShadow: true,
             ),
             SubHeaderLabel(
-              label: location,
+              label: lockLocation,
               color: Colors.grey.shade300,
               isShadow: true,
             ),
@@ -49,11 +50,10 @@ class LockDetail extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => LockSetting(
-                      appBarTitle: 'Lock Setting',
-                      img: img,
-                      name: name,
-                      location: location
-                    ),
+                        appBarTitle: 'Lock Setting',
+                        img: lockImg,
+                        name: lockName,
+                        location: lockLocation),
                   ),
                 );
               },
@@ -87,25 +87,36 @@ class LockDetail extends StatelessWidget {
                 'https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png',
                 'https://i.postimg.cc/85dPzp3S/josephine-Smith.png',
               ],
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AdminSettingMain(
+                        lockName: lockName,
+                        lockLocation: lockLocation,
+                        img: [
+                          'https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png',
+                          'https://i.postimg.cc/85dPzp3S/josephine-Smith.png',
+                        ],
+                        name: ['Jonathan Smith', 'Josephine Smith'],
+                        role: ['Admin', 'Admin'],
+                        ),
+                  ),
+                );
+              },
             ),
             Gap(10),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                IconCard(
-                  cardType: 'member',
-                  people: 3,
-                  imageUrls: [
+                IconCard(cardType: 'member', people: 3, imageUrls: [
                   'https://i.postimg.cc/jSC54rWH/jane-Smith.png',
                   'https://i.postimg.cc/SRDScZk1/jacob-Smith.png',
                   'https://i.postimg.cc/3rBxMwmj/james-Corner.png'
                 ]),
                 Gap(10),
-                IconCard(
-                  cardType: 'guest',
-                  people: 2,
-                  imageUrls: [
+                IconCard(cardType: 'guest', people: 2, imageUrls: [
                   'https://i.postimg.cc/QCXN9LGW/jasper-Sanchez.png',
                   'https://i.postimg.cc/3rBxMwmj/james-Corner.png'
                 ]),
@@ -116,17 +127,12 @@ class LockDetail extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                IconCard(
-                  cardType: 'req',
-                  people: 2,
-                  imageUrls: [
+                IconCard(cardType: 'req', people: 2, imageUrls: [
                   'https://i.postimg.cc/Fzgf8gm0/anna-House.png',
                   'https://i.postimg.cc/BQnQJGBr/taylor-Wang.png'
                 ]),
                 Gap(10),
-                IconCard(
-                  cardType: 'his',
-                  people: 0),
+                IconCard(cardType: 'his', people: 0),
               ],
             )
           ],

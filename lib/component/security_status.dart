@@ -1,4 +1,4 @@
-import 'package:fido_smart_lock/component/atoms/label.dart';
+import 'package:fido_smart_lock/component/label.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

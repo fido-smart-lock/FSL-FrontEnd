@@ -1,6 +1,6 @@
-import 'package:fido_smart_lock/component/atoms/background.dart';
-import 'package:fido_smart_lock/component/atoms/button.dart';
-import 'package:fido_smart_lock/component/atoms/label.dart';
+import 'package:fido_smart_lock/component/background.dart';
+import 'package:fido_smart_lock/component/button.dart';
+import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/pages/lock_management/lock_setting.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/cupertino.dart';

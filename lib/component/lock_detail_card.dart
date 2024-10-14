@@ -1,15 +1,16 @@
-import 'package:fido_smart_lock/component/atoms/label.dart';
-import 'package:fido_smart_lock/component/atoms/people.dart';
+import 'package:fido_smart_lock/component/label.dart';
+import 'package:fido_smart_lock/component/people.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 class AdminCard extends StatelessWidget {
-  const AdminCard({super.key, this.isManageable = false, required this.people, this.imageUrls = const []});
+  const AdminCard({super.key, this.isManageable = false, required this.people, this.imageUrls = const [], required this.onTap});
 
   final bool isManageable;
   final int people;
   final List<String> imageUrls;
+  final VoidCallback onTap;
 
   String _getAdminMessage() {
     if (isManageable) {
@@ -25,23 +26,26 @@ class AdminCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.topLeft,
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.grey[850],
-        borderRadius: BorderRadius.circular(13.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SubHeaderLabel(label: 'Admin', isBold: true),
-          Gap(5),
-          SubLabel(label: _getAdminMessage()),
-          Gap(10),
-          People(imageUrls: imageUrls)
-        ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        alignment: Alignment.topLeft,
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.grey[850],
+          borderRadius: BorderRadius.circular(13.0),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SubHeaderLabel(label: 'Admin', isBold: true),
+            Gap(5),
+            SubLabel(label: _getAdminMessage()),
+            Gap(10),
+            People(imageUrls: imageUrls)
+          ],
+        ),
       ),
     );
   }
