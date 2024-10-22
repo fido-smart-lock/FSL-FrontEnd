@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:fido_smart_lock/helper/size.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +27,9 @@ class _DropdownCapsuleState extends State<DropdownCapsule> {
 
   @override
   Widget build(BuildContext context) {
+    final responsive = Responsive(context);
+
+
     return DropdownButtonHideUnderline(
       child: DropdownButton2<String>(
         hint: const Row(
@@ -58,7 +62,7 @@ class _DropdownCapsuleState extends State<DropdownCapsule> {
         },
         buttonStyleData: ButtonStyleData(
           // height: 33,
-          width: 130,
+          width: responsive.widthScale(130),
           padding: const EdgeInsets.only(left: 15, right: 15),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
@@ -82,7 +86,7 @@ class _DropdownCapsuleState extends State<DropdownCapsule> {
         ),
         dropdownStyleData: DropdownStyleData(
           maxHeight: 200,
-          width: 140,
+          width: responsive.widthScale(140),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
             color: Color.fromRGBO(89, 66, 66, 1),

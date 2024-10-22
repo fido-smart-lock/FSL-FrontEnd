@@ -3,7 +3,7 @@ import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/component/lock_detail_card.dart';
 import 'package:fido_smart_lock/component/security_status.dart';
-import 'package:fido_smart_lock/pages/lock_management/admin_setting/admin_setting_main.dart';
+import 'package:fido_smart_lock/pages/lock_management/role_setting/role_setting_main.dart';
 import 'package:fido_smart_lock/pages/lock_management/lock_setting.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -50,10 +50,12 @@ class LockDetail extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => LockSetting(
-                        appBarTitle: 'Lock Setting',
-                        img: lockImg,
-                        name: lockName,
-                        location: lockLocation),
+                      appBarTitle: 'Lock Setting',
+                      img: lockImg,
+                      name: lockName,
+                      location: lockLocation,
+                      isSettingFromLock: true,
+                    ),
                   ),
                 );
               },
@@ -76,64 +78,165 @@ class LockDetail extends StatelessWidget {
           children: [
             Gap(110),
             Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [SecurityStatus(status: 'warning'), ScanButton()]),
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [SecurityStatus(status: 'warning'), ScanButton()],
+            ),
             Gap(10),
-            AdminCard(
-              isManageable: true,
-              people: 2,
-              imageUrls: [
-                'https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png',
-                'https://i.postimg.cc/85dPzp3S/josephine-Smith.png',
-              ],
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AdminSettingMain(
-                        lockName: lockName,
-                        lockLocation: lockLocation,
-                        img: [
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true, // Prevents unnecessary scrolling issues
+                itemCount: 1, // Replace with the actual number of items
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      AdminCard(
+                        isManageable: true,
+                        people: 2,
+                        imageUrls: [
                           'https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png',
                           'https://i.postimg.cc/85dPzp3S/josephine-Smith.png',
                         ],
-                        name: ['Jonathan Smith', 'Josephine Smith'],
-                        role: ['Admin', 'Admin'],
-                        ),
-                  ),
-                );
-              },
-            ),
-            Gap(10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                IconCard(cardType: 'member', people: 3, imageUrls: [
-                  'https://i.postimg.cc/jSC54rWH/jane-Smith.png',
-                  'https://i.postimg.cc/SRDScZk1/jacob-Smith.png',
-                  'https://i.postimg.cc/3rBxMwmj/james-Corner.png'
-                ]),
-                Gap(10),
-                IconCard(cardType: 'guest', people: 2, imageUrls: [
-                  'https://i.postimg.cc/QCXN9LGW/jasper-Sanchez.png',
-                  'https://i.postimg.cc/3rBxMwmj/james-Corner.png'
-                ]),
-              ],
-            ),
-            Gap(10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                IconCard(cardType: 'req', people: 2, imageUrls: [
-                  'https://i.postimg.cc/Fzgf8gm0/anna-House.png',
-                  'https://i.postimg.cc/BQnQJGBr/taylor-Wang.png'
-                ]),
-                Gap(10),
-                IconCard(cardType: 'his', people: 0),
-              ],
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AdminAndMemberSettingMain(
+                                lockName: lockName,
+                                lockLocation: lockLocation,
+                                img: [
+                                  'https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png',
+                                  'https://i.postimg.cc/85dPzp3S/josephine-Smith.png',
+                                ],
+                                name: ['Jonathan Smith', 'Josephine Smith'],
+                                role: 'Admin',
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      Gap(10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          IconCard(
+                            cardType: 'member',
+                            people: 3,
+                            imageUrls: [
+                              'https://i.postimg.cc/jSC54rWH/jane-Smith.png',
+                              'https://i.postimg.cc/SRDScZk1/jacob-Smith.png',
+                              'https://i.postimg.cc/3rBxMwmj/james-Corner.png'
+                            ],
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AdminAndMemberSettingMain(
+                                    lockName: lockName,
+                                    lockLocation: lockLocation,
+                                    img: [
+                                      'https://i.postimg.cc/jSC54rWH/jane-Smith.png',
+                                      'https://i.postimg.cc/SRDScZk1/jacob-Smith.png',
+                                      'https://i.postimg.cc/3rBxMwmj/james-Corner.png'
+                                    ],
+                                    name: ['Jane Smith', 'Jacob Smith', 'James Corner'],
+                                    role: 'Member',
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          IconCard(
+                            cardType: 'guest',
+                            people: 2,
+                            imageUrls: [
+                              'https://i.postimg.cc/QCXN9LGW/jasper-Sanchez.png',
+                              'https://i.postimg.cc/3rBxMwmj/james-Corner.png'
+                            ],
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => GuestSettingMain(
+                                    lockName: lockName,
+                                    lockLocation: lockLocation,
+                                    img: [
+                                      'https://i.postimg.cc/QCXN9LGW/jasper-Sanchez.png',
+                                      'https://i.postimg.cc/3rBxMwmj/james-Corner.png'
+                                    ],
+                                    name: ['Jasper Sanchez', 'thisisanamemorethan15'],
+                                    role: 'Guest',
+                                    date: ['30/10/2024', '7/7/2024'],
+                                    time: ['00:00', '22:00'],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                      Gap(10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          IconCard(
+                            cardType: 'req',
+                            people: 2,
+                            imageUrls: [
+                              'https://i.postimg.cc/Fzgf8gm0/anna-House.png',
+                              'https://i.postimg.cc/BQnQJGBr/taylor-Wang.png'
+                            ],
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RequestSettingMain(
+                                    lockName: lockName,
+                                    lockLocation: lockLocation,
+                                    img: [
+                                      'https://i.postimg.cc/Fzgf8gm0/anna-House.png',
+                                      'https://i.postimg.cc/BQnQJGBr/taylor-Wang.png'
+                                    ],
+                                    name: ['Anna House', 'Taylor Wang'],
+                                    dateTime: [
+                                      '2024-10-21T07:52:38',
+                                      '2024-09-10T07:54:38'
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          IconCard(
+                            cardType: 'his',
+                            people: 0,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AdminAndMemberSettingMain(
+                                    lockName: lockName,
+                                    lockLocation: lockLocation,
+                                    img: [
+                                      'https://i.postimg.cc/jSC54rWH/jane-Smith.png',
+                                      'https://i.postimg.cc/SRDScZk1/jacob-Smith.png',
+                                      'https://i.postimg.cc/3rBxMwmj/james-Corner.png'
+                                    ],
+                                    name: ['Jane Smith', 'Jacob Smith', 'James Corner'],
+                                    role: 'Member',
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                },
+              ),
             )
           ],
         ),

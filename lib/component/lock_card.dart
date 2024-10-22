@@ -1,4 +1,5 @@
 import 'package:dotted_border/dotted_border.dart';
+import 'package:fido_smart_lock/helper/size.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
@@ -19,6 +20,8 @@ class LockCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final responsive = Responsive(context);
+    
     return GestureDetector(
       onTap: onTap,
       child: badges.Badge(
@@ -32,8 +35,8 @@ class LockCard extends StatelessWidget {
           padding: EdgeInsets.all(5),
         ),
         child: Container(
-          width: 200,
-          height: 200,
+          width: responsive.widthScale(200),
+          height: responsive.heightScale(200),
           decoration: BoxDecoration(
             color: img == null
                 ? Colors.grey // Default background color

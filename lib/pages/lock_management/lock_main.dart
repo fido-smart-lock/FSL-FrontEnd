@@ -13,7 +13,7 @@ class LockMain extends StatelessWidget {
     "Office",
     "Airbnbbbbb",
   ];
-  final String name = 'Jonathan';
+  final String name = 'John';
   static final List<Map<String, String>> data = [
     {
       'img': 'https://i.postimg.cc/1tD3M3D2/front-Door.png',

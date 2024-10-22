@@ -54,19 +54,20 @@ class CapsuleButton extends StatelessWidget {
   final Color? buttonColor;
   final Color? labelColor;
 
-  const CapsuleButton(
-      {super.key,
-      required this.label,
-      this.onTap,
-      this.buttonColor = Colors.transparent,
-      this.labelColor, });
+  const CapsuleButton({
+    super.key,
+    required this.label,
+    this.onTap,
+    this.buttonColor = Colors.transparent,
+    this.labelColor,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
+        padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
         decoration: BoxDecoration(
           color: buttonColor,
           borderRadius: BorderRadius.circular(20.0),
@@ -78,7 +79,7 @@ class CapsuleButton extends StatelessWidget {
                     : Colors.transparent,
           ),
         ),
-        child: SubLabel(
+        child: SmallLabel(
           label: label,
           color: label == 'Remove'
               ? Colors.red.shade600

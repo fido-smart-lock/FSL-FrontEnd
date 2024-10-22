@@ -15,6 +15,7 @@ class Background extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: true,
       appBar: appBar == null
           ? null
@@ -24,40 +25,45 @@ class Background extends StatelessWidget {
               title: (appBar as AppBar).title,
               actions: (appBar as AppBar).actions,
             ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(255, 88, 61, 65),
-              Color.fromARGB(255, 33, 33, 33),
-              Color.fromARGB(255, 33, 33, 33),
-              Color.fromARGB(255, 42, 88, 156),
-            ],
-            stops: [
-              0.0,
-              0.32,
-              0.65,
-              1,
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-          // color: Color.fromARGB(255, 40, 40, 43)
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.only(
-              right: 35,
-              left: 35,
-              top: disabledTopPadding == true
-                  ? 10.0
-                  : 40.0, // Apply padding conditionally
+      body: Stack(
+        children: [
+          // Fixed gradient background that doesn't resize when the keyboard opens
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color.fromARGB(255, 88, 61, 65),
+                  Color.fromARGB(255, 33, 33, 33),
+                  Color.fromARGB(255, 33, 33, 33),
+                  Color.fromARGB(255, 42, 88, 156),
+                ],
+                stops: [
+                  0.0,
+                  0.32,
+                  0.65,
+                  1,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
             ),
-            child: child,
           ),
-        ),
+          // Foreground content that will adjust with the keyboard but keeps the background fixed
+          SafeArea(
+            child: Padding(
+              padding: EdgeInsets.only(
+                right: 35,
+                left: 35,
+                top: disabledTopPadding == true
+                    ? 10.0
+                    : 40.0, // Apply padding conditionally
+              ),
+              child: child,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:fido_smart_lock/component/background.dart';
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/label.dart';
+import 'package:fido_smart_lock/helper/size.dart';
 import 'package:fido_smart_lock/pages/lock_management/lock_setting.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/cupertino.dart';
@@ -44,6 +45,7 @@ class LockScan extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final responsive = Responsive(context);
     final size = MediaQuery.of(context).size;
     double outerCircleSize = size.width * 0.8; // 80% of screen width
     double innerCircleSize = size.width * 0.55;
@@ -76,33 +78,33 @@ class LockScan extends StatelessWidget {
                   semanticsLabel: 'Phone Scan', height: 400),
             ],
           ),
-          const Gap(100),
+          SizedBox(height: responsive.heightScale(75)),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SvgPicture.asset('assets/svg/nfc.svg',
-                  semanticsLabel: 'Phone Scan', height: 25),
+                  semanticsLabel: 'Phone Scan', height: responsive.heightScale(20)),
               Gap(10),
               Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Label(
+                    SubLabel(
                       label: 'Connect via NFC',
                       isBold: true,
                     ),
-                    SubLabel(
+                    SmallLabel(
                       label: 'Hold your phone near to the lock, using NFC',
                       color: Colors.grey[400]),
-                    SubLabel(
+                    SmallLabel(
                       label: 'phone will automatically connect to the lock.',
                       color: Colors.grey[400],
                     )
                   ])
             ],
           ),
-          const Gap(100),
+          Spacer(),
           Align(
               alignment: Alignment.bottomCenter,
               child: Button(

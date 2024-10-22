@@ -1,4 +1,5 @@
 import 'package:dotted_border/dotted_border.dart';
+import 'package:fido_smart_lock/helper/size.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +13,8 @@ class People extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final responsive = Responsive(context);
+
     return Container(
       height: 50, // Ensure enough space for the avatars
       child: Stack(
@@ -25,9 +28,9 @@ class People extends StatelessWidget {
               // Calculate the left position based on the index
               return Positioned(
                 left: index *
-                    40.0, // Adjust overlap amount here (reduce the multiplier)
+                    30.0, // Adjust overlap amount here (reduce the multiplier)
                 child: CircleAvatar(
-                  radius: 25,
+                  radius: responsive.radiusScale(20),
                   backgroundImage: NetworkImage(url),
                 ),
               );
@@ -50,9 +53,11 @@ class PeopleMoreThanTwo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 45,
-      width: 135, // Ensure enough space for the avatars
+    final responsive = Responsive(context);
+
+    return SizedBox(
+      height: responsive.heightScale(45),
+      width: responsive.widthScale(135), // Ensure enough space for the avatars
       child: Stack(
         children: [
           // Add the DottedBorder if there are more than 2 image URLs
@@ -63,7 +68,7 @@ class PeopleMoreThanTwo extends StatelessWidget {
                 borderType: BorderType.RRect,
                 dashPattern: [7, 8],
                 strokeWidth: 2,
-                radius: Radius.circular(25),
+                radius: Radius.circular(20),
                 color: Colors.grey,
                 child: CircleAvatar(
                   radius: 17,
@@ -91,7 +96,7 @@ class PeopleMoreThanTwo extends StatelessWidget {
                 return Positioned(
                   left: index * 30.0, // Adjust overlap amount here
                   child: CircleAvatar(
-                    radius: 20,
+                    radius: responsive.radiusScale(20),
                     backgroundImage: NetworkImage(url),
                   ),
                 );
