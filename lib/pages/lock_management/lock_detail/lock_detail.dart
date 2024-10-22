@@ -109,7 +109,7 @@ class LockDetail extends StatelessWidget {
                                   'https://i.postimg.cc/85dPzp3S/josephine-Smith.png',
                                 ],
                                 name: ['Jonathan Smith', 'Josephine Smith'],
-                                role: 'Admin',
+                                role: 'admin',
                               ),
                             ),
                           );
@@ -141,7 +141,7 @@ class LockDetail extends StatelessWidget {
                                       'https://i.postimg.cc/3rBxMwmj/james-Corner.png'
                                     ],
                                     name: ['Jane Smith', 'Jacob Smith', 'James Corner'],
-                                    role: 'Member',
+                                    role: 'member',
                                   ),
                                 ),
                               );
@@ -166,7 +166,7 @@ class LockDetail extends StatelessWidget {
                                       'https://i.postimg.cc/3rBxMwmj/james-Corner.png'
                                     ],
                                     name: ['Jasper Sanchez', 'thisisanamemorethan15'],
-                                    role: 'Guest',
+                                    role: 'guest',
                                     date: ['30/10/2024', '7/7/2024'],
                                     time: ['00:00', '22:00'],
                                   ),

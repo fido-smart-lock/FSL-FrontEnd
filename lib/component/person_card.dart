@@ -1,5 +1,7 @@
 import 'package:fido_smart_lock/component/button.dart';
+import 'package:fido_smart_lock/component/date_picker.dart';
 import 'package:fido_smart_lock/component/label.dart';
+import 'package:fido_smart_lock/component/time_picker.dart';
 import 'package:fido_smart_lock/helper/datetime.dart';
 import 'package:fido_smart_lock/helper/size.dart';
 import 'package:fido_smart_lock/helper/word.dart';
@@ -59,12 +61,12 @@ class Person extends StatelessWidget {
                     label: truncateWithEllipsis(name, 20),
                     isBold: true,
                   ),
-                  if (role != null && role != 'Guest')
+                  if (role != null && role != 'guest')
                     SmallLabel(
                       label: role!,
                       color: Colors.grey,
                     )
-                  else if (role == 'Guest')
+                  else if (role == 'guest')
                     XtraSmallLabel(
                       label: 'Exp: $date • $time',
                       color: Colors.grey,
@@ -83,14 +85,22 @@ class Person extends StatelessWidget {
                     return [
                       WoltModalSheetPage(
                         hasTopBarLayer: false,
-                        child: Container(
+                        child: Padding(
                           padding: EdgeInsets.fromLTRB(30, 30, 30, 80),
-                          child: Label(
-                            label:
-                                'Do you want to remove $name from $role of $lockName lock?',
-                            isBold: true,
-                            isCenter: true,
-                          ),
+                          child: Column(children: [
+                            SubLabel(
+                              label:
+                                  'Do you want to remove $name from $role of $lockName lock?',
+                              isBold: true,
+                              isCenter: true,
+                            ),
+                            if (role == 'member')
+                              SmallLabel(
+                                label: 'This action cannot be undone',
+                                isCenter: true,
+                                color: Colors.red,
+                              )
+                          ]),
                         ),
                         stickyActionBar: Padding(
                           padding: const EdgeInsets.fromLTRB(0, 0, 30, 30),
@@ -199,6 +209,80 @@ class PersonRequest extends StatelessWidget {
               label: 'Accept',
               buttonColor: Colors.green,
               labelColor: Colors.white,
+              onTap: () {
+                WoltModalSheet.show(
+                  context: context,
+                  pageListBuilder: (context) {
+                    return [
+                      WoltModalSheetPage(
+                        hasTopBarLayer: false,
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(30, 30, 30, 80),
+                          child: Column(
+                            children: [
+                              SubLabel(
+                                label:
+                                    'Do you want to accept $name request to unlock $lockName?',
+                                isBold: true,
+                                isCenter: true,
+                              ),
+                              SizedBox(
+                                height: responsive.heightScale(5),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(top: 7),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        SubLabel(label: 'Expiration Date', color: Colors.white.withOpacity(0.75),),
+                                        SizedBox(height: responsive.widthScale(3),),
+                                        DatePickerWidget(),
+                                      ],
+                                    ),
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        SubLabel(label: 'Time', color: Colors.white.withOpacity(0.75)),
+                                        SizedBox(height: responsive.widthScale(3),),
+                                        TimePickerWidget(),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        stickyActionBar: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 30, 30),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              GestureDetector(
+                                  onTap: Navigator.of(context).pop,
+                                  child: SmallLabel(label: 'Cancel')),
+                              Gap(20),
+                              CapsuleButton(
+                                label: 'Proceed',
+                                buttonColor: Colors.green,
+                                labelColor: Colors.white,
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    ];
+                  },
+                  modalTypeBuilder: (context) {
+                    return WoltModalType.dialog();
+                  },
+                );
+              },
             )
           ],
         )

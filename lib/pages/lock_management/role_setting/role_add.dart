@@ -1,5 +1,6 @@
 import 'package:fido_smart_lock/component/background.dart';
 import 'package:fido_smart_lock/component/label.dart';
+import 'package:fido_smart_lock/component/textfield_input.dart';
 import 'package:fido_smart_lock/helper/word.dart';
 import 'package:flutter/material.dart';
 
@@ -33,7 +34,8 @@ class AdminAndGuestAdd extends StatelessWidget {
         ),
         child: Column(
           children: [
-            HeaderLabel(label: 'Add New ${capitalizeFirstLetter(role)}')
+            HeaderLabel(label: 'Add New ${capitalizeFirstLetter(role)}'),
+            UserCodeInput()
           ],));
   }
 }

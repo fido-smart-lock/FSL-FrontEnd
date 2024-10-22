@@ -1,6 +1,7 @@
 import 'package:fido_smart_lock/component/background.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/component/person_card.dart';
+import 'package:fido_smart_lock/helper/word.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -58,7 +59,7 @@ class AdminAndMemberSettingMain extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           HeaderLabel(
-            label: role,
+            label: capitalizeFirstLetter(role),
             isBold: true,
           ),
           Expanded(
@@ -142,7 +143,7 @@ class GuestSettingMain extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           HeaderLabel(
-            label: role,
+            label: capitalizeFirstLetter(role),
             isBold: true,
           ),
           Expanded(
@@ -205,19 +206,6 @@ class RequestSettingMain extends StatelessWidget {
             ),
           ],
         ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: Icon(
-              CupertinoIcons.person_add,
-              size: 30,
-              color: Colors.white,
-              shadows: <Shadow>[
-                Shadow(color: Colors.black.withOpacity(0.50), blurRadius: 15.0)
-              ],
-            ),
-          )
-        ],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
