@@ -201,7 +201,7 @@ class _LockSettingState extends State<LockSetting> {
                         ),
                       );
                     }),
-                
+                Spacer(),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Button(

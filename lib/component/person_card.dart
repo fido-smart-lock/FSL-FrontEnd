@@ -16,19 +16,16 @@ class Person extends StatelessWidget {
   final String? role;
   final String? button;
   final String lockName;
-  final String? date;
-  final String? time;
+  final String? dateTime;
 
-  const Person({
-    super.key,
-    this.img,
-    required this.name,
-    this.role,
-    this.button,
-    required this.lockName,
-    this.date,
-    this.time,
-  });
+  const Person(
+      {super.key,
+      this.img,
+      required this.name,
+      this.role,
+      this.button,
+      required this.lockName,
+      this.dateTime});
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +65,7 @@ class Person extends StatelessWidget {
                     )
                   else if (role == 'guest')
                     XtraSmallLabel(
-                      label: 'Exp: $date • $time',
+                      label: 'Exp: ${dateDotTimeFormat(dateTime!)}',
                       color: Colors.grey,
                     )
                 ],
@@ -181,10 +178,10 @@ class PersonRequest extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SubLabel(
-                      label: name,
+                      label: truncateWithEllipsis(name, 25),
                       isBold: true,
                     ),
-                    SmallLabel(
+                    XtraSmallLabel(
                       label: 'Request pending ${timeDifference(dateTime)}',
                       color: Colors.grey,
                     )
@@ -232,23 +229,38 @@ class PersonRequest extends StatelessWidget {
                               Padding(
                                 padding: EdgeInsets.only(top: 7),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
                                   children: [
                                     Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        SubLabel(label: 'Expiration Date', color: Colors.white.withOpacity(0.75),),
-                                        SizedBox(height: responsive.widthScale(3),),
+                                        SubLabel(
+                                          label: 'Expiration Date',
+                                          color: Colors.white.withOpacity(0.75),
+                                        ),
+                                        SizedBox(
+                                          height: responsive.widthScale(3),
+                                        ),
                                         DatePickerWidget(),
                                       ],
                                     ),
                                     Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        SubLabel(label: 'Time', color: Colors.white.withOpacity(0.75)),
-                                        SizedBox(height: responsive.widthScale(3),),
+                                        SubLabel(
+                                            label: 'Time',
+                                            color:
+                                                Colors.white.withOpacity(0.75)),
+                                        SizedBox(
+                                          height: responsive.widthScale(3),
+                                        ),
                                         TimePickerWidget(),
                                       ],
                                     )
@@ -287,6 +299,113 @@ class PersonRequest extends StatelessWidget {
           ],
         )
       ]),
+    );
+  }
+}
+
+class PersonHistoryCard extends StatelessWidget {
+  const PersonHistoryCard(
+      {super.key,
+      required this.name,
+      this.img,
+      required this.dateTime,
+      required this.status});
+
+  final String name;
+  final String? img;
+  final String dateTime;
+  final String status;
+
+  static const iconConfig = {
+    'connect': {
+      'icon': CupertinoIcons.check_mark_circled,
+      'color': Colors.green,
+    },
+    'req': {
+      'icon': CupertinoIcons.bell,
+      'color': Colors.amber,
+    },
+    'risk': {
+      'icon': CupertinoIcons.exclamationmark_shield,
+      'color': Colors.red,
+    }
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final responsive = Responsive(context);
+
+    final config = iconConfig[status] ??
+        {
+          'icon': CupertinoIcons.question_circle,
+          'color': Colors.grey,
+        };
+
+    final icon = config['icon'] as IconData;
+    final color = config['color'] as Color;
+
+    return Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.only(left: 10, right: 15, top: 13, bottom: 13),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        color: Colors.blueGrey[900], // Include color within BoxDecoration
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            children: [
+              if (status == 'risk')
+                Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.grey[600],
+                  ),
+                  child: Center(
+                      child: Icon(
+                    CupertinoIcons.exclamationmark_bubble_fill,
+                    size: 25,
+                  )),
+                )
+              else
+                CircleAvatar(
+                  radius: responsive.radiusScale(23),
+                  backgroundImage: NetworkImage(img!),
+                ),
+              SizedBox(
+                width: responsive.widthScale(7),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (status == 'risk')
+                    SubLabel(
+                      label: 'Unauthorized Attempt',
+                      isBold: true,
+                    )
+                  else
+                    SubLabel(
+                      label: truncateWithEllipsis(name, 20),
+                      isBold: true,
+                    ),
+                  XtraSmallLabel(
+                    label: 'Exp: ${dateDotTimeFormat(dateTime)}',
+                    color: Colors.grey,
+                  )
+                ],
+              ),
+            ],
+          ),
+          Icon(
+            icon,
+            color: color,
+            size: 30,
+          )
+        ],
+      ),
     );
   }
 }

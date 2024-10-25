@@ -3,6 +3,7 @@ import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/component/lock_detail_card.dart';
 import 'package:fido_smart_lock/component/security_status.dart';
+import 'package:fido_smart_lock/pages/lock_management/role_setting/history_view.dart';
 import 'package:fido_smart_lock/pages/lock_management/role_setting/role_setting_main.dart';
 import 'package:fido_smart_lock/pages/lock_management/lock_setting.dart';
 import 'package:flutter/cupertino.dart';
@@ -132,7 +133,8 @@ class LockDetail extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => AdminAndMemberSettingMain(
+                                  builder: (context) =>
+                                      AdminAndMemberSettingMain(
                                     lockName: lockName,
                                     lockLocation: lockLocation,
                                     img: [
@@ -140,7 +142,11 @@ class LockDetail extends StatelessWidget {
                                       'https://i.postimg.cc/SRDScZk1/jacob-Smith.png',
                                       'https://i.postimg.cc/3rBxMwmj/james-Corner.png'
                                     ],
-                                    name: ['Jane Smith', 'Jacob Smith', 'James Corner'],
+                                    name: [
+                                      'Jane Smith',
+                                      'Jacob Smith',
+                                      'James Corner'
+                                    ],
                                     role: 'member',
                                   ),
                                 ),
@@ -165,10 +171,15 @@ class LockDetail extends StatelessWidget {
                                       'https://i.postimg.cc/QCXN9LGW/jasper-Sanchez.png',
                                       'https://i.postimg.cc/3rBxMwmj/james-Corner.png'
                                     ],
-                                    name: ['Jasper Sanchez', 'thisisanamemorethan15'],
+                                    name: [
+                                      'Jasper Sanchez',
+                                      'thisisanamemorethan15'
+                                    ],
                                     role: 'guest',
-                                    date: ['30/10/2024', '7/7/2024'],
-                                    time: ['00:00', '22:00'],
+                                    dateTime: [
+                                      '2024-09-10T07:54:38',
+                                      '2024-10-30T07:54:38'
+                                    ],
                                   ),
                                 ),
                               );
@@ -216,16 +227,45 @@ class LockDetail extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => AdminAndMemberSettingMain(
+                                  builder: (context) => HistoryView(
                                     lockName: lockName,
                                     lockLocation: lockLocation,
                                     img: [
-                                      'https://i.postimg.cc/jSC54rWH/jane-Smith.png',
-                                      'https://i.postimg.cc/SRDScZk1/jacob-Smith.png',
-                                      'https://i.postimg.cc/3rBxMwmj/james-Corner.png'
+                                      '',
+                                      'https://i.postimg.cc/3rBxMwmj/james-Corner.png',
+                                      'https://i.postimg.cc/Fzgf8gm0/anna-House.png',
+                                      'https://i.postimg.cc/BQnQJGBr/taylor-Wang.png',
+                                      'https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png',
+                                      'https://i.postimg.cc/BQnQJGBr/taylor-Wang.png',
+                                      'https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png',
                                     ],
-                                    name: ['Jane Smith', 'Jacob Smith', 'James Corner'],
-                                    role: 'Member',
+                                    name: [
+                                      '',
+                                      'James Corner',
+                                      'Anna House',
+                                      'Taylor Wang',
+                                      'Jonathan Smith',
+                                      'Taylor Wang',
+                                      'Jonathan Smith',
+                                    ],
+                                    dateTime: [
+                                      '2024-10-23T02:33:15',
+                                      '2024-10-23T08:57:52',
+                                      '2024-10-23T17:55:52',
+                                      '2024-10-22T07:15:05',
+                                      '2024-10-22T15:05:47',
+                                      '2024-10-18T18:41:12',
+                                      '2024-10-18T21:26:33'
+                                    ],
+                                    status: [
+                                      'risk',
+                                      'connect',
+                                      'req',
+                                      'connect',
+                                      'connect',
+                                      'connect',
+                                      'connect'
+                                    ],
                                   ),
                                 ),
                               );

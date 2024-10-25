@@ -24,6 +24,10 @@ class Background extends StatelessWidget {
               elevation: 0, // Remove shadow
               title: (appBar as AppBar).title,
               actions: (appBar as AppBar).actions,
+              bottom: (appBar as AppBar).bottom,
+              automaticallyImplyLeading: (appBar as AppBar).automaticallyImplyLeading, // Use the passed value or default to true
+              centerTitle: (appBar as AppBar).centerTitle, // Title alignment control
+              leadingWidth: (appBar as AppBar).leadingWidth
             ),
       body: Stack(
         children: [
@@ -50,7 +54,6 @@ class Background extends StatelessWidget {
               ),
             ),
           ),
-          // Foreground content that will adjust with the keyboard but keeps the background fixed
           SafeArea(
             child: Padding(
               padding: EdgeInsets.only(

@@ -1,4 +1,5 @@
 import 'package:fido_smart_lock/component/label.dart';
+import 'package:fido_smart_lock/helper/size.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatefulWidget {
@@ -69,7 +70,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
             right: 0,
             bottom: responsiveFontSize * 0.5,
             child: AnimatedOpacity(
-              opacity: _focusNode.hasFocus || _currentText.isNotEmpty ? 1.0 : 0.0,
+              opacity:
+                  _focusNode.hasFocus || _currentText.isNotEmpty ? 1.0 : 0.0,
               duration: const Duration(milliseconds: 300),
               child: Text(
                 '${widget.controller.text.length}/${widget.maxLength}',
@@ -91,15 +93,18 @@ class UserCodeInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.blueGrey[900],
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Expanded(
+    final responsive = Responsive(context);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+            decoration: BoxDecoration(
+              color: Colors.blueGrey[900],
+              borderRadius: BorderRadius.circular(12),
+            ),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Enter User Code',
@@ -109,21 +114,22 @@ class UserCodeInput extends StatelessWidget {
               style: TextStyle(color: Colors.white),
             ),
           ),
-          SizedBox(width: 8),
-          ElevatedButton(
-            onPressed: () {
-              // Add your action here
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+        ),
+        SizedBox(width: responsive.widthScale(5),),
+        ElevatedButton(
+          onPressed: () {
+            // Add your action here
+          },
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+            backgroundColor: Colors.green,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
-            child: Label(label: 'Find'),
           ),
-        ],
-      ),
+          child: Label(label: 'Find',),
+        ),
+      ],
     );
   }
 }
