@@ -14,3 +14,15 @@ String truncateWithEllipsis(String input, int n) {
   // If the string length is less than or equal to 'n', return the original string
   return input;
 }
+
+// Helper function to handle singular/plural
+String addPlural(int value, String unit) {
+  return '$unit${value > 1 ? 's' : ''}';
+}
+
+String addLabelPossessive(String label) {
+  // Check if the location name ends with 's' to determine possessive form
+  return label.endsWith('s') 
+      ? "$label'"    // Only add an apostrophe if it ends with 's'
+      : "$label's";  // Otherwise, add "'s"
+}

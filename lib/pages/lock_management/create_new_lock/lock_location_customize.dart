@@ -1,5 +1,5 @@
-import 'package:fido_smart_lock/component/background.dart';
-import 'package:fido_smart_lock/component/capsule.dart';
+import 'package:fido_smart_lock/component/background/background.dart';
+import 'package:fido_smart_lock/component/input/capsule.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

@@ -1,8 +1,8 @@
-import 'package:fido_smart_lock/component/background.dart';
-import 'package:fido_smart_lock/component/date_picker.dart';
+import 'package:fido_smart_lock/component/background/background.dart';
+import 'package:fido_smart_lock/component/input/date_picker.dart';
 import 'package:fido_smart_lock/component/label.dart';
-import 'package:fido_smart_lock/component/textfield_input.dart';
-import 'package:fido_smart_lock/component/time_picker.dart';
+import 'package:fido_smart_lock/component/input/textfield_input.dart';
+import 'package:fido_smart_lock/component/input/time_picker.dart';
 import 'package:fido_smart_lock/helper/size.dart';
 import 'package:fido_smart_lock/helper/word.dart';
 import 'package:flutter/material.dart';

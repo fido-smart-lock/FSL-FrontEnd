@@ -1,7 +1,7 @@
-import 'package:fido_smart_lock/component/background.dart';
+import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/label.dart';
-import 'package:fido_smart_lock/component/person_card.dart';
+import 'package:fido_smart_lock/component/card/person_card.dart';
 import 'package:fido_smart_lock/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';

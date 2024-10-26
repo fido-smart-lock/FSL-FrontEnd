@@ -1,7 +1,7 @@
-import 'package:fido_smart_lock/component/background_lock_detail.dart';
+import 'package:fido_smart_lock/component/background/background_lock_detail.dart';
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/label.dart';
-import 'package:fido_smart_lock/component/lock_detail_card.dart';
+import 'package:fido_smart_lock/component/card/lock_detail_card.dart';
 import 'package:fido_smart_lock/component/security_status.dart';
 import 'package:fido_smart_lock/pages/lock_management/role_setting/history_view.dart';
 import 'package:fido_smart_lock/pages/lock_management/role_setting/role_setting_main.dart';

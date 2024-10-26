@@ -1,4 +1,4 @@
-import 'package:fido_smart_lock/component/background.dart';
+import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/helper/size.dart';

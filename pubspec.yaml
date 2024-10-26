@@ -80,6 +80,10 @@ flutter:
   assets:
     - assets/svg/scan.svg
     - assets/svg/nfc.svg
+    - assets/data/noti_warning.json
+    - assets/data/noti_req.json
+    - assets/data/noti_connect.json
+    - assets/data/noti_other.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -1,0 +1,42 @@
+[
+  {
+      "dateTime": "2024-10-25T18:30:25",
+      "subMode": "invite",
+      "lockLocation": "",
+      "lockName": "Front Door",
+      "name": "Mason Johnson",
+      "role": "admin"
+  },
+  {
+      "dateTime": "2024-10-25T16:15:50",
+      "subMode": "sent",
+      "lockLocation": "Home",
+      "lockName": "Garage",
+      "name": "",
+      "role": ""
+  },
+  {
+      "dateTime": "2024-10-25T14:10:05",
+      "subMode": "accepted",
+      "lockLocation": "Office",
+      "lockName": "Office Door",
+      "name": "",
+      "role": ""
+  },
+  {
+      "dateTime": "2024-10-25T12:05:35",
+      "subMode": "invite",
+      "lockLocation": "",
+      "lockName": "Backyard",
+      "name": "Ella Brown",
+      "role": "member"
+  },
+  {
+      "dateTime": "2024-10-25T09:45:20",
+      "subMode": "sent",
+      "lockLocation": "Office",
+      "lockName": "Storage",
+      "name": "",
+      "role": ""
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+      "dateTime": "2024-10-25T18:45:03",
+      "number": 2,
+      "lockLocation": "Home",
+      "lockName": "Front Door"
+  },
+  {
+      "dateTime": "2024-10-25T15:27:18",
+      "number": 7,
+      "lockLocation": "Home",
+      "lockName": "Garage"
+  },
+  {
+      "dateTime": "2024-10-25T12:34:56",
+      "number": 3,
+      "lockLocation": "Office",
+      "lockName": "Office Door"
+  }
+]

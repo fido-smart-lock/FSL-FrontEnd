@@ -1,7 +1,7 @@
 import 'package:fido_smart_lock/component/label.dart';
+import 'package:fido_smart_lock/helper/size.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 class Button extends StatelessWidget {
   const Button(
       {super.key,
@@ -115,6 +115,50 @@ class ScanButton extends StatelessWidget {
           shadows: <Shadow>[
             Shadow(color: Colors.black.withOpacity(0.50), blurRadius: 15.0)
           ],
+        )
+      ],
+    );
+  }
+}
+
+class DoubleButton extends StatelessWidget {
+  const DoubleButton(
+      {super.key,
+      required this.labelText,
+      required this.labelCapsuleButton,
+      required this.buttonColor,
+      this.labelCapsuleButtonColor = Colors.white,
+      required this.onTapText,
+      required this.onTapCapsuleButton});
+
+  final String labelText;
+  final String labelCapsuleButton;
+  final Color buttonColor;
+  final Color labelCapsuleButtonColor;
+  final VoidCallback onTapText;
+  final VoidCallback onTapCapsuleButton;
+
+  @override
+  Widget build(BuildContext context) {
+    final responsive = Responsive(context);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        GestureDetector(
+            onTap: onTapText,
+            child: SmallLabel(
+              label: labelText,
+              color: buttonColor,
+            )),
+        SizedBox(
+          width: responsive.widthScale(15),
+        ),
+        CapsuleButton(
+          onTap: onTapCapsuleButton,
+          label: labelCapsuleButton,
+          buttonColor: buttonColor,
+          labelColor: labelCapsuleButtonColor,
         )
       ],
     );

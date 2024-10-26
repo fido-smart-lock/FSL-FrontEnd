@@ -1,5 +1,6 @@
-import 'package:fido_smart_lock/component/background.dart';
+import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/label.dart';
+import 'package:fido_smart_lock/pages/notification/tabbar_contents/tabbar_contents.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -42,7 +43,14 @@ class NotiMain extends StatelessWidget {
             ],
           ),
         ),
-        child: SizedBox.shrink(), // Empty child
+        child: TabBarView(
+          children: <Widget>[
+            TabBarContents(mode: 'warning'),
+            TabBarContents(mode: 'req'),
+            TabBarContents(mode: 'connect'),
+            TabBarContents(mode: 'other')
+          ],
+        ),
       ),
     );
   }

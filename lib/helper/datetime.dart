@@ -44,11 +44,6 @@ String timeDifference(String inputDateTimeString) {
   }
 }
 
-// Helper function to handle singular/plural
-String addPlural(int value, String unit) {
-  return '$value $unit${value > 1 ? 's' : ''}';
-}
-
 String dateDotTimeFormat(String inputDateTimeString) {
   try {
     // Parse the string to DateTime

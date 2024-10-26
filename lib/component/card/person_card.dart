@@ -1,7 +1,7 @@
 import 'package:fido_smart_lock/component/button.dart';
-import 'package:fido_smart_lock/component/date_picker.dart';
+import 'package:fido_smart_lock/component/input/date_picker.dart';
 import 'package:fido_smart_lock/component/label.dart';
-import 'package:fido_smart_lock/component/time_picker.dart';
+import 'package:fido_smart_lock/component/input/time_picker.dart';
 import 'package:fido_smart_lock/helper/datetime.dart';
 import 'package:fido_smart_lock/helper/size.dart';
 import 'package:fido_smart_lock/helper/word.dart';
