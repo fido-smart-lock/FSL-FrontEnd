@@ -15,7 +15,7 @@ class People extends StatelessWidget {
   Widget build(BuildContext context) {
     final responsive = Responsive(context);
 
-    return Container(
+    return SizedBox(
       height: 50, // Ensure enough space for the avatars
       child: Stack(
         children: imageUrls

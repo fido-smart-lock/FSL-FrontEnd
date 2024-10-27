@@ -3,11 +3,12 @@ import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/helper/datetime.dart';
 import 'package:fido_smart_lock/helper/size.dart';
 import 'package:fido_smart_lock/helper/word.dart';
+import 'package:fido_smart_lock/pages/notification/tabbar_contents/tabbar_mode.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class NotiCard extends StatelessWidget {
-  NotiCard({
+  const NotiCard({
     super.key,
     required this.dateTime,
     required this.mode,
@@ -45,50 +46,17 @@ class NotiCard extends StatelessWidget {
     return '';
   }
 
-  final modeConfig = {
-    'warning': {
-      'icon': CupertinoIcons.exclamationmark_shield,
-      'color': Colors.red,
-      'LabelCapsuleButtonColor': null,
-      'labelText': 'Ignore All',
-      'labelCapsuleButton': 'View All',
-      'onTapText': () {},
-      'onTapCapsuleButton': () {}
-    },
-    'req': {
-      'icon': CupertinoIcons.bell,
-      'color': Colors.amber,
-      'LabelCapsuleButtonColor': Colors.grey[850],
-      'labelText': 'View All',
-      'labelCapsuleButton': 'Accept All',
-      'onTapText': () {},
-      'onTapCapsuleButton': () {}
-    },
-    'connect': {
-      'icon': CupertinoIcons.check_mark_circled,
-      'color': Colors.green,
-      'LabelCapsuleButtonColor': null,
-      'labelText': 'View More',
-      'labelCapsuleButton': '',
-      'onTapText': () {},
-      'onTapCapsuleButton': () {}
-    },
-    'other': {
-      'icon': CupertinoIcons.ellipses_bubble,
-      'color': Colors.lightBlueAccent,
-      'LabelCapsuleButtonColor': Colors.grey[850],
-      'labelText': 'Decline',
-      'labelCapsuleButton': 'Accept',
-      'onTapText': () {},
-      'onTapCapsuleButton': () {}
-    }
-  };
-
   @override
   Widget build(BuildContext context) {
     final responsive = Responsive(context);
 
-    final config = modeConfig[mode] ??
+    final config = getModeConfig(
+          context,
+          name: name,
+          role: role,
+          lockName: lockName,
+          lockLocation: lockLocation
+        )[mode] ??
         {
           'icon': CupertinoIcons.question_circle,
           'color': Colors.grey,
@@ -105,7 +73,7 @@ class NotiCard extends StatelessWidget {
     final labelCapsuleButton = config['labelCapsuleButton'] as String;
     final onTapText = config['onTapText'] as VoidCallback;
     final onTapCapsuleButton = config['onTapCapsuleButton'] as VoidCallback;
-    final LabelCapsuleButtonColor =
+    final labelCapsuleButtonColor =
         config['LabelCapsuleButtonColor'] as Color? ?? Colors.white;
     const subColor = Colors.grey;
 
@@ -132,7 +100,10 @@ class NotiCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon),
+              Icon(
+                icon,
+                color: color,
+              ),
               SizedBox(width: responsive.widthScale(10)),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,7 +159,7 @@ class NotiCard extends StatelessWidget {
                 DoubleButton(
                   labelText: labelText,
                   labelCapsuleButton: labelCapsuleButton,
-                  labelCapsuleButtonColor: LabelCapsuleButtonColor,
+                  labelCapsuleButtonColor: labelCapsuleButtonColor,
                   buttonColor: color,
                   onTapText: onTapText,
                   onTapCapsuleButton: onTapCapsuleButton,

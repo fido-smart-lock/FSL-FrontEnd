@@ -3,44 +3,58 @@ import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/component/card/person_card.dart';
 import 'package:fido_smart_lock/helper/size.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // For loading asset data
+import 'dart:convert'; // For JSON parsing
 
-class HistoryView extends StatelessWidget {
-  const HistoryView({
-    super.key,
-    required this.lockName,
-    required this.lockLocation,
-    required this.img,
-    required this.dateTime,
-    required this.name,
-    required this.status,
-  });
+class HistoryView extends StatefulWidget {
+  const HistoryView({super.key});
 
-  final String lockName;
-  final String lockLocation;
-  final List<String> img;
-  final List<String> dateTime;
-  final List<String> name;
-  final List<String> status;
+  @override
+  _HistoryViewState createState() => _HistoryViewState();
+}
+
+class _HistoryViewState extends State<HistoryView> {
+  late String lockName;
+  late String lockLocation;
+  late List<String> img;
+  late List<String> dateTime;
+  late List<String> name;
+  late List<String> status;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    final String response = await rootBundle.loadString('assets/data/lock_detail_history.json');
+    final Map<String, dynamic> data = json.decode(response);
+
+    setState(() {
+      lockName = data['lockName'];
+      lockLocation = data['lockLocation'];
+      img = (data['history'] as List).map((item) => item['img'] as String).toList();
+      dateTime = (data['history'] as List).map((item) => item['dateTime'] as String).toList();
+      name = (data['history'] as List).map((item) => item['name'] as String).toList();
+      status = (data['history'] as List).map((item) => item['status'] as String).toList();
+    });
+  }
 
   bool _isToday(DateTime date) {
     DateTime now = DateTime.now();
-    return date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day;
+    return date.year == now.year && date.month == now.month && date.day == now.day;
   }
 
   bool _isYesterday(DateTime date) {
-    DateTime now = DateTime.now().subtract(Duration(days: 1));
-    return date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day;
+    DateTime now = DateTime.now().subtract(const Duration(days: 1));
+    return date.year == now.year && date.month == now.month && date.day == now.day;
   }
 
   @override
   Widget build(BuildContext context) {
     // Convert dateTime strings to DateTime objects for comparison
-    List<DateTime> dateTimes =
-        dateTime.map((dt) => DateTime.parse(dt)).toList();
+    List<DateTime> dateTimes = dateTime.map((dt) => DateTime.parse(dt)).toList();
 
     // Split items into categories: Today, Yesterday, and Earlier
     List<int> todayIndices = [];
@@ -101,15 +115,11 @@ class HistoryView extends StatelessWidget {
                       ),
                       ...todayIndices.map((index) => Padding(
                             padding: EdgeInsets.symmetric(vertical: 5),
-                            child: Column(
-                              children: [
-                                PersonHistoryCard(
-                                  img: img[index],
-                                  name: name[index],
-                                  status: status[index],
-                                  dateTime: dateTime[index],
-                                ),
-                              ],
+                            child: PersonHistoryCard(
+                              img: img[index],
+                              name: name[index],
+                              status: status[index],
+                              dateTime: dateTime[index],
                             ),
                           )),
                       SizedBox(height: responsive.heightScale(25)),
@@ -126,15 +136,11 @@ class HistoryView extends StatelessWidget {
                       ),
                       ...yesterdayIndices.map((index) => Padding(
                             padding: EdgeInsets.symmetric(vertical: 5),
-                            child: Column(
-                              children: [
-                                PersonHistoryCard(
-                                  img: img[index],
-                                  name: name[index],
-                                  status: status[index],
-                                  dateTime: dateTime[index],
-                                ),
-                              ],
+                            child: PersonHistoryCard(
+                              img: img[index],
+                              name: name[index],
+                              status: status[index],
+                              dateTime: dateTime[index],
                             ),
                           )),
                       SizedBox(height: responsive.heightScale(25)),
@@ -152,15 +158,11 @@ class HistoryView extends StatelessWidget {
                       ...earlierIndices.map((index) {
                         return Padding(
                           padding: EdgeInsets.symmetric(vertical: 5),
-                          child: Column(
-                            children: [
-                              PersonHistoryCard(
-                                img: img[index],
-                                name: name[index],
-                                status: status[index],
-                                dateTime: dateTime[index],
-                              ),
-                            ],
+                          child: PersonHistoryCard(
+                            img: img[index],
+                            name: name[index],
+                            status: status[index],
+                            dateTime: dateTime[index],
                           ),
                         );
                       }),

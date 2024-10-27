@@ -22,7 +22,7 @@ class CustomTextField extends StatefulWidget {
 
 class _CustomTextFieldState extends State<CustomTextField> {
   late FocusNode _focusNode;
-  String _currentText = '';
+  final String _currentText = '';
 
   @override
   void initState() {

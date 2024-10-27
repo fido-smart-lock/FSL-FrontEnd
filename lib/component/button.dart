@@ -149,7 +149,8 @@ class DoubleButton extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         GestureDetector(
-            onTap: onTapText,
+            onTap: () {
+              onTapText();},
             child: Label(
               size: 'xs',
               label: labelText,

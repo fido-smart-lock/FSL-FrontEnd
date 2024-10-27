@@ -4,7 +4,6 @@ import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/helper/size.dart';
 import 'package:fido_smart_lock/pages/lock_management/lock_setting.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 // import 'dart:async';

@@ -92,7 +92,7 @@ class RequestAccess extends StatelessWidget {
 }
 
 class RequestSend extends StatelessWidget {
-  const RequestSend({Key? key}) : super(key: key);
+  const RequestSend({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -22,13 +22,13 @@ class Label extends StatelessWidget {
   final bool? isShadow;
 
   static const sizeConfig = {
-    'xxs': 10,
-    'xs': 12,
-    's': 14,
-    'm': 16,
-    'l': 18,
-    'xl': 20,
-    'xxl': 25
+    'xxs': 10.0,
+    'xs': 12.0,
+    's': 14.0,
+    'm': 16.0,
+    'l': 18.0,
+    'xl': 20.0,
+    'xxl': 25.0
   };
 
   @override
