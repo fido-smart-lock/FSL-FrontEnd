@@ -45,9 +45,9 @@ class AdminCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Label(label: 'Admin', isBold: true),
+            Label(size: 'm', label: 'Admin', isBold: true),
             Gap(5),
-            SmallLabel(label: _getAdminMessage()),
+            Label(size: 'xs', label: _getAdminMessage()),
             Gap(10),
             People(imageUrls: imageUrls)
           ],
@@ -130,9 +130,9 @@ class IconCard extends StatelessWidget {
               width: responsive.widthScale(5),
               height: responsive.heightScale(5),
             ),
-            Label(label: label, isBold: true),
+            Label(size: 'm', label: label, isBold: true),
             const Gap(5),
-            SmallLabel(label: _getSubMessage()),
+            Label(size: 'xs', label: _getSubMessage()),
             const Gap(10),
             // Conditionally display PeopleMoreThanTwo only if cardType is not 'his'
             if (cardType != 'his')

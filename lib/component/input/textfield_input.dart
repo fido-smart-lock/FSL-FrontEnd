@@ -115,7 +115,9 @@ class UserCodeInput extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(width: responsive.widthScale(5),),
+        SizedBox(
+          width: responsive.widthScale(5),
+        ),
         ElevatedButton(
           onPressed: () {
             // Add your action here
@@ -127,7 +129,10 @@ class UserCodeInput extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-          child: Label(label: 'Find',),
+          child: Label(
+            size: 'm',
+            label: 'Find',
+          ),
         ),
       ],
     );

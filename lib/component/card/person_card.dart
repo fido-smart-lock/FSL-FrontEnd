@@ -54,17 +54,20 @@ class Person extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SubLabel(
+                  Label(
+                    size: 's',
                     label: truncateWithEllipsis(name, 20),
                     isBold: true,
                   ),
                   if (role != null && role != 'guest')
-                    SmallLabel(
+                    Label(
+                      size: 'xs',
                       label: role!,
                       color: Colors.grey,
                     )
                   else if (role == 'guest')
-                    XtraSmallLabel(
+                    Label(
+                      size: 'xxs',
                       label: 'Exp: ${dateDotTimeFormat(dateTime!)}',
                       color: Colors.grey,
                     )
@@ -85,14 +88,16 @@ class Person extends StatelessWidget {
                         child: Padding(
                           padding: EdgeInsets.fromLTRB(30, 30, 30, 80),
                           child: Column(children: [
-                            SubLabel(
+                            Label(
+                              size: 's',
                               label:
                                   'Do you want to remove $name from $role of $lockName lock?',
                               isBold: true,
                               isCenter: true,
                             ),
                             if (role == 'member')
-                              SmallLabel(
+                              Label(
+                                size: 'xs',
                                 label: 'This action cannot be undone',
                                 isCenter: true,
                                 color: Colors.red,
@@ -106,7 +111,7 @@ class Person extends StatelessWidget {
                             children: [
                               GestureDetector(
                                   onTap: Navigator.of(context).pop,
-                                  child: SmallLabel(label: 'Cancel')),
+                                  child: Label(size: 'xs', label: 'Cancel')),
                               Gap(20),
                               CapsuleButton(
                                 label: 'Proceed',
@@ -177,11 +182,13 @@ class PersonRequest extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SubLabel(
+                    Label(
+                      size: 's',
                       label: truncateWithEllipsis(name, 25),
                       isBold: true,
                     ),
-                    XtraSmallLabel(
+                    Label(
+                      size: 'xxs',
                       label: 'Request pending ${timeDifference(dateTime)}',
                       color: Colors.grey,
                     )
@@ -197,7 +204,8 @@ class PersonRequest extends StatelessWidget {
           children: [
             GestureDetector(
                 onTap: Navigator.of(context).pop,
-                child: SmallLabel(
+                child: Label(
+                  size: 'xs',
                   label: 'Decline',
                   color: Colors.red,
                 )),
@@ -217,7 +225,8 @@ class PersonRequest extends StatelessWidget {
                           padding: EdgeInsets.fromLTRB(30, 30, 30, 80),
                           child: Column(
                             children: [
-                              SubLabel(
+                              Label(
+                                size: 's',
                                 label:
                                     'Do you want to accept $name request to unlock $lockName?',
                                 isBold: true,
@@ -238,7 +247,8 @@ class PersonRequest extends StatelessWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        SubLabel(
+                                        Label(
+                                          size: 's',
                                           label: 'Expiration Date',
                                           color: Colors.white.withOpacity(0.75),
                                         ),
@@ -254,7 +264,8 @@ class PersonRequest extends StatelessWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        SubLabel(
+                                        Label(
+                                            size: 's',
                                             label: 'Time',
                                             color:
                                                 Colors.white.withOpacity(0.75)),
@@ -277,7 +288,7 @@ class PersonRequest extends StatelessWidget {
                             children: [
                               GestureDetector(
                                   onTap: Navigator.of(context).pop,
-                                  child: SmallLabel(label: 'Cancel')),
+                                  child: Label(size: 'xs', label: 'Cancel')),
                               Gap(20),
                               CapsuleButton(
                                 label: 'Proceed',
@@ -382,16 +393,19 @@ class PersonHistoryCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (status == 'risk')
-                    SubLabel(
+                    Label(
+                      size: 's',
                       label: 'Unauthorized Attempt',
                       isBold: true,
                     )
                   else
-                    SubLabel(
+                    Label(
+                      size: 's',
                       label: truncateWithEllipsis(name, 20),
                       isBold: true,
                     ),
-                  XtraSmallLabel(
+                  Label(
+                    size: 'xxs',
                     label: 'Exp: ${dateDotTimeFormat(dateTime)}',
                     color: Colors.grey,
                   )

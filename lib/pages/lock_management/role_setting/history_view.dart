@@ -24,18 +24,23 @@ class HistoryView extends StatelessWidget {
 
   bool _isToday(DateTime date) {
     DateTime now = DateTime.now();
-    return date.year == now.year && date.month == now.month && date.day == now.day;
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
   }
 
   bool _isYesterday(DateTime date) {
     DateTime now = DateTime.now().subtract(Duration(days: 1));
-    return date.year == now.year && date.month == now.month && date.day == now.day;
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
   }
 
   @override
   Widget build(BuildContext context) {
     // Convert dateTime strings to DateTime objects for comparison
-    List<DateTime> dateTimes = dateTime.map((dt) => DateTime.parse(dt)).toList();
+    List<DateTime> dateTimes =
+        dateTime.map((dt) => DateTime.parse(dt)).toList();
 
     // Split items into categories: Today, Yesterday, and Earlier
     List<int> todayIndices = [];
@@ -60,11 +65,13 @@ class HistoryView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            MainHeaderLabel(
+            Label(
+              size: 'xxl',
               label: lockName,
               isShadow: true,
             ),
-            SubHeaderLabel(
+            Label(
+              size: 'l',
               label: lockLocation,
               color: Colors.grey.shade300,
               isShadow: true,
@@ -75,7 +82,8 @@ class HistoryView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          HeaderLabel(
+          Label(
+            size: 'xl',
             label: 'History',
             isBold: true,
           ),
@@ -86,20 +94,24 @@ class HistoryView extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SubLabel(label: 'Today', isBold: true,),
+                      Label(
+                        size: 's',
+                        label: 'Today',
+                        isBold: true,
+                      ),
                       ...todayIndices.map((index) => Padding(
-                        padding: EdgeInsets.symmetric(vertical: 5),
-                        child: Column(
-                          children: [
-                            PersonHistoryCard(
-                              img: img[index],
-                              name: name[index],
-                              status: status[index],
-                              dateTime: dateTime[index],
+                            padding: EdgeInsets.symmetric(vertical: 5),
+                            child: Column(
+                              children: [
+                                PersonHistoryCard(
+                                  img: img[index],
+                                  name: name[index],
+                                  status: status[index],
+                                  dateTime: dateTime[index],
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      )),
+                          )),
                       SizedBox(height: responsive.heightScale(25)),
                     ],
                   ),
@@ -107,20 +119,24 @@ class HistoryView extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SubLabel(label: 'Yesterday', isBold: true,),
+                      Label(
+                        size: 's',
+                        label: 'Yesterday',
+                        isBold: true,
+                      ),
                       ...yesterdayIndices.map((index) => Padding(
-                        padding: EdgeInsets.symmetric(vertical: 5),
-                        child: Column(
-                          children: [
-                            PersonHistoryCard(
-                              img: img[index],
-                              name: name[index],
-                              status: status[index],
-                              dateTime: dateTime[index],
+                            padding: EdgeInsets.symmetric(vertical: 5),
+                            child: Column(
+                              children: [
+                                PersonHistoryCard(
+                                  img: img[index],
+                                  name: name[index],
+                                  status: status[index],
+                                  dateTime: dateTime[index],
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      )),
+                          )),
                       SizedBox(height: responsive.heightScale(25)),
                     ],
                   ),
@@ -128,7 +144,11 @@ class HistoryView extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SubLabel(label: 'Earlier', isBold: true,),
+                      Label(
+                        size: 's',
+                        label: 'Earlier',
+                        isBold: true,
+                      ),
                       ...earlierIndices.map((index) {
                         return Padding(
                           padding: EdgeInsets.symmetric(vertical: 5),

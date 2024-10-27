@@ -56,9 +56,14 @@ class SecurityStatus extends StatelessWidget {
             ],
           ),
           const SizedBox(width: 5),
-          Label(label: 'Security Status:', color: color, isShadow: true),
+          Label(
+              size: 'm',
+              label: 'Security Status:',
+              color: color,
+              isShadow: true),
           const SizedBox(width: 5),
           Label(
+            size: 'm',
             label: statusList[status] ?? 'Unknown',
             color: color,
             isShadow: true,

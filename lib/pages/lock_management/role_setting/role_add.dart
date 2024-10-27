@@ -28,11 +28,13 @@ class AdminAndMemberAdd extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              MainHeaderLabel(
+              Label(
+                size: 'xxl',
                 label: lockName,
                 isShadow: true,
               ),
-              SubHeaderLabel(
+              Label(
+                size: 'l',
                 label: lockLocation,
                 color: Colors.grey.shade300,
                 isShadow: true,
@@ -44,7 +46,8 @@ class AdminAndMemberAdd extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            HeaderLabel(
+            Label(
+              size: 'xl',
               label: 'Add New ${capitalizeFirstLetter(role)}',
               isBold: true,
             ),
@@ -53,7 +56,8 @@ class AdminAndMemberAdd extends StatelessWidget {
               height: responsive.heightScale(5),
             ),
             if (role == 'member')
-              XtraSmallLabel(
+              Label(
+                size: 'xxs',
                 label:
                     'members have no expiration date access. If you want to add user with limit time of access, please considered using ‘invite new guest’',
                 color: Colors.grey.shade500,
@@ -84,11 +88,13 @@ class GuestAdd extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              MainHeaderLabel(
+              Label(
+                size: 'xxl',
                 label: lockName,
                 isShadow: true,
               ),
-              SubHeaderLabel(
+              Label(
+                size: 'l',
                 label: lockLocation,
                 color: Colors.grey.shade300,
                 isShadow: true,
@@ -100,7 +106,8 @@ class GuestAdd extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            HeaderLabel(
+            Label(
+              size: 'xl',
               label: 'Add New ${capitalizeFirstLetter(role)}',
               isBold: true,
             ),
@@ -115,7 +122,7 @@ class GuestAdd extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SubLabel(label: 'Expiration Date'),
+                    Label(size: 's', label: 'Expiration Date'),
                     SizedBox(
                       height: responsive.widthScale(3),
                     ),
@@ -129,7 +136,7 @@ class GuestAdd extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SubLabel(label: 'Time'),
+                    Label(size: 's', label: 'Time'),
                     SizedBox(
                       height: responsive.widthScale(3),
                     ),

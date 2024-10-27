@@ -16,7 +16,7 @@ class LockLocationCustomize extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Background(
-      appBar: AppBar(title: MainHeaderLabel(label: '')),
+      appBar: AppBar(title: Label(size: 'xxl', label: '')),
       disabledTopPadding: true,
       child: Column(
         children: <Widget>[
@@ -25,7 +25,8 @@ class LockLocationCustomize extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                HeaderLabel(
+                Label(
+                  size: 'xl',
                   label: 'Customize Location',
                   color: Colors.white,
                 ),

@@ -15,7 +15,6 @@ class LockScan extends StatelessWidget {
 
   const LockScan({super.key, this.option});
 
-
   // Future<void> _handleNfcScan(BuildContext context) async {
   //   // Start the NFC scan with a 5-second delay
   //   await Future.delayed(Duration(seconds: 5));
@@ -52,7 +51,7 @@ class LockScan extends StatelessWidget {
 
     return Background(
       appBar: AppBar(
-        title: MainHeaderLabel(label: 'Scan Your Lock'),
+        title: Label(size: 'xxl', label: 'Scan Your Lock'),
       ),
       child: Center(
         child: Column(children: [
@@ -84,20 +83,24 @@ class LockScan extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SvgPicture.asset('assets/svg/nfc.svg',
-                  semanticsLabel: 'Phone Scan', height: responsive.heightScale(20)),
+                  semanticsLabel: 'Phone Scan',
+                  height: responsive.heightScale(20)),
               Gap(10),
               Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SubLabel(
+                    Label(
+                      size: 's',
                       label: 'Connect via NFC',
                       isBold: true,
                     ),
-                    SmallLabel(
-                      label: 'Hold your phone near to the lock, using NFC',
-                      color: Colors.grey[400]),
-                    SmallLabel(
+                    Label(
+                        size: 'xs',
+                        label: 'Hold your phone near to the lock, using NFC',
+                        color: Colors.grey[400]),
+                    Label(
+                      size: 'xs',
                       label: 'phone will automatically connect to the lock.',
                       color: Colors.grey[400],
                     )
@@ -114,7 +117,9 @@ class LockScan extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => LockSetting(
-                          appBarTitle: option == 'register' ? 'Create New Lock' : 'Set Up Lock',
+                          appBarTitle: option == 'register'
+                              ? 'Create New Lock'
+                              : 'Set Up Lock',
                           option: option,
                         ),
                       ),

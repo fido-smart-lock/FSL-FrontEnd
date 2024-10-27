@@ -51,8 +51,9 @@ class LockMain extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  MainHeaderLabel(label: 'Good Day', name: name, isBold: true),
-                  SubHeaderLabel(label: 'Manage Your Locks'),
+                  Label(
+                      size: 'xxl', label: 'Good Day', name: name, isBold: true),
+                  Label(size: 'l', label: 'Manage Your Locks'),
                 ],
               )
             ],

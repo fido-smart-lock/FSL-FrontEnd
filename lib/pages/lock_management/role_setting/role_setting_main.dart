@@ -29,11 +29,13 @@ class AdminAndMemberSettingMain extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            MainHeaderLabel(
+            Label(
+              size: 'xxl',
               label: lockName,
               isShadow: true,
             ),
-            SubHeaderLabel(
+            Label(
+              size: 'l',
               label: lockLocation,
               color: Colors.grey.shade300,
               isShadow: true,
@@ -73,7 +75,8 @@ class AdminAndMemberSettingMain extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          HeaderLabel(
+          Label(
+            size: 'xl',
             label: capitalizeFirstLetter(role),
             isBold: true,
           ),
@@ -101,15 +104,14 @@ class AdminAndMemberSettingMain extends StatelessWidget {
 }
 
 class GuestSettingMain extends StatelessWidget {
-  const GuestSettingMain({
-    super.key,
-    required this.lockName,
-    required this.lockLocation,
-    required this.name,
-    required this.role,
-    required this.img,
-    required this.dateTime
-  });
+  const GuestSettingMain(
+      {super.key,
+      required this.lockName,
+      required this.lockLocation,
+      required this.name,
+      required this.role,
+      required this.img,
+      required this.dateTime});
 
   final String lockName;
   final String lockLocation;
@@ -126,11 +128,13 @@ class GuestSettingMain extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            MainHeaderLabel(
+            Label(
+              size: 'xxl',
               label: lockName,
               isShadow: true,
             ),
-            SubHeaderLabel(
+            Label(
+              size: 'l',
               label: lockLocation,
               color: Colors.grey.shade300,
               isShadow: true,
@@ -170,7 +174,8 @@ class GuestSettingMain extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          HeaderLabel(
+          Label(
+            size: 'xl',
             label: capitalizeFirstLetter(role),
             isBold: true,
           ),
@@ -221,11 +226,13 @@ class RequestSettingMain extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            MainHeaderLabel(
+            Label(
+              size: 'xxl',
               label: lockName,
               isShadow: true,
             ),
-            SubHeaderLabel(
+            Label(
+              size: 'l',
               label: lockLocation,
               color: Colors.grey.shade300,
               isShadow: true,
@@ -237,7 +244,8 @@ class RequestSettingMain extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          HeaderLabel(
+          Label(
+            size: 'xl',
             label: 'Request as Invited Guest',
             isBold: true,
           ),

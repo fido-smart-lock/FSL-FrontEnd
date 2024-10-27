@@ -13,10 +13,10 @@ class DatePickerWidget extends StatefulWidget {
 
 class _DatePickerWidgetState extends State<DatePickerWidget> {
   DateTime? _selectedDate;
-  
+
   // Date format
   final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
-  
+
   // Function to show the date picker
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -40,23 +40,22 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
       onTap: () => _selectDate(context),
       child: Row(
         children: [
-          Icon(
-            CupertinoIcons.calendar_badge_plus,
-            color: Colors.white.withOpacity(0.75)
+          Icon(CupertinoIcons.calendar_badge_plus,
+              color: Colors.white.withOpacity(0.75)),
+          SizedBox(
+            width: responsive.widthScale(5),
           ),
-          SizedBox(width: responsive.widthScale(5),),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 7, vertical: 3),
             decoration: BoxDecoration(
-              color: Colors.blueGrey[900],
-              borderRadius: BorderRadius.circular(responsive.radiusScale(3))
-            ),
-            child: SubLabel(
-              label: _selectedDate != null 
-                ? _dateFormat.format(_selectedDate!)
-                : 'DD/MM/YYYY',
-              color: Colors.white.withOpacity(0.75)
-            ),
+                color: Colors.blueGrey[900],
+                borderRadius: BorderRadius.circular(responsive.radiusScale(3))),
+            child: Label(
+                size: 's',
+                label: _selectedDate != null
+                    ? _dateFormat.format(_selectedDate!)
+                    : 'DD/MM/YYYY',
+                color: Colors.white.withOpacity(0.75)),
           ),
         ],
       ),

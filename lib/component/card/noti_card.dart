@@ -77,7 +77,7 @@ class NotiCard extends StatelessWidget {
       'icon': CupertinoIcons.ellipses_bubble,
       'color': Colors.lightBlueAccent,
       'LabelCapsuleButtonColor': Colors.grey[850],
-      'labelText': 'Learn More',
+      'labelText': 'Decline',
       'labelCapsuleButton': 'Accept',
       'onTapText': () {},
       'onTapCapsuleButton': () {}
@@ -105,11 +105,12 @@ class NotiCard extends StatelessWidget {
     final labelCapsuleButton = config['labelCapsuleButton'] as String;
     final onTapText = config['onTapText'] as VoidCallback;
     final onTapCapsuleButton = config['onTapCapsuleButton'] as VoidCallback;
-    final LabelCapsuleButtonColor = config['LabelCapsuleButtonColor'] as Color? ?? Colors.white;
+    final LabelCapsuleButtonColor =
+        config['LabelCapsuleButtonColor'] as Color? ?? Colors.white;
     const subColor = Colors.grey;
 
     return Container(
-      padding: EdgeInsets.fromLTRB(15,15,20,20),
+      padding: EdgeInsets.fromLTRB(15, 15, 20, 20),
       decoration: BoxDecoration(
         color: Colors.grey[850],
         borderRadius: BorderRadius.circular(responsive.radiusScale(15)),
@@ -119,7 +120,8 @@ class NotiCard extends StatelessWidget {
         children: [
           Align(
               alignment: Alignment.centerRight,
-              child: SmallLabel(
+              child: Label(
+                size: 'xs',
                 label: timeDifference(dateTime),
                 color: subColor,
               )),
@@ -135,33 +137,39 @@ class NotiCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SubLabel(
+                  Label(
+                    size: 's',
                     label: _getMainTextLabel(),
                     isBold: true,
                   ),
                   if ((mode != 'other') ||
                       ((mode == 'other') && (subMode != 'invite')))
-                    SmallLabel(
+                    Label(
+                      size: 'xs',
                       label: 'location $lockLocation: $lockName',
                       color: subColor,
                     ),
                   if ((mode == 'req') || (mode == 'connect'))
-                    SmallLabel(
+                    Label(
+                      size: 'xs',
                       label: 'by $name',
                       color: subColor,
                     ),
                   if ((mode == 'other') && (subMode == 'sent'))
-                    SmallLabel(
+                    Label(
+                      size: 'xs',
                       label: 'waiting for admin to accept request',
                       color: subColor,
                     ),
                   if ((mode == 'other') && (subMode == 'accepted'))
-                    SmallLabel(
+                    Label(
+                      size: 'xs',
                       label: 'this lock will be added to your list',
                       color: subColor,
                     ),
                   if ((mode == 'other') && (subMode == 'invite'))
-                    SmallLabel(
+                    Label(
+                      size: 'xs',
                       label: 'invited by $name',
                       color: subColor,
                     ),
@@ -170,7 +178,8 @@ class NotiCard extends StatelessWidget {
             ],
           ),
           if (((mode == 'other') && (subMode == 'invite')) ||
-              (mode == 'req') || (mode == 'warning'))
+              (mode == 'req') ||
+              (mode == 'warning'))
             Column(
               children: [
                 SizedBox(
@@ -196,7 +205,8 @@ class NotiCard extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
                     onTap: onTapText,
-                    child: SmallLabel(
+                    child: Label(
+                      size: 'xs',
                       label: labelText,
                       color: color,
                     ),

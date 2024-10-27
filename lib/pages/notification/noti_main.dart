@@ -14,7 +14,7 @@ class NotiMain extends StatelessWidget {
       child: Background(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: MainHeaderLabel(label: 'Notifications', isBold: true),
+          title: Label(size: 'xxl', label: 'Notifications', isBold: true),
           centerTitle: false,
           leadingWidth: NavigationToolbar.kMiddleSpacing,
           bottom: const TabBar(

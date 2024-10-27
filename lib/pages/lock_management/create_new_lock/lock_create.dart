@@ -12,13 +12,13 @@ class LockCreate extends StatelessWidget {
   Widget build(BuildContext context) {
     return Background(
         appBar: AppBar(
-          title: MainHeaderLabel(label: 'Create New Lock'),
+          title: Label(size: 'xxl', label: 'Create New Lock'),
         ),
         child: Align(
           alignment: Alignment.topCenter,
           child: Column(
             children: [
-              Label(label: 'what type of lock you want to create?'),
+              Label(size: 'm', label: 'what type of lock you want to create?'),
               const Gap(25),
               GestureDetector(
                 onTap: () {
@@ -51,6 +51,7 @@ class LockCreate extends StatelessWidget {
                         ),
                         Center(
                           child: Label(
+                            size: 'm',
                             label: 'Register new lock',
                             isBold: true,
                           ),
@@ -58,18 +59,18 @@ class LockCreate extends StatelessWidget {
                         const Gap(10),
                         Align(
                             alignment: Alignment.topLeft,
-                            child: SubLabel(
+                            child: Label(
+                              size: 's',
                               label: 'recommend for',
                               color: Colors.grey,
                             )),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            SubLabel(
-                                label: '• ',
-                                color: Colors.grey),
+                            Label(size: 's', label: '• ', color: Colors.grey),
                             Expanded(
-                              child: SubLabel(
+                              child: Label(
+                                  size: 's',
                                   label:
                                       'new lock that never registered by any user',
                                   color: Colors.grey),
@@ -79,13 +80,11 @@ class LockCreate extends StatelessWidget {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            SubLabel(
-                                label: '• ',
-                                color: Colors.grey),
+                            Label(size: 's', label: '• ', color: Colors.grey),
                             Expanded(
-                              child: SubLabel(
-                                  label:
-                                      'lock that needs your full management',
+                              child: Label(
+                                  size: 's',
+                                  label: 'lock that needs your full management',
                                   color: Colors.grey),
                             ),
                           ],
@@ -125,6 +124,7 @@ class LockCreate extends StatelessWidget {
                         ),
                         Center(
                           child: Label(
+                            size: 'm',
                             label: 'Request access to registered lock',
                             isBold: true,
                           ),
@@ -132,18 +132,18 @@ class LockCreate extends StatelessWidget {
                         const Gap(10),
                         Align(
                             alignment: Alignment.topLeft,
-                            child: SubLabel(
+                            child: Label(
+                              size: 's',
                               label: 'recommend for',
                               color: Colors.grey,
                             )),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            SubLabel(
-                                label: '• ',
-                                color: Colors.grey),
+                            Label(size: 's', label: '• ', color: Colors.grey),
                             Expanded(
-                              child: SubLabel(
+                              child: Label(
+                                  size: 's',
                                   label:
                                       'lock that other user own, but you need an access (as an invited guest)',
                                   color: Colors.grey),

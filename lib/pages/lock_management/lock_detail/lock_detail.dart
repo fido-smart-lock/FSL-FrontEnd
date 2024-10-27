@@ -31,11 +31,13 @@ class LockDetail extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            MainHeaderLabel(
+            Label(
+              size: 'xxl',
               label: lockName,
               isShadow: true,
             ),
-            SubHeaderLabel(
+            Label(
+              size: 'l',
               label: lockLocation,
               color: Colors.grey.shade300,
               isShadow: true,

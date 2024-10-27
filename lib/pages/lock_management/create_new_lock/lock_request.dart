@@ -28,13 +28,14 @@ class RequestAccess extends StatelessWidget {
   Widget build(BuildContext context) {
     return Background(
       appBar: AppBar(
-        title: MainHeaderLabel(label: 'Request Access'),
+        title: Label(size: 'xxl', label: 'Request Access'),
       ),
       disabledTopPadding: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Label(
+            size: 'm',
             label:
                 'By proceeding, this request will notify the admin of the lock in the following list',
           ),
@@ -62,7 +63,8 @@ class RequestAccess extends StatelessWidget {
               alignment: Alignment.topCenter,
               child: Column(
                 children: [
-                  SubLabel(
+                  Label(
+                    size: 's',
                     label:
                         'You can only have an access to the lock as an ‘invited guest’ if you want to be a ‘member’ please contact the admin of the lock directly.',
                     color: Colors.grey,
@@ -96,7 +98,7 @@ class RequestSend extends StatelessWidget {
   Widget build(BuildContext context) {
     return Background(
         appBar: AppBar(
-          title: MainHeaderLabel(label: 'Request Access'),
+          title: Label(size: 'xxl', label: 'Request Access'),
         ),
         child: Align(
           alignment: Alignment.topCenter,
@@ -108,7 +110,7 @@ class RequestSend extends StatelessWidget {
                   child: Lottie.network(
                     'https://lottie.host/47234022-509e-409a-a8c9-e6da53f5ca3b/B1wGjwm0U4.json',
                   )),
-              HeaderLabel(label: 'Request Send!'),
+              Label(size: 'xl', label: 'Request Send!'),
               Gap(250),
               Button(
                   onTap: () {

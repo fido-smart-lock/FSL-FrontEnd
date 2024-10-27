@@ -2,6 +2,7 @@ import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/helper/size.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 class Button extends StatelessWidget {
   const Button(
       {super.key,
@@ -37,7 +38,8 @@ class Button extends StatelessWidget {
           borderRadius: BorderRadius.circular(30),
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 30.0),
-            child: SubHeaderLabel(
+            child: Label(
+              size: 'l',
               label: label,
               color: Colors.white,
             ),
@@ -79,7 +81,8 @@ class CapsuleButton extends StatelessWidget {
                     : Colors.transparent,
           ),
         ),
-        child: SmallLabel(
+        child: Label(
+          size: 'xs',
           label: label,
           color: label == 'Remove'
               ? Colors.red.shade600
@@ -147,7 +150,8 @@ class DoubleButton extends StatelessWidget {
       children: [
         GestureDetector(
             onTap: onTapText,
-            child: SmallLabel(
+            child: Label(
+              size: 'xs',
               label: labelText,
               color: buttonColor,
             )),

@@ -113,7 +113,7 @@ class _LockSettingState extends State<LockSetting> {
       },
       child: Background(
         appBar: AppBar(
-          title: MainHeaderLabel(label: widget.appBarTitle),
+          title: Label(size: 'xxl', label: widget.appBarTitle),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -150,9 +150,11 @@ class _LockSettingState extends State<LockSetting> {
                             Align(
                               alignment: Alignment.topCenter,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Label(
+                                    size: 'm',
                                     label: 'Lock Location',
                                     color: _isLocationValid
                                         ? Colors.white
@@ -173,7 +175,8 @@ class _LockSettingState extends State<LockSetting> {
                                       children: const <Widget>[
                                         Icon(CupertinoIcons.pen,
                                             color: Colors.grey),
-                                        SubLabel(
+                                        Label(
+                                            size: 's',
                                             label: 'Customize',
                                             color: Colors.grey),
                                       ],
