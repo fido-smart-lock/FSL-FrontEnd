@@ -1,5 +1,6 @@
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/label.dart';
+import 'package:fido_smart_lock/component/modal/confirmation_modal.dart';
 import 'package:fido_smart_lock/helper/datetime.dart';
 import 'package:fido_smart_lock/helper/size.dart';
 import 'package:fido_smart_lock/helper/word.dart';
@@ -8,17 +9,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class NotiCard extends StatelessWidget {
-  const NotiCard({
-    super.key,
-    required this.dateTime,
-    required this.mode,
-    this.number = 1,
-    this.subMode = '',
-    this.lockName = '',
-    this.lockLocation = '',
-    this.role = '',
-    this.name = '',
-  });
+  const NotiCard(
+      {super.key,
+      required this.dateTime,
+      required this.mode,
+      this.number = 1,
+      this.subMode = '',
+      this.lockName = '',
+      this.lockLocation = '',
+      this.role = '',
+      this.name = '',
+      this.error = ''});
 
   final String mode;
   final String subMode;
@@ -28,17 +29,23 @@ class NotiCard extends StatelessWidget {
   final String lockLocation;
   final String role;
   final String name;
+  final String error;
 
   String _getMainTextLabel() {
     if (mode == 'warning') {
-      return 'Found $number risk ${addPlural(number, 'attempt')}';
+      if (subMode == 'main') {
+        return 'Found $number risk ${addPlural(number, 'attempt')}';
+      }
+      if (subMode == 'view') {
+        return 'Risk attempt found';
+      }
     } else if (mode == 'req') {
       return '$number ${addPlural(number, 'request')} pending';
     } else if (mode == 'connect') {
       return 'Connected successfully';
     } else if (mode == 'other') {
       if ((subMode == 'sent') || (subMode == 'accepted')) {
-        return '${addLabelPossessive(lockName)} request is $subMode';
+        return 'Request is $subMode!';
       } else if (subMode == 'invite') {
         return '$lockName $role invitation';
       }
@@ -50,13 +57,11 @@ class NotiCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final responsive = Responsive(context);
 
-    final config = getModeConfig(
-          context,
-          name: name,
-          role: role,
-          lockName: lockName,
-          lockLocation: lockLocation
-        )[mode] ??
+    final config = getModeConfig(context,
+            name: name,
+            role: role,
+            lockName: lockName,
+            lockLocation: lockLocation)[mode] ??
         {
           'icon': CupertinoIcons.question_circle,
           'color': Colors.grey,
@@ -113,7 +118,7 @@ class NotiCard extends StatelessWidget {
                     label: _getMainTextLabel(),
                     isBold: true,
                   ),
-                  if ((mode != 'other') ||
+                  if (((mode != 'other') && ((subMode != 'view'))) ||
                       ((mode == 'other') && (subMode != 'invite')))
                     Label(
                       size: 'xs',
@@ -144,13 +149,19 @@ class NotiCard extends StatelessWidget {
                       label: 'invited by $name',
                       color: subColor,
                     ),
+                  if ((mode == 'warning') && (subMode == 'view'))
+                    Label(
+                      size: 'xs',
+                      label: '$error',
+                      color: subColor,
+                    ),
                 ],
               ),
             ],
           ),
           if (((mode == 'other') && (subMode == 'invite')) ||
               (mode == 'req') ||
-              (mode == 'warning'))
+              ((mode == 'warning') && (subMode == 'main')))
             Column(
               children: [
                 SizedBox(
@@ -184,7 +195,37 @@ class NotiCard extends StatelessWidget {
                   ),
                 ),
               ],
-            )
+            ),
+          if ((mode == 'warning') && (subMode == 'view'))
+            Column(
+              children: [
+                SizedBox(
+                  height: responsive.heightScale(10),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: GestureDetector(
+                    onTap: () {
+                      showConfirmationModal(
+                        context,
+                        message:
+                            'Are you sure you want to ignore this risk? It can be a serious threat to your security.',
+                        isCanNotUndone: true,
+                        onProceed: () {
+                          Navigator.of(context).pop();
+                          // Additional actions for "Proceed" go here
+                        },
+                      );
+                    },
+                    child: Label(
+                      size: 'xs',
+                      label: 'Ignore this risk attempt',
+                      color: color,
+                    ),
+                  ),
+                ),
+              ],
+            ),
         ],
       ),
     );

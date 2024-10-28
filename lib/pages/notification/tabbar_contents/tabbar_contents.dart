@@ -6,9 +6,10 @@ import 'package:flutter/services.dart'; // For loading asset data
 import 'package:fido_smart_lock/component/card/noti_card.dart';
 
 class TabBarContents extends StatelessWidget {
-  const TabBarContents({super.key, required this.mode});
+  const TabBarContents({super.key, required this.mode, this.subMode});
 
   final String mode;
+  final String? subMode;
 
   Future<List<Map<String, dynamic>>> _loadData() async {
     // Load the JSON file from assets
@@ -45,7 +46,7 @@ class TabBarContents extends StatelessWidget {
                   NotiCard(
                     dateTime: item['dateTime'] ?? '',
                     mode: mode,
-                    subMode: item['subMode'] ?? '',
+                    subMode: item['subMode'] ?? (subMode ?? ''),
                     lockName: item['lockName'] ?? '',
                     lockLocation: item['lockLocation'] ?? '',
                     role: item['role'] ?? '',

@@ -4,6 +4,7 @@ import 'package:fido_smart_lock/component/modal/confirmation_with_date_time_moda
 import 'package:fido_smart_lock/helper/word.dart';
 import 'package:fido_smart_lock/pages/lock_management/lock_setting.dart';
 import 'package:fido_smart_lock/pages/lock_management/role_setting/history_view.dart';
+import 'package:fido_smart_lock/pages/notification/warning_view/warning_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -31,7 +32,17 @@ Map<String, dynamic> getModeConfig(BuildContext context,
           },
         );
       },
-      'onTapCapsuleButton': () {},
+      'onTapCapsuleButton': () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WarningView(
+              lockLocation: lockLocation,
+              lockName: lockName,
+            ),
+          ),
+        );
+      },
     },
     'req': {
       'icon': CupertinoIcons.bell,

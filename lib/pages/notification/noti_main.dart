@@ -45,7 +45,7 @@ class NotiMain extends StatelessWidget {
         ),
         child: TabBarView(
           children: <Widget>[
-            TabBarContents(mode: 'warning'),
+            TabBarContents(mode: 'warning', subMode: 'main'),
             TabBarContents(mode: 'req'),
             TabBarContents(mode: 'connect'),
             TabBarContents(mode: 'other')

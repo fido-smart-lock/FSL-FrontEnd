@@ -1,0 +1,10 @@
+[
+  {
+      "dateTime": "2024-10-25T20:15:42",
+      "error": "Attempt to access without permission"
+  },
+  {
+      "dateTime": "2024-10-25T18:45:30",
+      "error": "Authentication failed"
+  }
+]

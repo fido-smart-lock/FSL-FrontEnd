@@ -1,14 +1,13 @@
 import 'package:fido_smart_lock/component/button.dart';
-import 'package:fido_smart_lock/component/input/date_picker.dart';
 import 'package:fido_smart_lock/component/label.dart';
-import 'package:fido_smart_lock/component/input/time_picker.dart';
+import 'package:fido_smart_lock/component/modal/confirmation_modal.dart';
+import 'package:fido_smart_lock/component/modal/confirmation_with_date_time_modal.dart';
 import 'package:fido_smart_lock/helper/datetime.dart';
 import 'package:fido_smart_lock/helper/size.dart';
 import 'package:fido_smart_lock/helper/word.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 
 class Person extends StatelessWidget {
   final String? img;
@@ -79,55 +78,10 @@ class Person extends StatelessWidget {
             CapsuleButton(
               label: 'Remove',
               onTap: () {
-                WoltModalSheet.show(
-                  context: context,
-                  pageListBuilder: (context) {
-                    return [
-                      WoltModalSheetPage(
-                        hasTopBarLayer: false,
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(30, 30, 30, 80),
-                          child: Column(children: [
-                            Label(
-                              size: 's',
-                              label:
-                                  'Do you want to remove $name from $role of $lockName lock?',
-                              isBold: true,
-                              isCenter: true,
-                            ),
-                            if (role == 'member')
-                              Label(
-                                size: 'xs',
-                                label: 'This action cannot be undone',
-                                isCenter: true,
-                                color: Colors.red,
-                              )
-                          ]),
-                        ),
-                        stickyActionBar: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 30, 30),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              GestureDetector(
-                                  onTap: Navigator.of(context).pop,
-                                  child: Label(size: 'xs', label: 'Cancel')),
-                              Gap(20),
-                              CapsuleButton(
-                                label: 'Proceed',
-                                buttonColor: Colors.green,
-                                labelColor: Colors.white,
-                              )
-                            ],
-                          ),
-                        ),
-                      )
-                    ];
-                  },
-                  modalTypeBuilder: (context) {
-                    return WoltModalType.dialog();
-                  },
-                );
+                showConfirmationModal(context,
+                    message:
+                        'Do you want to remove $name from $role of $lockName lock?',
+                    onProceed: () {});
               },
             )
           else if (button == 'invite')
@@ -215,96 +169,10 @@ class PersonRequest extends StatelessWidget {
               buttonColor: Colors.green,
               labelColor: Colors.white,
               onTap: () {
-                WoltModalSheet.show(
-                  context: context,
-                  pageListBuilder: (context) {
-                    return [
-                      WoltModalSheetPage(
-                        hasTopBarLayer: false,
-                        child: Container(
-                          padding: EdgeInsets.fromLTRB(30, 30, 30, 80),
-                          child: Column(
-                            children: [
-                              Label(
-                                size: 's',
-                                label:
-                                    'Do you want to accept $name request to unlock $lockName?',
-                                isBold: true,
-                                isCenter: true,
-                              ),
-                              SizedBox(
-                                height: responsive.heightScale(5),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(top: 7),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Label(
-                                          size: 's',
-                                          label: 'Expiration Date',
-                                          color: Colors.white.withOpacity(0.75),
-                                        ),
-                                        SizedBox(
-                                          height: responsive.widthScale(3),
-                                        ),
-                                        DatePickerWidget(),
-                                      ],
-                                    ),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Label(
-                                            size: 's',
-                                            label: 'Time',
-                                            color:
-                                                Colors.white.withOpacity(0.75)),
-                                        SizedBox(
-                                          height: responsive.widthScale(3),
-                                        ),
-                                        TimePickerWidget(),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        stickyActionBar: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 30, 30),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              GestureDetector(
-                                  onTap: Navigator.of(context).pop,
-                                  child: Label(size: 'xs', label: 'Cancel')),
-                              Gap(20),
-                              CapsuleButton(
-                                label: 'Proceed',
-                                buttonColor: Colors.green,
-                                labelColor: Colors.white,
-                              )
-                            ],
-                          ),
-                        ),
-                      )
-                    ];
-                  },
-                  modalTypeBuilder: (context) {
-                    return WoltModalType.dialog();
-                  },
-                );
+                showConfirmationWithDateTimeModal(context,
+                    message:
+                        'Do you want to accept $name request to unlock $lockName?',
+                    onProceed: () {});
               },
             )
           ],
