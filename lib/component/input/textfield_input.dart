@@ -102,7 +102,7 @@ class UserCodeInput extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
             decoration: BoxDecoration(
-              color: Colors.blueGrey[900],
+              color: Colors.grey[850],
               borderRadius: BorderRadius.circular(12),
             ),
             child: TextField(

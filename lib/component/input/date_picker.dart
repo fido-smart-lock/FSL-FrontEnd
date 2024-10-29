@@ -48,7 +48,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 7, vertical: 3),
             decoration: BoxDecoration(
-                color: Colors.blueGrey[900],
+                color: Colors.grey[850],
                 borderRadius: BorderRadius.circular(responsive.radiusScale(3))),
             child: Label(
                 size: 's',

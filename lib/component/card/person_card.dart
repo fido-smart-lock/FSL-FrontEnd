@@ -35,7 +35,7 @@ class Person extends StatelessWidget {
       padding: EdgeInsets.only(left: 10, right: 15, top: 13, bottom: 13),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        color: Colors.blueGrey[900], // Include color within BoxDecoration
+        color: Colors.grey[850], // Include color within BoxDecoration
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -119,7 +119,7 @@ class PersonRequest extends StatelessWidget {
       padding: EdgeInsets.only(left: 15, right: 20, top: 13, bottom: 13),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(responsive.radiusScale(15)),
-        color: Colors.blueGrey[900], // Include color within BoxDecoration
+        color: Colors.grey[850], // Include color within BoxDecoration
       ),
       child: Column(children: [
         Row(
@@ -228,7 +228,7 @@ class PersonHistoryCard extends StatelessWidget {
       padding: EdgeInsets.only(left: 10, right: 15, top: 13, bottom: 13),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        color: Colors.blueGrey[900], // Include color within BoxDecoration
+        color: Colors.grey[850], // Include color within BoxDecoration
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
