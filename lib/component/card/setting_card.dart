@@ -1,14 +1,13 @@
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/helper/size.dart';
+import 'package:fido_smart_lock/pages/user_settings/setting_menu_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SettingCard extends StatefulWidget {
-  const SettingCard({super.key, required this.menu, this.description = '', required this.isToggle});
+  const SettingCard({super.key, required this.menu});
 
   final String menu;
-  final String description;
-  final bool isToggle;
 
   @override
   State<SettingCard> createState() => _SettingCardState();
@@ -31,53 +30,86 @@ class _SettingCardState extends State<SettingCard> {
   Widget build(BuildContext context) {
     final responsive = Responsive(context);
 
-    return Container(
-      padding: EdgeInsets.fromLTRB(15, 15, 20, 20),
-      decoration: BoxDecoration(
-        color: Colors.grey[850],
-        borderRadius: BorderRadius.circular(responsive.radiusScale(15)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                margin: EdgeInsets.only(bottom: 5),
-                padding: EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.grey[900],
+    final config = getMenuConfig(context)[widget.menu] ??
+        {
+          'icon': CupertinoIcons.question_circle,
+          'menuName': 'Unknown Menu',
+          'description': '',
+          'isToggle': false,
+          'onTap': () {}
+        };
+
+    final icon = config['icon'] as IconData;
+    final menuName = config['menuName'] as String;
+    final description = config['description'] as String;
+    final isToggle = config['isToggle'] as bool;
+    final onTap = config['onTap'] as VoidCallback;
+
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 5),
+        padding: EdgeInsets.fromLTRB(15, 10, 20, 10),
+        decoration: BoxDecoration(
+          color: Colors.grey[850],
+          borderRadius: BorderRadius.circular(responsive.radiusScale(15)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(bottom: 5),
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.grey[900],
+                  ),
+                  child: Center(
+                      child: Icon(
+                    icon,
+                    size: 25,
+                  )),
                 ),
-                child: Center(
-                    child: Icon(
-                  CupertinoIcons.envelope_badge,
-                  size: 30,
-                )),
+                SizedBox(
+                  width: responsive.widthScale(10),
+                ),
+                Column(
+                  children: [
+                    Label(
+                      size: 'm',
+                      label: menuName,
+                    ),
+                    if (description != '')
+                      Label(
+                        size: 'xs',
+                        label: description,
+                        color: Colors.grey,
+                      )
+                  ],
+                ),
+              ],
+            ),
+            if (!isToggle)
+              Icon(
+                CupertinoIcons.chevron_right,
+                size: 20,
               ),
-              SizedBox(width: responsive.widthScale(10),),
-              Column(
-                children: [
-                  Label(size: 'm', label: widget.menu),
-                  if (widget.description != '') 
-                    Label(size: 'xs', label: widget.description, color: Colors.grey,)
-                ],
-              ),
-            ],
-          ),
-          if (!widget.isToggle)
-           Icon(CupertinoIcons.chevron_right, size: 30,),
-          if (widget.isToggle)
-            Switch(value: toggleValue,
-            activeColor: Colors.green,
-             onChanged: (bool value) {
-            setState(() {
-              toggleValue = value;
-            });
-          },)
-        ],
+            if (isToggle)
+              Switch(
+                value: toggleValue,
+                activeColor: Colors.green,
+                onChanged: (bool value) {
+                  setState(() {
+                    toggleValue = value;
+                  });
+                },
+              )
+          ],
+        ),
       ),
     );
   }

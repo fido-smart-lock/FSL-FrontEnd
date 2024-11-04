@@ -4,7 +4,7 @@ import 'package:fido_smart_lock/component/modal/confirmation_modal.dart';
 import 'package:fido_smart_lock/helper/datetime.dart';
 import 'package:fido_smart_lock/helper/size.dart';
 import 'package:fido_smart_lock/helper/word.dart';
-import 'package:fido_smart_lock/pages/notification/tabbar_contents/tabbar_mode.dart';
+import 'package:fido_smart_lock/pages/notification/tabbar_contents/tabbar_mode_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

@@ -143,8 +143,8 @@ class _LockSettingState extends State<LockSetting> {
                               labelText: 'Enter lock name',
                               labelColor: _isNameValid
                                   ? Colors.white
-                                  : Colors
-                                      .red, // Change color based on validation
+                                  : Colors.red,
+                              mode: 'maxLength', // Change color based on validation
                             ),
                             const Gap(20),
                             Align(

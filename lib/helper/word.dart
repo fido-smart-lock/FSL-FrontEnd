@@ -26,3 +26,7 @@ String addLabelPossessive(String label) {
       ? "$label'"    // Only add an apostrophe if it ends with 's'
       : "$label's";  // Otherwise, add "'s"
 }
+
+String concatenateNameAndSurname(String name, String surname) {
+  return '$name $surname';
+}

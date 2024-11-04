@@ -1,5 +1,6 @@
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/helper/size.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatefulWidget {
@@ -7,14 +8,17 @@ class CustomTextField extends StatefulWidget {
   final String labelText;
   final TextEditingController controller;
   final Color labelColor;
+  final String mode;
+  final bool isVerified;
 
-  const CustomTextField({
-    super.key,
-    required this.maxLength,
-    required this.controller,
-    required this.labelText,
-    required this.labelColor,
-  });
+  const CustomTextField(
+      {super.key,
+      this.maxLength = 99999,
+      required this.controller,
+      required this.labelText,
+      required this.labelColor,
+      this.mode = '',
+      this.isVerified = false});
 
   @override
   _CustomTextFieldState createState() => _CustomTextFieldState();
@@ -38,7 +42,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
-    double responsiveFontSize = MediaQuery.of(context).size.width * 0.03;
+    double responsiveFontSize = MediaQuery.of(context).size.width * 0.035;
 
     return GestureDetector(
       onTap: () {
@@ -66,22 +70,23 @@ class _CustomTextFieldState extends State<CustomTextField> {
               ),
             ),
           ),
-          Positioned(
-            right: 0,
-            bottom: responsiveFontSize * 0.5,
-            child: AnimatedOpacity(
-              opacity:
-                  _focusNode.hasFocus || _currentText.isNotEmpty ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 300),
-              child: Text(
-                '${widget.controller.text.length}/${widget.maxLength}',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: responsiveFontSize,
+          if (widget.mode == 'maxLength')
+            Positioned(
+              right: 0,
+              bottom: responsiveFontSize * 0.5,
+              child: AnimatedOpacity(
+                opacity:
+                    _focusNode.hasFocus || _currentText.isNotEmpty ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 300),
+                child: Text(
+                  '${widget.controller.text.length}/${widget.maxLength}',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: responsiveFontSize,
+                  ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );
