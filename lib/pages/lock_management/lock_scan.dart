@@ -73,7 +73,8 @@ class LockScan extends StatelessWidget {
                     color: Color.fromARGB(255, 68, 102, 153)),
               ),
               SvgPicture.asset('assets/svg/scan.svg',
-                  semanticsLabel: 'Phone Scan', height: 400),
+                  semanticsLabel: 'Phone Scan',
+                  height: responsive.heightScale(400)),
             ],
           ),
           SizedBox(height: responsive.heightScale(75)),
@@ -85,25 +86,23 @@ class LockScan extends StatelessWidget {
                   semanticsLabel: 'Phone Scan',
                   height: responsive.heightScale(20)),
               Gap(10),
-              Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Label(
-                      size: 's',
-                      label: 'Connect via NFC',
-                      isBold: true,
-                    ),
-                    Label(
-                        size: 'xs',
-                        label: 'Hold your phone near to the lock, using NFC',
-                        color: Colors.grey[400]),
-                    Label(
-                      size: 'xs',
-                      label: 'phone will automatically connect to the lock.',
-                      color: Colors.grey[400],
-                    )
-                  ])
+              Flexible(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Label(
+                        size: 's',
+                        label: 'Connect via NFC',
+                        isBold: true,
+                      ),
+                      Label(
+                          size: 'xs',
+                          label:
+                              'Hold your phone near to the lock, using NFC phone will automatically connect to the lock.',
+                          color: Colors.grey[400]),
+                    ]),
+              )
             ],
           ),
           Spacer(),

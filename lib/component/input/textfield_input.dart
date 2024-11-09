@@ -9,16 +9,19 @@ class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
   final Color labelColor;
   final String mode;
-  final bool isVerified;
+  final bool isValid;
+  final String validateText;
 
-  const CustomTextField(
-      {super.key,
-      this.maxLength = 99999,
-      required this.controller,
-      required this.labelText,
-      required this.labelColor,
-      this.mode = '',
-      this.isVerified = false});
+  const CustomTextField({
+    super.key,
+    this.maxLength = 99999,
+    required this.controller,
+    required this.labelText,
+    required this.labelColor,
+    this.mode = '',
+    this.isValid = false,
+    this.validateText = 'This field is required.'
+  });
 
   @override
   _CustomTextFieldState createState() => _CustomTextFieldState();
@@ -26,7 +29,7 @@ class CustomTextField extends StatefulWidget {
 
 class _CustomTextFieldState extends State<CustomTextField> {
   late FocusNode _focusNode;
-  final String _currentText = '';
+  bool _isObscured = true;
 
   @override
   void initState() {
@@ -43,56 +46,89 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     double responsiveFontSize = MediaQuery.of(context).size.width * 0.035;
+    final responsive = Responsive(context);
 
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
       },
-      child: Stack(
+      child: Column(
         children: [
-          TextFormField(
-            controller: widget.controller,
-            focusNode: _focusNode,
-            maxLength: widget.maxLength,
-            cursorColor: Colors.grey,
-            decoration: InputDecoration(
-              labelText: widget.labelText,
-              labelStyle: TextStyle(
-                color: widget.labelColor,
-                fontSize: 20,
-              ),
-              counterText: '',
-              focusedBorder: const UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.grey,
-                  width: 2.0,
-                ),
-              ),
-            ),
-          ),
-          if (widget.mode == 'maxLength')
-            Positioned(
-              right: 0,
-              bottom: responsiveFontSize * 0.5,
-              child: AnimatedOpacity(
-                opacity:
-                    _focusNode.hasFocus || _currentText.isNotEmpty ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 300),
-                child: Text(
-                  '${widget.controller.text.length}/${widget.maxLength}',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: responsiveFontSize,
+          Stack(
+            children: [
+              TextFormField(
+                controller: widget.controller,
+                focusNode: _focusNode,
+                maxLength: widget.maxLength,
+                obscureText: widget.mode == 'password' && _isObscured,
+                cursorColor: widget.isValid ? Colors.grey : Colors.red,
+                decoration: InputDecoration(
+                  labelText: widget.labelText,
+                  labelStyle: TextStyle(
+                    color: widget.labelColor,
+                    fontSize: 20,
+                  ),
+                  counterText: '',
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: widget.isValid ? Colors.grey : Colors.red,
+                      width: 2.0,
+                    ),
                   ),
                 ),
               ),
-            ),
+              if (widget.mode == 'maxLength')
+                Positioned(
+                  right: 0,
+                  bottom: responsiveFontSize * 0.5,
+                  child: AnimatedOpacity(
+                    opacity: _focusNode.hasFocus || widget.controller.text.isNotEmpty ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 300),
+                    child: Text(
+                      '${widget.controller.text.length}/${widget.maxLength}',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: responsiveFontSize,
+                      ),
+                    ),
+                  ),
+                ),
+              if (widget.mode == 'password')
+                Positioned(
+                  right: 0,
+                  bottom: responsiveFontSize * 0.5,
+                  child: IconButton(
+                    icon: Icon(
+                      _isObscured ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isObscured = !_isObscured; // Toggle the obscured state
+                      });
+                    },
+                  ),
+                ),
+            ],
+          ),
+          if(!widget.isValid)
+            Column(
+              children: [
+                SizedBox(height: responsive.heightScale(10),),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(CupertinoIcons.exclamationmark_triangle, color: Colors.red, size: 15,),
+                  SizedBox(width: responsive.widthScale(5),),
+                  Label(size: 'xs', label: widget.validateText, color: Colors.red,)
+                ],
+                          ),
+              ],
+            )
         ],
       ),
     );
   }
 }
-
 class UserCodeInput extends StatelessWidget {
   const UserCodeInput({super.key});
 

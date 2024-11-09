@@ -18,10 +18,14 @@ class Button extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final responsive = Responsive(context);
+
     return Container(
+      height: responsive.heightScale(50),
+      width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        color: color ?? Colors.indigoAccent,
-        borderRadius: BorderRadius.circular(30),
+        color: color ?? Colors.blueAccent,
+        borderRadius: BorderRadius.circular(responsive.radiusScale(15)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
@@ -35,13 +39,16 @@ class Button extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(responsive.radiusScale(15)),
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 30.0),
-            child: Label(
-              size: 'l',
-              label: label,
-              color: Colors.white,
+            child: Center(
+              child: Label(
+                size: 'm',
+                label: label,
+                isCenter: true,
+                color: Colors.white,
+              ),
             ),
           ),
         ),

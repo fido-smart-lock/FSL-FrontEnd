@@ -5,6 +5,7 @@ import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/input/textfield_input.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/helper/size.dart';
+import 'package:fido_smart_lock/pages/log_in/login_main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
@@ -86,7 +87,9 @@ class _ProfileSettingState extends State<ProfileSetting> {
     });
     _emailController.addListener(() {
       setState(() {
-        _isEmailValid = _emailController.text.trim().isNotEmpty;
+        _isEmailValid = RegExp(
+              r'^[^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*@([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}$')
+          .hasMatch(_emailController.text.trim());
       });
     });
   }
@@ -115,6 +118,12 @@ class _ProfileSettingState extends State<ProfileSetting> {
             child: GestureDetector(
               onTap: () {
                 //TODO: add logout handling
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoginMain(),
+                  ),
+                );
               },
               child: Icon(
                 Icons.logout_rounded,
@@ -186,6 +195,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         controller: _nameController,
                         labelText: 'First Name',
                         labelColor: _isNameValid ? Colors.white : Colors.red,
+                        isValid: _isNameValid,
                       ),
                     ),
                     SizedBox(
@@ -196,6 +206,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         controller: _surnameController,
                         labelText: 'Last Name',
                         labelColor: _isSurnameValid ? Colors.white : Colors.red,
+                        isValid: _isNameValid,
                       ),
                     ),
                   ],
@@ -208,7 +219,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                   labelText: 'Email',
                   labelColor: _isEmailValid ? Colors.white : Colors.red,
                   mode: 'verified',
-                  isVerified: _isVerified,
+                  isValid: _isEmailValid,
                 ),
                 SizedBox(
                   height: responsive.heightScale(5),

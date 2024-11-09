@@ -115,106 +115,103 @@ class _LockSettingState extends State<LockSetting> {
         appBar: AppBar(
           title: Label(size: 'xxl', label: widget.appBarTitle),
         ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: Column(
-              children: [
-                ListView.builder(
-                    shrinkWrap: true, // Prevents unnecessary scrolling issues
-                    itemCount: 1, // Replace with the actual number of items
-                    itemBuilder: (context, index) {
-                      return IntrinsicHeight(
-                        child: Column(
-                          children: [
-                            LockCard(
-                              isBadged: true,
-                              img: widget.img,
-                              name: _nameController.text.isNotEmpty
-                                  ? _nameController.text
-                                  : "New Lock", // Display the name from the controller
-                              onTap: () => print('LockCard tapped!'),
-                            ),
-                            const Gap(20),
-                            CustomTextField(
-                              controller: _nameController,
-                              maxLength: 20,
-                              labelText: 'Enter lock name',
-                              labelColor: _isNameValid
-                                  ? Colors.white
-                                  : Colors.red,
-                              mode: 'maxLength', // Change color based on validation
-                            ),
-                            const Gap(20),
-                            Align(
-                              alignment: Alignment.topCenter,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Label(
-                                    size: 'm',
-                                    label: 'Lock Location',
-                                    color: _isLocationValid
-                                        ? Colors.white
-                                        : Colors
-                                            .red, // Change color based on validation
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: Column(
+            children: [
+              ListView.builder(
+                  shrinkWrap: true, // Prevents unnecessary scrolling issues
+                  itemCount: 1, // Replace with the actual number of items
+                  itemBuilder: (context, index) {
+                    return IntrinsicHeight(
+                      child: Column(
+                        children: [
+                          LockCard(
+                            isBadged: true,
+                            img: widget.img,
+                            name: _nameController.text.isNotEmpty
+                                ? _nameController.text
+                                : "New Lock", // Display the name from the controller
+                            onTap: () => print('LockCard tapped!'),
+                          ),
+                          const Gap(20),
+                          CustomTextField(
+                            controller: _nameController,
+                            maxLength: 20,
+                            labelText: 'Enter lock name',
+                            labelColor: _isNameValid
+                                ? Colors.white
+                                : Colors.red,
+                            mode: 'maxLength',
+                            isValid: _isNameValid, // Change color based on validation
+                          ),
+                          const Gap(20),
+                          Align(
+                            alignment: Alignment.topCenter,
+                            child: Row(
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Label(
+                                  size: 'm',
+                                  label: 'Lock Location',
+                                  color: _isLocationValid
+                                      ? Colors.white
+                                      : Colors.red, // Change color based on validation
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            LockLocationCustomize(),
+                                      ),
+                                    );
+                                  },
+                                  child: Row(
+                                    children: const <Widget>[
+                                      Icon(CupertinoIcons.pen,
+                                          color: Colors.grey),
+                                      Label(
+                                          size: 's',
+                                          label: 'Customize',
+                                          color: Colors.grey),
+                                    ],
                                   ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              LockLocationCustomize(),
-                                        ),
-                                      );
-                                    },
-                                    child: Row(
-                                      children: const <Widget>[
-                                        Icon(CupertinoIcons.pen,
-                                            color: Colors.grey),
-                                        Label(
-                                            size: 's',
-                                            label: 'Customize',
-                                            color: Colors.grey),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                            const Gap(10),
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Wrap(
-                                spacing: 8.0,
-                                runSpacing: 8.0,
-                                children: lockLocation.map((location) {
-                                  return LocationCapsule(
-                                    location: location,
-                                    isSelected: _selectedLocation == location,
-                                    onTap: () => _onLocationSelected(location),
-                                  );
-                                }).toList(),
-                              ),
+                          ),
+                          const Gap(10),
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: Wrap(
+                              spacing: 8.0,
+                              runSpacing: 8.0,
+                              children: lockLocation.map((location) {
+                                return LocationCapsule(
+                                  location: location,
+                                  isSelected: _selectedLocation == location,
+                                  onTap: () => _onLocationSelected(location),
+                                );
+                              }).toList(),
                             ),
-                          ],
-                        ),
-                      );
-                    }),
-                Spacer(),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Button(
-                    onTap:
-                        _validateAndSave, // Trigger validation and navigation
-                    label: 'Save Change',
-                  ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+              Spacer(),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Button(
+                  onTap:
+                      _validateAndSave, // Trigger validation and navigation
+                  label: 'Save Change',
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

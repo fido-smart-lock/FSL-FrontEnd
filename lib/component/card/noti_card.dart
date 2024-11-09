@@ -45,7 +45,7 @@ class NotiCard extends StatelessWidget {
       return 'Connected successfully';
     } else if (mode == 'other') {
       if ((subMode == 'sent') || (subMode == 'accepted')) {
-        return 'Request is $subMode!';
+        return '${addLabelPossessive(lockName)} request is $subMode!';
       } else if (subMode == 'invite') {
         return '$lockName $role invitation';
       }
@@ -110,52 +110,54 @@ class NotiCard extends StatelessWidget {
                 color: color,
               ),
               SizedBox(width: responsive.widthScale(10)),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Label(
-                    size: 's',
-                    label: _getMainTextLabel(),
-                    isBold: true,
-                  ),
-                  if (((mode != 'other') && ((subMode != 'view'))) ||
-                      ((mode == 'other') && (subMode != 'invite')))
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Label(
-                      size: 'xs',
-                      label: 'location $lockLocation: $lockName',
-                      color: subColor,
+                      size: 's',
+                      label: _getMainTextLabel(),
+                      isBold: true,
                     ),
-                  if ((mode == 'req') || (mode == 'connect'))
-                    Label(
-                      size: 'xs',
-                      label: 'by $name',
-                      color: subColor,
-                    ),
-                  if ((mode == 'other') && (subMode == 'sent'))
-                    Label(
-                      size: 'xs',
-                      label: 'waiting for admin to accept request',
-                      color: subColor,
-                    ),
-                  if ((mode == 'other') && (subMode == 'accepted'))
-                    Label(
-                      size: 'xs',
-                      label: 'this lock will be added to your list',
-                      color: subColor,
-                    ),
-                  if ((mode == 'other') && (subMode == 'invite'))
-                    Label(
-                      size: 'xs',
-                      label: 'invited by $name',
-                      color: subColor,
-                    ),
-                  if ((mode == 'warning') && (subMode == 'view'))
-                    Label(
-                      size: 'xs',
-                      label: '$error',
-                      color: subColor,
-                    ),
-                ],
+                    if (((mode != 'other') && ((subMode != 'view'))) ||
+                        ((mode == 'other') && (subMode != 'invite')))
+                      Label(
+                        size: 'xs',
+                        label: 'location $lockLocation: $lockName',
+                        color: subColor,
+                      ),
+                    if ((mode == 'req') || (mode == 'connect'))
+                      Label(
+                        size: 'xs',
+                        label: 'by $name',
+                        color: subColor,
+                      ),
+                    if ((mode == 'other') && (subMode == 'sent'))
+                      Label(
+                        size: 'xs',
+                        label: 'waiting for admin to accept request',
+                        color: subColor,
+                      ),
+                    if ((mode == 'other') && (subMode == 'accepted'))
+                      Label(
+                        size: 'xs',
+                        label: 'this lock will be added to your list',
+                        color: subColor,
+                      ),
+                    if ((mode == 'other') && (subMode == 'invite'))
+                      Label(
+                        size: 'xs',
+                        label: 'invited by $name',
+                        color: subColor,
+                      ),
+                    if ((mode == 'warning') && (subMode == 'view'))
+                      Label(
+                        size: 'xs',
+                        label: '$error',
+                        color: subColor,
+                      ),
+                  ],
+                ),
               ),
             ],
           ),

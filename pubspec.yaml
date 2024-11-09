@@ -80,6 +80,9 @@ flutter:
   assets:
     - assets/svg/scan.svg
     - assets/svg/nfc.svg
+    - assets/svg/approved.svg
+    - assets/svg/dreamMail.svg
+    - assets/svg/knight.svg
     - assets/data/noti_warning.json
     - assets/data/noti_req.json
     - assets/data/noti_connect.json

@@ -11,6 +11,8 @@ class Label extends StatelessWidget {
     this.color,
     this.isCenter,
     this.isShadow,
+    this.isJustify,
+    this.isUnderlined,
   });
 
   final String size;
@@ -19,22 +21,35 @@ class Label extends StatelessWidget {
   final bool? isBold;
   final Color? color;
   final bool? isCenter;
+  final bool? isJustify;
   final bool? isShadow;
+  final bool? isUnderlined;
 
-  static const sizeConfig = {
-    'xxs': 10.0,
-    'xs': 12.0,
-    's': 14.0,
-    'm': 16.0,
-    'l': 18.0,
-    'xl': 20.0,
-    'xxl': 25.0
-  };
+  double _getFontSize(String size) {
+    switch (size) {
+      case 'xxs':
+        return 10.0;
+      case 'xs':
+        return 12.0;
+      case 's':
+        return 14.0;
+      case 'm':
+        return 16.0;
+      case 'l':
+        return 18.0;
+      case 'xl':
+        return 20.0;
+      case 'xxl':
+        return 25.0;
+      default:
+        return 14.0; // Default size
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     String displayText = name != null ? '$label, $name' : label;
-    final fontSize = sizeConfig[size] as double;
+    final fontSize = _getFontSize(size);
     final responsive = Responsive(context);
 
     return Text(
@@ -46,8 +61,15 @@ class Label extends StatelessWidget {
         shadows: isShadow == true
             ? [Shadow(color: Colors.black.withOpacity(0.75), blurRadius: 15.0)]
             : null,
+        decoration: isUnderlined == true ? TextDecoration.underline : null
       ),
-      textAlign: isCenter == true ? TextAlign.center : TextAlign.start,
+      textAlign: isCenter == true
+          ? TextAlign.center
+          : isJustify == true
+              ? TextAlign.justify
+              : TextAlign.start,
+      softWrap: true,
+      overflow: TextOverflow.visible,
     );
   }
 }

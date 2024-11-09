@@ -59,6 +59,7 @@ class _SettingCardState extends State<SettingCard> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Row(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
@@ -77,19 +78,24 @@ class _SettingCardState extends State<SettingCard> {
                 SizedBox(
                   width: responsive.widthScale(10),
                 ),
-                Column(
-                  children: [
-                    Label(
-                      size: 'm',
-                      label: menuName,
-                    ),
-                    if (description != '')
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Label(
-                        size: 'xs',
-                        label: description,
-                        color: Colors.grey,
-                      )
-                  ],
+                        size: 'm',
+                        label: menuName,
+                      ),
+                      if (description != '')
+                        Label(
+                          size: 'xxs',
+                          label: description,
+                          color: Colors.grey,
+                        ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -101,6 +107,7 @@ class _SettingCardState extends State<SettingCard> {
             if (isToggle)
               Switch(
                 value: toggleValue,
+                inactiveTrackColor: Colors.transparent,
                 activeColor: Colors.green,
                 onChanged: (bool value) {
                   setState(() {

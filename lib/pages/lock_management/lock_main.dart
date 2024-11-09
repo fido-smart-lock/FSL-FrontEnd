@@ -1,5 +1,5 @@
 import 'package:fido_smart_lock/component/background/background.dart';
-import 'package:fido_smart_lock/component/dropdown_capsule.dart';
+import 'package:fido_smart_lock/component/dropdown/dropdown_capsule.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/component/card/lock_card.dart';
 import 'package:fido_smart_lock/pages/lock_management/create_new_lock/lock_create.dart';
