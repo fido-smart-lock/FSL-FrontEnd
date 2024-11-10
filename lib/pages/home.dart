@@ -1,5 +1,4 @@
 import 'package:fido_smart_lock/pages/lock_management/lock_main.dart';
-import 'package:fido_smart_lock/pages/lock_management/lock_scan.dart';
 import 'package:fido_smart_lock/pages/notification/noti_main.dart';
 import 'package:fido_smart_lock/pages/user_settings/setting_main.dart';
 import 'package:flutter/cupertino.dart';

@@ -1,6 +1,4 @@
 // mode_config.dart
-import 'dart:io';
-
 import 'package:fido_smart_lock/pages/user_settings/edit_profile/profile_setting.dart';
 import 'package:fido_smart_lock/pages/user_settings/noti_setting/noti_setting.dart';
 import 'package:fido_smart_lock/pages/user_settings/security/password_setting.dart';
