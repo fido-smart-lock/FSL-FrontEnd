@@ -27,7 +27,8 @@ class Background extends StatelessWidget {
               bottom: (appBar as AppBar).bottom,
               automaticallyImplyLeading: (appBar as AppBar).automaticallyImplyLeading, // Use the passed value or default to true
               centerTitle: (appBar as AppBar).centerTitle, // Title alignment control
-              leadingWidth: (appBar as AppBar).leadingWidth
+              leadingWidth: (appBar as AppBar).leadingWidth,
+              leading: (appBar as AppBar).leading,
             ),
       body: Stack(
         children: [

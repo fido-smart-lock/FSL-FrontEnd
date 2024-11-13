@@ -1,4 +1,6 @@
 import 'package:fido_smart_lock/pages/home.dart';
+import 'package:fido_smart_lock/pages/user_settings/support/faq.dart';
+import 'package:fido_smart_lock/pages/user_settings/support/support.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -14,7 +16,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Fido Smart-Lock',
       theme: _buildTheme(Brightness.dark),
-      home: Home()
+      home: Home(),
+      initialRoute: '/',
+      routes: {
+        '/home': (context) => Home(initialIndex: 0),
+        '/support': (context) => Support(),
+        'faq': (context) => Faq()
+        // add other routes here
+      },
     );
   }
 

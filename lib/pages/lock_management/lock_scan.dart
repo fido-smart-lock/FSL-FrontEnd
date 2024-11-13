@@ -2,6 +2,7 @@ import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/helper/size.dart';
+import 'package:fido_smart_lock/pages/lock_management/lock_scan_pass.dart';
 import 'package:fido_smart_lock/pages/lock_management/lock_setting.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +12,11 @@ import 'package:gap/gap.dart';
 
 class LockScan extends StatelessWidget {
   final String? option;
+  final String lockName;
+  final String lockLocation;
 
-  const LockScan({super.key, this.option});
+  const LockScan(
+      {super.key, this.option, this.lockName = '', this.lockLocation = ''});
 
   // Future<void> _handleNfcScan(BuildContext context) async {
   //   // Start the NFC scan with a 5-second delay
@@ -50,7 +54,25 @@ class LockScan extends StatelessWidget {
 
     return Background(
       appBar: AppBar(
-        title: Label(size: 'xxl', label: 'Scan Your Lock'),
+        title: option == 'inLock'
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Label(
+                    size: 'xxl',
+                    label: lockName,
+                    isShadow: true,
+                  ),
+                  Label(
+                    size: 'l',
+                    label: lockLocation,
+                    color: Colors.grey.shade300,
+                    isShadow: true,
+                  ),
+                ],
+              )
+            : Label(size: 'xxl', label: 'Scan Your Lock'),
       ),
       child: Center(
         child: Column(children: [
@@ -111,17 +133,32 @@ class LockScan extends StatelessWidget {
               child: Button(
                   onTap: () {
                     // _handleNfcScan(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LockSetting(
-                          appBarTitle: option == 'register'
-                              ? 'Create New Lock'
-                              : 'Set Up Lock',
-                          option: option,
+                    if (option == 'inLock') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LockScanPass(
+                            lockName: lockName,
+                            lockLocation: lockLocation,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    } else if (option == 'inLockFinal') {
+                      Navigator.popUntil(context, ModalRoute.withName('/'));
+                    }
+                    else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LockSetting(
+                            appBarTitle: option == 'register'
+                                ? 'Create New Lock'
+                                : 'Set Up Lock',
+                            option: option,
+                          ),
+                        ),
+                      );
+                    }
                   },
                   label: 'Scan'))
         ]),

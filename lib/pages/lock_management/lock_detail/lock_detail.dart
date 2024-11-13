@@ -84,7 +84,13 @@ class LockDetail extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.end,
-              children: [SecurityStatus(status: 'warning'), ScanButton()],
+              children: [
+                SecurityStatus(status: 'warning'),
+                ScanButton(
+                  lockName: lockName,
+                  lockLocation: lockLocation,
+                )
+              ],
             ),
             Gap(10),
             Expanded(

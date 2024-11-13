@@ -1,5 +1,6 @@
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/helper/size.dart';
+import 'package:fido_smart_lock/pages/lock_management/lock_scan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -103,30 +104,48 @@ class CapsuleButton extends StatelessWidget {
 }
 
 class ScanButton extends StatelessWidget {
-  const ScanButton({super.key});
+  const ScanButton(
+      {super.key, required this.lockName, required this.lockLocation});
+
+  final String lockName;
+  final String lockLocation;
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Icon(
-          CupertinoIcons.viewfinder,
-          size: 70,
-          color: Colors.white,
-          shadows: <Shadow>[
-            Shadow(color: Colors.black.withOpacity(0.50), blurRadius: 15.0)
-          ],
-        ),
-        Icon(
-          CupertinoIcons.lock_fill,
-          size: 30,
-          color: Colors.white,
-          shadows: <Shadow>[
-            Shadow(color: Colors.black.withOpacity(0.50), blurRadius: 15.0)
-          ],
-        )
-      ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LockScan(
+              option: 'inLock',
+              lockName: lockName,
+              lockLocation: lockLocation,
+            ),
+          ),
+        );
+      },
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Icon(
+            CupertinoIcons.viewfinder,
+            size: 70,
+            color: Colors.white,
+            shadows: <Shadow>[
+              Shadow(color: Colors.black.withOpacity(0.50), blurRadius: 15.0)
+            ],
+          ),
+          Icon(
+            CupertinoIcons.lock_fill,
+            size: 30,
+            color: Colors.white,
+            shadows: <Shadow>[
+              Shadow(color: Colors.black.withOpacity(0.50), blurRadius: 15.0)
+            ],
+          )
+        ],
+      ),
     );
   }
 }
@@ -157,7 +176,8 @@ class DoubleButton extends StatelessWidget {
       children: [
         GestureDetector(
             onTap: () {
-              onTapText();},
+              onTapText();
+            },
             child: Label(
               size: 'xs',
               label: labelText,
