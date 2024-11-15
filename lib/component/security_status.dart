@@ -1,6 +1,5 @@
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/pages/user_settings/support/faq.dart';
-import 'package:fido_smart_lock/pages/user_settings/support/support.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
