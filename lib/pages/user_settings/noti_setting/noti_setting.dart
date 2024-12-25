@@ -10,6 +10,7 @@ const NotiSetting({ super.key });
   Widget build(BuildContext context){
     return Background(
       appBar: AppBar(
+        centerTitle: true,
         title: Label(
           size: 'xxl',
           label: 'Notification Setting',

@@ -14,6 +14,7 @@ class SignUpComplete extends StatelessWidget {
     final responsive = Responsive(context);
     return Background(
         appBar: AppBar(
+          centerTitle: true,
           title: Label(
             size: 'xxl',
             label: 'Sign Up',

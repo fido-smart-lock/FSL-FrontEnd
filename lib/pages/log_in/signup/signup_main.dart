@@ -155,6 +155,7 @@ class _SignUpMainState extends State<SignUpMain> {
 
     return Background(
       appBar: AppBar(
+        centerTitle: true,
         title: Label(
           size: 'xxl',
           label: 'Sign Up',

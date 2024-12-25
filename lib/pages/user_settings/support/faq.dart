@@ -13,6 +13,7 @@ class Faq extends StatelessWidget {
   Widget build(BuildContext context) {
     return Background(
         appBar: AppBar(
+          centerTitle: true,
           leading: IconButton(
             icon: Icon(CupertinoIcons.left_chevron),
             onPressed: () {

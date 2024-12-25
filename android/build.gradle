@@ -1,9 +1,22 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0" // Ensure Kotlin version is here
+    }
+}
+
 allprojects {
     repositories {
         google()
         mavenCentral()
     }
 }
+
+ext.kotlin_version = '2.1.0'  // Ensure Kotlin version is defined
 
 rootProject.buildDir = "../build"
 subprojects {

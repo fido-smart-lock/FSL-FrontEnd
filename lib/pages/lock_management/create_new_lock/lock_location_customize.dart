@@ -16,7 +16,7 @@ class LockLocationCustomize extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Background(
-      appBar: AppBar(title: Label(size: 'xxl', label: '')),
+      appBar: AppBar(centerTitle: true, title: Label(size: 'xxl', label: '')),
       disabledTopPadding: true,
       child: Column(
         children: <Widget>[

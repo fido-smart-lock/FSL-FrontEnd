@@ -63,7 +63,7 @@ class _DropdownCapsuleState extends State<DropdownCapsule> {
         buttonStyleData: ButtonStyleData(
           // height: 33,
           width: responsive.widthScale(130),
-          padding: const EdgeInsets.only(left: 15, right: 15),
+          padding: const EdgeInsets.only(left: 15, right: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
             border: Border.all(

@@ -54,6 +54,7 @@ class LockScan extends StatelessWidget {
 
     return Background(
       appBar: AppBar(
+        centerTitle: true,
         title: option == 'inLock'
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,

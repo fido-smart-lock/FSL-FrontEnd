@@ -9,7 +9,7 @@ String truncateWithEllipsis(String input, int n) {
   // Check if the input length exceeds the limit 'n'
   if (k > n) {
     // Return the truncated string with ellipsis
-    return input.substring(0, n) + '...';
+    return '${input.substring(0, n)}...';
   }
   // If the string length is less than or equal to 'n', return the original string
   return input;

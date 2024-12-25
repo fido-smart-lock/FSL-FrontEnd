@@ -28,6 +28,7 @@ class RequestAccess extends StatelessWidget {
   Widget build(BuildContext context) {
     return Background(
       appBar: AppBar(
+        centerTitle: true,
         title: Label(size: 'xxl', label: 'Request Access'),
       ),
       disabledTopPadding: true,
@@ -98,6 +99,7 @@ class RequestSend extends StatelessWidget {
   Widget build(BuildContext context) {
     return Background(
         appBar: AppBar(
+          centerTitle: true,
           title: Label(size: 'xxl', label: 'Request Access'),
         ),
         child: Align(

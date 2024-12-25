@@ -75,6 +75,7 @@ class _HistoryViewState extends State<HistoryView> {
 
     return Background(
       appBar: AppBar(
+        centerTitle: true,
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

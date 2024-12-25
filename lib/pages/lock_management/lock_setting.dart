@@ -113,6 +113,7 @@ class _LockSettingState extends State<LockSetting> {
       },
       child: Background(
         appBar: AppBar(
+          centerTitle: true,
           title: Label(size: 'xxl', label: widget.appBarTitle),
         ),
         child: Align(

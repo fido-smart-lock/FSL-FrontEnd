@@ -21,6 +21,7 @@ class BackgroundLockDetail extends StatelessWidget {
       appBar: appBar == null
           ? null
           : AppBar(
+              centerTitle: true,
               backgroundColor: Colors.transparent,
               elevation: 0,
               title: (appBar as AppBar).title,

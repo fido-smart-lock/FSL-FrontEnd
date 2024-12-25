@@ -25,6 +25,7 @@ class AdminAndMemberSettingMain extends StatelessWidget {
   Widget build(BuildContext context) {
     return Background(
       appBar: AppBar(
+        centerTitle: true,
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -124,6 +125,7 @@ class GuestSettingMain extends StatelessWidget {
   Widget build(BuildContext context) {
     return Background(
       appBar: AppBar(
+        centerTitle: true,
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -222,6 +224,7 @@ class RequestSettingMain extends StatelessWidget {
   Widget build(BuildContext context) {
     return Background(
       appBar: AppBar(
+        centerTitle: true,
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

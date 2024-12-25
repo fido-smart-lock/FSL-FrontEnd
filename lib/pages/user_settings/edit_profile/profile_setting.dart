@@ -107,6 +107,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
 
     return Background(
       appBar: AppBar(
+        centerTitle: true,
         title: Label(
           size: 'xxl',
           label: 'Edit Profile',

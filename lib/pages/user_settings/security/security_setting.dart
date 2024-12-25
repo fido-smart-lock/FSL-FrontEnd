@@ -11,6 +11,7 @@ class SecuritySetting extends StatelessWidget {
   Widget build(BuildContext context) {
     return Background(
         appBar: AppBar(
+          centerTitle: true,
           title: Label(
             size: 'xxl',
             label: 'Security',

@@ -12,6 +12,7 @@ class LockCreate extends StatelessWidget {
   Widget build(BuildContext context) {
     return Background(
         appBar: AppBar(
+          centerTitle: true,
           title: Label(size: 'xxl', label: 'Create New Lock'),
         ),
         child: Align(

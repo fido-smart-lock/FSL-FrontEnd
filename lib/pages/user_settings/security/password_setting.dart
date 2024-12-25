@@ -124,6 +124,7 @@ class _PasswordSettingState extends State<PasswordSetting> {
 
     return Background(
       appBar: AppBar(
+        centerTitle: true,
         title: Label(
           size: 'xxl',
           label: 'Change Password',

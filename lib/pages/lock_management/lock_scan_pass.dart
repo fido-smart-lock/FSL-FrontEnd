@@ -60,6 +60,7 @@ class _LockScanPassState extends State<LockScanPass> {
 
     return Background(
         appBar: AppBar(
+          centerTitle: true,
             title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

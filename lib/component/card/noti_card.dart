@@ -153,7 +153,7 @@ class NotiCard extends StatelessWidget {
                     if ((mode == 'warning') && (subMode == 'view'))
                       Label(
                         size: 'xs',
-                        label: '$error',
+                        label: error,
                         color: subColor,
                       ),
                   ],

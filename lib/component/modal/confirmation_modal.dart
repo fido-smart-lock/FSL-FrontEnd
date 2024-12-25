@@ -1,5 +1,4 @@
 // confirmation_modal.dart
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
