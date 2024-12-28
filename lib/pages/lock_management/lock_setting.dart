@@ -4,6 +4,7 @@ import 'package:fido_smart_lock/component/input/capsule.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/component/card/lock_card.dart';
 import 'package:fido_smart_lock/component/input/textfield_input.dart';
+import 'package:fido_smart_lock/component/modal/confirmation_modal.dart';
 import 'package:fido_smart_lock/pages/home.dart';
 import 'package:fido_smart_lock/pages/lock_management/create_new_lock/lock_location_customize.dart';
 import 'package:fido_smart_lock/pages/lock_management/create_new_lock/lock_request.dart';
@@ -115,6 +116,25 @@ class _LockSettingState extends State<LockSetting> {
         appBar: AppBar(
           centerTitle: true,
           title: Label(size: 'xxl', label: widget.appBarTitle),
+          actions: [
+            if (widget.isSettingFromLock)
+            Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {
+                  showConfirmationModal(context,
+                      message:
+                          'Are you sure you want to delete this lock?',
+                      isCanNotUndone: true,
+                      onProceed: () {});
+                },
+                child: Icon(
+                  CupertinoIcons.trash,
+                  color: Colors.red,
+                ),
+              ),
+            )
+          ],
         ),
         child: Align(
           alignment: Alignment.topCenter,
@@ -140,25 +160,25 @@ class _LockSettingState extends State<LockSetting> {
                             controller: _nameController,
                             maxLength: 20,
                             labelText: 'Enter lock name',
-                            labelColor: _isNameValid
-                                ? Colors.white
-                                : Colors.red,
+                            labelColor:
+                                _isNameValid ? Colors.white : Colors.red,
                             mode: 'maxLength',
-                            isValid: _isNameValid, // Change color based on validation
+                            isValid:
+                                _isNameValid, // Change color based on validation
                           ),
                           const Gap(20),
                           Align(
                             alignment: Alignment.topCenter,
                             child: Row(
-                              mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Label(
                                   size: 'm',
                                   label: 'Lock Location',
                                   color: _isLocationValid
                                       ? Colors.white
-                                      : Colors.red, // Change color based on validation
+                                      : Colors
+                                          .red, // Change color based on validation
                                 ),
                                 GestureDetector(
                                   onTap: () {
@@ -207,10 +227,12 @@ class _LockSettingState extends State<LockSetting> {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Button(
-                  onTap:
-                      _validateAndSave, // Trigger validation and navigation
+                  onTap: _validateAndSave, // Trigger validation and navigation
                   label: 'Save Change',
                 ),
+              ),
+              SizedBox(
+                height: 20,
               ),
             ],
           ),

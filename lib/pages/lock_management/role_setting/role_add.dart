@@ -56,6 +56,11 @@ class AdminAndMemberAdd extends StatelessWidget {
             SizedBox(
               height: responsive.heightScale(5),
             ),
+            Label(
+              size: 'xs',
+              label: 'Your user code is 123456',
+              color: Colors.grey.shade500,
+            ),
             if (role == 'member')
               Label(
                 size: 'xxs',

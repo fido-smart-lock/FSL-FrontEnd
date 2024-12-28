@@ -146,8 +146,7 @@ class LockScan extends StatelessWidget {
                       );
                     } else if (option == 'inLockFinal') {
                       Navigator.popUntil(context, ModalRoute.withName('/'));
-                    }
-                    else {
+                    } else {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -161,7 +160,10 @@ class LockScan extends StatelessWidget {
                       );
                     }
                   },
-                  label: 'Scan'))
+                  label: 'Scan')),
+          SizedBox(
+            height: 20,
+          ),
         ]),
       ),
     );

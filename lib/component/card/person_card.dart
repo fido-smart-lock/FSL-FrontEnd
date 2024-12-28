@@ -55,7 +55,7 @@ class Person extends StatelessWidget {
                 children: [
                   Label(
                     size: 's',
-                    label: truncateWithEllipsis(name, 20),
+                    label: truncateWithEllipsis(name, 15),
                     isBold: true,
                   ),
                   if (role != null && role != 'guest')

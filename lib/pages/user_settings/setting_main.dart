@@ -33,6 +33,7 @@ class SettingsMain extends StatelessWidget {
                 SizedBox(height: responsive.heightScale(10),),
                 Label(size: 'xl', label: 'Jonathan Smith', isBold: true,),
                 Label(size: 'xs', label: 'jonathan.s@example.com'),
+                Label(size: 'xs', label: 'User Code: 123456', color: Colors.grey[500],),
           
                 //white space divider
                 SizedBox(height: responsive.heightScale(20),),
