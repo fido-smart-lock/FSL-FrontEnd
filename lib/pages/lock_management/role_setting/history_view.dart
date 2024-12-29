@@ -115,7 +115,7 @@ class _HistoryViewState extends State<HistoryView> {
                         isBold: true,
                       ),
                       ...todayIndices.map((index) => Padding(
-                            padding: EdgeInsets.symmetric(vertical: 5),
+                            padding: EdgeInsets.symmetric(vertical: 2.5),
                             child: PersonHistoryCard(
                               img: img[index],
                               name: name[index],
@@ -136,7 +136,7 @@ class _HistoryViewState extends State<HistoryView> {
                         isBold: true,
                       ),
                       ...yesterdayIndices.map((index) => Padding(
-                            padding: EdgeInsets.symmetric(vertical: 5),
+                            padding: EdgeInsets.symmetric(vertical: 2.5),
                             child: PersonHistoryCard(
                               img: img[index],
                               name: name[index],
@@ -158,7 +158,7 @@ class _HistoryViewState extends State<HistoryView> {
                       ),
                       ...earlierIndices.map((index) {
                         return Padding(
-                          padding: EdgeInsets.symmetric(vertical: 5),
+                          padding: EdgeInsets.symmetric(vertical: 2.5),
                           child: PersonHistoryCard(
                             img: img[index],
                             name: name[index],

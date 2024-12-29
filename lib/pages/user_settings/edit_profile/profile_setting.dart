@@ -4,12 +4,15 @@ import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/input/textfield_input.dart';
 import 'package:fido_smart_lock/component/label.dart';
+import 'package:fido_smart_lock/helper/Image.dart';
 import 'package:fido_smart_lock/helper/size.dart';
 import 'package:fido_smart_lock/pages/log_in/login_main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class ProfileSetting extends StatefulWidget {
   const ProfileSetting({super.key});
@@ -26,6 +29,9 @@ class _ProfileSettingState extends State<ProfileSetting> {
   bool _isSurnameValid = true;
   bool _isEmailValid = true;
   late bool _isVerified = false;
+
+  File? _selectedImage; // Image file
+  String? _imageUrl; // URL after uploading to Cloudinary
 
   Future<Map<String, dynamic>> _loadProfileData() async {
     final String response =
@@ -88,10 +94,38 @@ class _ProfileSettingState extends State<ProfileSetting> {
     _emailController.addListener(() {
       setState(() {
         _isEmailValid = RegExp(
-              r'^[^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*@([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}$')
-          .hasMatch(_emailController.text.trim());
+                r'^[^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*@([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}$')
+            .hasMatch(_emailController.text.trim());
       });
     });
+  }
+
+  Future<void> _pickImageFromGallery() async {
+    // Step 1: Pick image from gallery
+    final returnedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (returnedImage == null) return;
+
+    setState(() {
+      _selectedImage = File(returnedImage.path); // Store the selected image
+    });
+
+    // Step 2: Upload image to Cloudinary
+    String? uploadedUrl = await uploadImageToCloudinary(_selectedImage!);
+
+    if (uploadedUrl != null) {
+      setState(() {
+        _imageUrl = uploadedUrl; // Store the uploaded image URL
+      });
+
+      //TODO: Save image URL to database+config the API
+      //   // Step 3: Save image URL to database
+      //   await saveImageUrlToDatabase(_imageUrl!);
+      // } else {
+      //   print('Failed to upload image');
+      // }
+    }
   }
 
   @override
@@ -149,7 +183,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    //TODO: add open gallery handling
+                    _pickImageFromGallery();
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -179,7 +213,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         child: CircleAvatar(
                           radius: 50,
                           backgroundImage: NetworkImage(
-                              'https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png'),
+                              _imageUrl ??
+                                'https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png',),
                         ),
                       ),
                     ),

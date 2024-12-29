@@ -274,7 +274,7 @@ class PersonHistoryCard extends StatelessWidget {
                     ),
                   Label(
                     size: 'xxs',
-                    label: 'Exp: ${dateDotTimeFormat(dateTime)}',
+                    label: dateDotTimeFormat(dateTime),
                     color: Colors.grey,
                   )
                 ],

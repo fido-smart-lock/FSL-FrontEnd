@@ -153,7 +153,10 @@ class _LockSettingState extends State<LockSetting> {
                             name: _nameController.text.isNotEmpty
                                 ? _nameController.text
                                 : "New Lock", // Display the name from the controller
-                            onTap: () => print('LockCard tapped!'),
+                            onTap: () {
+                              //TODO: add image picker
+                              
+                            },
                           ),
                           const Gap(20),
                           CustomTextField(
@@ -230,9 +233,6 @@ class _LockSettingState extends State<LockSetting> {
                   onTap: _validateAndSave, // Trigger validation and navigation
                   label: 'Save Change',
                 ),
-              ),
-              SizedBox(
-                height: 20,
               ),
             ],
           ),

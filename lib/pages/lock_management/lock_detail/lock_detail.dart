@@ -125,7 +125,7 @@ class LockDetail extends StatelessWidget {
                           );
                         },
                       ),
-                      Gap(10),
+                      Gap(5),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,7 +196,7 @@ class LockDetail extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Gap(10),
+                      Gap(5),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,

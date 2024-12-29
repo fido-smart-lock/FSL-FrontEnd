@@ -161,9 +161,6 @@ class LockScan extends StatelessWidget {
                     }
                   },
                   label: 'Scan')),
-          SizedBox(
-            height: 20,
-          ),
         ]),
       ),
     );
