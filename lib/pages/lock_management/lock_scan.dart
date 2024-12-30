@@ -18,15 +18,6 @@ class LockScan extends StatelessWidget {
   const LockScan(
       {super.key, this.option, this.lockName = '', this.lockLocation = ''});
 
-  void readNfcTag() async {
-    Map<String, dynamic>? tagData = await startNFCReading();
-    if (tagData != null) {
-      debugPrint('Tag Data: $tagData');
-    } else {
-      debugPrint('Failed to read NFC tag.');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final responsive = Responsive(context);
@@ -116,7 +107,9 @@ class LockScan extends StatelessWidget {
               child: Button(
                   onTap: () async {
                     final tagData = await startNFCReading();
-                    if(tagData != null) {
+                    final uid = extractNfcUid(tagData!);
+                    debugPrint('UID: $uid');
+                    if(uid != null) {
                       if (option == 'inLock') {
                       Navigator.push(
                         context,

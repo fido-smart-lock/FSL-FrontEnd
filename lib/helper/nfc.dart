@@ -35,3 +35,19 @@ Future<Map<String, dynamic>?> startNFCReading() async {
     return null; // Return null in case of an error
   }
 }
+
+String? extractNfcUid(Map<String, dynamic> tagData) {
+  try {
+    // Check for 'nfca' key, which commonly contains the identifier
+    if (tagData.containsKey('nfca')) {
+      List<int> identifier = tagData['nfca']['identifier'];
+
+      // Convert the identifier list to a hex string UID
+      String uid = identifier.map((e) => e.toRadixString(16).padLeft(2, '0')).join(':');
+      return uid; // Return UID as a string
+    }
+  } catch (e) {
+    debugPrint('Error extracting NFC UID: $e');
+  }
+  return null; // Return null if UID is not found
+}
