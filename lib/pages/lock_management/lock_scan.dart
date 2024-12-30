@@ -1,14 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
 import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/label.dart';
+import 'package:fido_smart_lock/helper/nfc.dart';
 import 'package:fido_smart_lock/helper/size.dart';
 import 'package:fido_smart_lock/pages/lock_management/lock_scan_pass.dart';
 import 'package:fido_smart_lock/pages/lock_management/lock_setting.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-// import 'dart:async';
-// import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 
 class LockScan extends StatelessWidget {
   final String? option;
@@ -18,32 +18,14 @@ class LockScan extends StatelessWidget {
   const LockScan(
       {super.key, this.option, this.lockName = '', this.lockLocation = ''});
 
-  // Future<void> _handleNfcScan(BuildContext context) async {
-  //   // Start the NFC scan with a 5-second delay
-  //   await Future.delayed(Duration(seconds: 5));
-
-  //   try {
-  //     // Start NFC reading
-  //     await FlutterNfcKit.poll();
-
-  //     // Simulate some processing time or conditions for success
-  //     await Future.delayed(Duration(seconds: 2));
-
-  //     // Successfully read, stop the session
-  //     await FlutterNfcKit.finish();
-
-  //     // Navigate to the 'Lock Setting' page
-  //     Navigator.push(
-  //       context,
-  //       MaterialPageRoute(
-  //         builder: (context) => LockSetting(),
-  //       ),
-  //     );
-  //   } catch (e) {
-  //     // Handle errors, e.g., user canceled, etc.
-  //     print('Error: $e');
-  //   }
-  // }
+  void readNfcTag() async {
+    Map<String, dynamic>? tagData = await startNFCReading();
+    if (tagData != null) {
+      debugPrint('Tag Data: $tagData');
+    } else {
+      debugPrint('Failed to read NFC tag.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,9 +114,10 @@ class LockScan extends StatelessWidget {
           Align(
               alignment: Alignment.bottomCenter,
               child: Button(
-                  onTap: () {
-                    // _handleNfcScan(context);
-                    if (option == 'inLock') {
+                  onTap: () async {
+                    final tagData = await startNFCReading();
+                    if(tagData != null) {
+                      if (option == 'inLock') {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -159,6 +142,8 @@ class LockScan extends StatelessWidget {
                         ),
                       );
                     }
+                    }
+                    
                   },
                   label: 'Scan')),
         ]),
