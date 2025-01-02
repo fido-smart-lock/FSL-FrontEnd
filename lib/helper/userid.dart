@@ -10,8 +10,9 @@ Future<String?> getUserId() async {
   return await storage.read(key: 'userId'); // Returns null if not found
 }
 
-Future<void> removeUserId() async {
+Future<void> removeUserIdAndUserCode() async {
   final storage = FlutterSecureStorage();
   await storage.delete(key: 'userId');
+  await storage.delete(key: 'userCode');
 }
 

@@ -72,7 +72,9 @@ Map<String, dynamic> getModeConfig(BuildContext context,
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => HistoryView(),
+            builder: (context) => HistoryView(
+              lockId: '4',
+            ),
           ),
         );
       },

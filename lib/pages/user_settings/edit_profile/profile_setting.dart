@@ -6,6 +6,7 @@ import 'package:fido_smart_lock/component/input/textfield_input.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/helper/Image.dart';
 import 'package:fido_smart_lock/helper/size.dart';
+import 'package:fido_smart_lock/helper/userid.dart';
 import 'package:fido_smart_lock/pages/log_in/login_main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -155,7 +156,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
             padding: EdgeInsets.only(right: 20.0),
             child: GestureDetector(
               onTap: () async {
-                await storage.delete(key: 'userId');
+                removeUserIdAndUserCode();
                 Navigator.push(
                   context,
                   MaterialPageRoute(

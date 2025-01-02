@@ -83,6 +83,7 @@ class _AdminAndMemberSettingMainState extends State<AdminAndMemberSettingMain> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => AdminAndMemberAdd(
+                        lockId: widget.lockId,
                         lockName: lockName!,
                         lockLocation: lockLocation!,
                         role: widget.role,
@@ -209,6 +210,7 @@ class _GuestSettingMainState extends State<GuestSettingMain> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => GuestAdd(
+                    lockId: widget.lockId,
                     lockName: lockName!,
                     lockLocation: lockLocation!,
                     role: widget.role,
@@ -346,6 +348,7 @@ class _RequestSettingMainState extends State<RequestSettingMain> {
                 return Padding(
                   padding: EdgeInsets.symmetric(vertical: 5),
                   child: Person(
+
                     img: user['userImage'], // Pass user image
                     name: concatenateNameAndSurname(user['userName'],
                         user['userSurname']), // Concatenate name

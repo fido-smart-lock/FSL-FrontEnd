@@ -1,12 +1,16 @@
+import 'dart:convert';
+
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/component/modal/confirmation_modal.dart';
 import 'package:fido_smart_lock/component/modal/confirmation_with_date_time_modal.dart';
+import 'package:fido_smart_lock/helper/api.dart';
 import 'package:fido_smart_lock/helper/datetime.dart';
 import 'package:fido_smart_lock/helper/size.dart';
 import 'package:fido_smart_lock/helper/word.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/gap.dart';
 
 class Person extends StatelessWidget {
@@ -14,17 +18,67 @@ class Person extends StatelessWidget {
   final String name;
   final String? role;
   final String? button;
-  final String lockName;
+  final String? lockName;
   final String? dateTime;
+  final String desUserId; // From parent component
+  final String lockId; // From parent component
 
-  const Person(
-      {super.key,
-      this.img,
-      required this.name,
-      this.role,
-      this.button,
-      required this.lockName,
-      this.dateTime});
+  const Person({
+    super.key,
+    this.img,
+    required this.name,
+    this.role,
+    this.button,
+    this.lockName,
+    this.dateTime,
+    this.desUserId = '', // Receive from parent
+    this.lockId = '',   // Receive from parent
+  });
+
+//TODO: Recheck 422 error
+  Future<void> sendInviteRequest(BuildContext context) async {
+  const storage = FlutterSecureStorage();
+
+  try {
+    // Get srcUserId from storage
+    String? srcUserId = await storage.read(key: 'userId');
+    if (srcUserId == null || srcUserId.isEmpty) {
+      throw Exception('srcUserId is missing');
+    }
+
+    // Validate required fields
+    if (desUserId.isEmpty || lockId.isEmpty) {
+      throw Exception('desUserId or lockId is missing.');
+    }
+
+    // Prepare request body
+    final body = {
+      'srcUserId': srcUserId,
+      'desUserId': desUserId,
+      'role': role ?? "", // Default empty string
+      'lockId': lockId,
+      'datetime': dateTime ?? DateTime.now().toIso8601String(), // Avoid null
+    };
+
+    debugPrint('Payload: ${jsonEncode(body)}'); // Debugging payload
+
+    // Make POST request
+    final response = await postJsonData(
+      apiUri: 'https://fsl-1080584581311.us-central1.run.app/invitation',
+      body: body,
+    );
+
+    // Handle response
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Invite sent successfully!')),
+    );
+  } catch (e) {
+    // Error handling
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Failed to send invite: $e')),
+    );
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +86,10 @@ class Person extends StatelessWidget {
 
     return Container(
       alignment: Alignment.center,
-      padding: EdgeInsets.only(left: 10, right: 15, top: 13, bottom: 13),
+      padding: const EdgeInsets.only(left: 10, right: 15, top: 13, bottom: 13),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        color: Colors.grey[850], // Include color within BoxDecoration
+        color: Colors.grey[850],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -81,19 +135,33 @@ class Person extends StatelessWidget {
                 showConfirmationModal(context,
                     message:
                         'Do you want to remove $name from $role of $lockName lock?',
-                    onProceed: () {});
+                    onProceed: () {
+                      // Future code for removing a person
+                    });
               },
             )
           else if (button == 'invite')
             CapsuleButton(
               label: 'Invite',
-              onTap: () {},
+              onTap: () {
+                showConfirmationModal(
+                  context,
+                  message:
+                      'Do you want to add $name as $role of $lockName lock?',
+                  description:
+                      'This person will have full control of the lock.',
+                  onProceed: () {
+                    sendInviteRequest(context); // Call API on Proceed
+                  },
+                );
+              },
             )
         ],
       ),
     );
   }
 }
+
 
 class PersonRequest extends StatelessWidget {
   final String? img;

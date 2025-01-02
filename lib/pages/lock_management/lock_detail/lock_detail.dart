@@ -262,7 +262,9 @@ class _LockDetailState extends State<LockDetail> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => HistoryView(),
+                                  builder: (context) => HistoryView(
+                                    lockId: widget.lockId
+                                  ),
                                 ),
                               );
                             },

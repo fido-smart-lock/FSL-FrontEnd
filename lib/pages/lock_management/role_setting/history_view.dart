@@ -1,77 +1,168 @@
 import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/component/card/person_card.dart';
+import 'package:fido_smart_lock/helper/api.dart';
 import 'package:fido_smart_lock/helper/size.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // For loading asset data
-import 'dart:convert'; // For JSON parsing
+import 'package:flutter_svg/svg.dart';
 
 class HistoryView extends StatefulWidget {
-  const HistoryView({super.key});
+  const HistoryView({super.key, required this.lockId});
+
+  final String lockId;
 
   @override
   _HistoryViewState createState() => _HistoryViewState();
 }
 
 class _HistoryViewState extends State<HistoryView> {
-  late String lockName;
-  late String lockLocation;
-  late List<String> img;
-  late List<String> dateTime;
-  late List<String> name;
-  late List<String> status;
+  String? lockName;
+  String? lockLocation;
+  List<Map<String, dynamic>>? dataList;
 
   @override
   void initState() {
     super.initState();
-    _loadData();
+    fetchLockHistory();
   }
 
-  Future<void> _loadData() async {
-    final String response = await rootBundle.loadString('assets/data/lock_detail_history.json');
-    final Map<String, dynamic> data = json.decode(response);
+  Future<void> fetchLockHistory() async {
+    String apiUri =
+        'https://fsl-1080584581311.us-central1.run.app/history/${widget.lockId}';
 
-    setState(() {
-      lockName = data['lockName'];
-      lockLocation = data['lockLocation'];
-      img = (data['history'] as List).map((item) => item['img'] as String).toList();
-      dateTime = (data['history'] as List).map((item) => item['dateTime'] as String).toList();
-      name = (data['history'] as List).map((item) => item['name'] as String).toList();
-      status = (data['history'] as List).map((item) => item['status'] as String).toList();
-    });
+    try {
+      var data = await getJsonData(apiUri: apiUri)
+          .timeout(const Duration(seconds: 10));
+      debugPrint('API Response: ${data.toString()}');
+
+      setState(() {
+        lockLocation = data['lockLocation'] ?? 'Unknown Location';
+        lockName = data['lockName'] ?? 'Unknown Lock';
+        dataList = data['dataList'] != null && data['dataList'] is List
+            ? List<Map<String, dynamic>>.from(data['dataList'])
+            : [];
+      });
+    } catch (e) {
+      debugPrint('Error: $e');
+      setState(() {
+        lockLocation = null;
+        lockName = null;
+        dataList = null;
+      });
+    }
   }
 
   bool _isToday(DateTime date) {
     DateTime now = DateTime.now();
-    return date.year == now.year && date.month == now.month && date.day == now.day;
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
   }
 
   bool _isYesterday(DateTime date) {
     DateTime now = DateTime.now().subtract(const Duration(days: 1));
-    return date.year == now.year && date.month == now.month && date.day == now.day;
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
   }
 
   @override
   Widget build(BuildContext context) {
-    // Convert dateTime strings to DateTime objects for comparison
-    List<DateTime> dateTimes = dateTime.map((dt) => DateTime.parse(dt)).toList();
+    final responsive = Responsive(context);
 
-    // Split items into categories: Today, Yesterday, and Earlier
+    if (dataList == null) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 10),
+            Label(size: 'm', label: 'Fetching history... Please wait.')
+          ],
+        ),
+      );
+    }
+
+    if (dataList!.isEmpty) {
+      return Background(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Label(
+                size: 'xxl',
+                label: lockName ?? 'Loading...',
+                isShadow: true,
+              ),
+              Label(
+                size: 'l',
+                label: lockLocation ?? 'Loading...',
+                color: Colors.grey.shade300,
+                isShadow: true,
+              ),
+            ],
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Label(
+              size: 'xl',
+              label: 'History',
+              isBold: true,
+            ),
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                      width: responsive.widthScale(200),
+                      height: responsive.heightScale(200),
+                    child: Image.network('https://i.postimg.cc/ncPjMvKy/svgviewer-png-output.png')),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Label(
+                    size: 'm',
+                    label: 'Nothing to see here (yet).',
+                    isBold: true,
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Label(
+                    size: 'm',
+                    label:
+                        'using windows is maybe not the best way to get out of your property',
+                    isCenter: true,
+                    color: Colors.grey,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     List<int> todayIndices = [];
     List<int> yesterdayIndices = [];
     List<int> earlierIndices = [];
 
-    for (int i = 0; i < dateTimes.length; i++) {
-      if (_isToday(dateTimes[i])) {
+    for (int i = 0; i < dataList!.length; i++) {
+      DateTime date = DateTime.parse(dataList![i]['dateTime']);
+      if (_isToday(date)) {
         todayIndices.add(i);
-      } else if (_isYesterday(dateTimes[i])) {
+      } else if (_isYesterday(date)) {
         yesterdayIndices.add(i);
       } else {
         earlierIndices.add(i);
       }
     }
-
-    final responsive = Responsive(context);
 
     return Background(
       appBar: AppBar(
@@ -82,12 +173,12 @@ class _HistoryViewState extends State<HistoryView> {
           children: [
             Label(
               size: 'xxl',
-              label: lockName,
+              label: lockName ?? 'Loading...',
               isShadow: true,
             ),
             Label(
               size: 'l',
-              label: lockLocation,
+              label: lockLocation ?? 'Loading...',
               color: Colors.grey.shade300,
               isShadow: true,
             ),
@@ -103,77 +194,53 @@ class _HistoryViewState extends State<HistoryView> {
             isBold: true,
           ),
           Expanded(
-            child: ListView(
-              children: [
-                if (todayIndices.isNotEmpty)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Label(
-                        size: 's',
-                        label: 'Today',
-                        isBold: true,
-                      ),
-                      ...todayIndices.map((index) => Padding(
-                            padding: EdgeInsets.symmetric(vertical: 2.5),
-                            child: PersonHistoryCard(
-                              img: img[index],
-                              name: name[index],
-                              status: status[index],
-                              dateTime: dateTime[index],
-                            ),
-                          )),
-                      SizedBox(height: responsive.heightScale(25)),
-                    ],
-                  ),
-                if (yesterdayIndices.isNotEmpty)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Label(
-                        size: 's',
-                        label: 'Yesterday',
-                        isBold: true,
-                      ),
-                      ...yesterdayIndices.map((index) => Padding(
-                            padding: EdgeInsets.symmetric(vertical: 2.5),
-                            child: PersonHistoryCard(
-                              img: img[index],
-                              name: name[index],
-                              status: status[index],
-                              dateTime: dateTime[index],
-                            ),
-                          )),
-                      SizedBox(height: responsive.heightScale(25)),
-                    ],
-                  ),
-                if (earlierIndices.isNotEmpty)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Label(
-                        size: 's',
-                        label: 'Earlier',
-                        isBold: true,
-                      ),
-                      ...earlierIndices.map((index) {
-                        return Padding(
-                          padding: EdgeInsets.symmetric(vertical: 2.5),
-                          child: PersonHistoryCard(
-                            img: img[index],
-                            name: name[index],
-                            status: status[index],
-                            dateTime: dateTime[index],
-                          ),
-                        );
-                      }),
-                    ],
-                  ),
-              ],
+            child: ListView.builder(
+              itemCount: dataList!.length,
+              itemBuilder: (context, index) {
+                DateTime date = DateTime.parse(dataList![index]['dateTime']);
+                String title = _isToday(date)
+                    ? 'Today'
+                    : _isYesterday(date)
+                        ? 'Yesterday'
+                        : 'Earlier';
+                return _buildHistorySection(
+                  title: title,
+                  indices: [index],
+                  responsive: responsive,
+                );
+              },
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildHistorySection({
+    required String title,
+    required List<int> indices,
+    required Responsive responsive,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Label(
+          size: 's',
+          label: title,
+          isBold: true,
+        ),
+        ...indices.map((index) => Padding(
+              padding: EdgeInsets.symmetric(vertical: 2.5),
+              child: PersonHistoryCard(
+                img: dataList![index]['userImage'] ??
+                    'https://via.placeholder.com/150',
+                name: dataList![index]['userName'] ?? 'Unknown',
+                status: dataList![index]['status'] ?? 'Unknown',
+                dateTime: dataList![index]['dateTime'],
+              ),
+            )),
+        SizedBox(height: responsive.heightScale(25)),
+      ],
     );
   }
 }

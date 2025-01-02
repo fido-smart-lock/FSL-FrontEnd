@@ -9,6 +9,7 @@ void showConfirmationModal(
   BuildContext context, {
   required String message,
   required VoidCallback onProceed,
+  String description = '',
   bool isCanNotUndone = false
 }) {
   WoltModalSheet.show(
@@ -25,6 +26,12 @@ void showConfirmationModal(
                   size: 's',
                   label: message,
                   isBold: true,
+                  isCenter: true,
+                ),
+                if (description.isNotEmpty) 
+                Label(
+                  size: 's',
+                  label: description,
                   isCenter: true,
                 ),
                 if(isCanNotUndone)

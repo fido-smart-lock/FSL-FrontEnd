@@ -41,7 +41,7 @@ class _LoginMainState extends State<LoginMain> {
     if (_isEmailValid && _isPasswordValid){
       // Hardcoded userId
             String userId = "bs2623";
-            int userCode = 3390; //TODO: Replace with API call once ready
+            int userCode = 6462; //TODO: Replace with API call once ready
             await storage.write(key: 'userId', value: userId);
             await storage.write(key: 'userCode', value: userCode.toString());
       Navigator.push(

@@ -130,10 +130,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
   }
 }
 class UserCodeInput extends StatelessWidget {
-  const UserCodeInput({super.key});
+  final Function(String) onFindPressed;
+
+  const UserCodeInput({super.key, required this.onFindPressed});
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController textController = TextEditingController();
     final responsive = Responsive(context);
 
     return Row(
@@ -147,6 +150,7 @@ class UserCodeInput extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: TextField(
+              controller: textController,
               decoration: InputDecoration(
                 hintText: 'Enter User Code',
                 hintStyle: TextStyle(color: Colors.white54),
@@ -161,7 +165,10 @@ class UserCodeInput extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () {
-            // Add your action here
+            final userInput = textController.text.trim();
+            if (userInput.isNotEmpty) {
+              onFindPressed(userInput);
+            }
           },
           style: ElevatedButton.styleFrom(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
