@@ -11,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -29,6 +30,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
   bool _isSurnameValid = true;
   bool _isEmailValid = true;
   late bool _isVerified = false;
+
+  final storage = FlutterSecureStorage();
 
   File? _selectedImage; // Image file
   String? _imageUrl; // URL after uploading to Cloudinary
@@ -151,8 +154,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
           Padding(
             padding: EdgeInsets.only(right: 20.0),
             child: GestureDetector(
-              onTap: () {
-                //TODO: add logout handling
+              onTap: () async {
+                await storage.delete(key: 'userId');
                 Navigator.push(
                   context,
                   MaterialPageRoute(

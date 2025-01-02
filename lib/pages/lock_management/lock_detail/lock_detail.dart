@@ -4,29 +4,103 @@ import 'package:fido_smart_lock/component/card/lock_detail_admin_card.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/component/card/lock_detail_icon_card.dart';
 import 'package:fido_smart_lock/component/security_status.dart';
+import 'package:fido_smart_lock/helper/api.dart';
 import 'package:fido_smart_lock/pages/lock_management/role_setting/history_view.dart';
 import 'package:fido_smart_lock/pages/lock_management/role_setting/role_setting_main.dart';
 import 'package:fido_smart_lock/pages/lock_management/lock_setting.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/gap.dart';
 
-class LockDetail extends StatelessWidget {
-  final String lockName;
-  final String? lockImg;
-  final String lockLocation;
+class LockDetail extends StatefulWidget {
+  final String lockId;
 
   const LockDetail({
     super.key,
-    required this.lockName,
-    this.lockImg,
-    required this.lockLocation,
+    required this.lockId,
   });
 
   @override
+  State<LockDetail> createState() => _LockDetailState();
+}
+
+class _LockDetailState extends State<LockDetail> {
+  String? lockLocation = '';
+  String? lockName = '';
+  String? lockImage = '';
+  bool? isAdmin = false;
+  String? securityStatus = '';
+  List<Map<String, dynamic>>? dataList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserLockDetail();
+  }
+
+  Future<void> fetchUserLockDetail() async {
+    const storage = FlutterSecureStorage();
+    String? userId = await storage.read(key: 'userId');
+
+    if (userId != null) {
+      String apiUri =
+          'https://fsl-1080584581311.us-central1.run.app/lockDetail/${widget.lockId}/$userId';
+
+      try {
+        var data = await getJsonData(apiUri: apiUri);
+        setState(() {
+          lockLocation = data['lockLocation'];
+          lockName = data['lockName'];
+          lockImage = data['lockImage'];
+          isAdmin = data['isAdmin'];
+          securityStatus = data['securityStatus'];
+          dataList = List<Map<String, dynamic>>.from(data['dataList']);
+        });
+      } catch (e) {
+        debugPrint('Error: $e');
+      }
+    } else {
+      debugPrint('User ID not found in secure storage.');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    List<String> adminImages = dataList
+            ?.where((user) => user['role'] == 'admin')
+            .map<String>((user) => user['userImage'] as String)
+            .toList() ??
+        [];
+
+    int adminCount = adminImages.length;
+
+    List<String> memberImages = dataList
+            ?.where((user) => user['role'] == 'member')
+            .map<String>((user) => user['userImage'] as String)
+            .toList() ??
+        [];
+
+    int memberCount = memberImages.length;
+
+    List<String> guestImages = dataList
+            ?.where((user) => user['role'] == 'guest')
+            .map<String>((user) => user['userImage'] as String)
+            .toList() ??
+        [];
+
+    int guestCount = guestImages.length;
+
+    List<String> reqImages = dataList
+            ?.where((user) => user['role'] == 'req')
+            .map<String>((user) => user['userImage'] as String)
+            .toList() ??
+        [];
+
+    int reqCount = reqImages.length;
+
     return BackgroundLockDetail(
-      imageUrl: lockImg,
+      imageUrl: lockImage,
       appBar: AppBar(
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -34,12 +108,12 @@ class LockDetail extends StatelessWidget {
           children: [
             Label(
               size: 'xxl',
-              label: lockName,
+              label: lockName!,
               isShadow: true,
             ),
             Label(
               size: 'l',
-              label: lockLocation,
+              label: lockLocation!,
               color: Colors.grey.shade300,
               isShadow: true,
             ),
@@ -55,7 +129,7 @@ class LockDetail extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (context) => LockSetting(
                       appBarTitle: 'Lock Setting',
-                      img: lockImg,
+                      img: lockImage,
                       name: lockName,
                       location: lockLocation,
                       isSettingFromLock: true,
@@ -85,40 +159,32 @@ class LockDetail extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                SecurityStatus(status: 'warning'),
+                SecurityStatus(status: securityStatus!),
                 ScanButton(
-                  lockName: lockName,
-                  lockLocation: lockLocation,
+                  lockName: lockName!,
+                  lockLocation: lockImage!,
                 )
               ],
             ),
             Gap(10),
             Expanded(
               child: ListView.builder(
-                shrinkWrap: true, // Prevents unnecessary scrolling issues
-                itemCount: 1, // Replace with the actual number of items
+                shrinkWrap: true,
+                itemCount: 1,
                 itemBuilder: (context, index) {
                   return Column(
                     children: [
                       AdminCard(
-                        isManageable: true,
-                        people: 2,
-                        imageUrls: [
-                          'https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png',
-                          'https://i.postimg.cc/85dPzp3S/josephine-Smith.png',
-                        ],
+                        isManageable: isAdmin!,
+                        people: adminCount,
+                        imageUrls: adminImages,
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => AdminAndMemberSettingMain(
-                                lockName: lockName,
-                                lockLocation: lockLocation,
-                                img: [
-                                  'https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png',
-                                  'https://i.postimg.cc/85dPzp3S/josephine-Smith.png',
-                                ],
-                                name: ['Jonathan Smith', 'Josephine Smith'],
+                                isAdmin: isAdmin!,
+                                lockId: widget.lockId,
                                 role: 'admin',
                               ),
                             ),
@@ -132,30 +198,16 @@ class LockDetail extends StatelessWidget {
                         children: [
                           IconCard(
                             cardType: 'member',
-                            people: 3,
-                            imageUrls: [
-                              'https://i.postimg.cc/jSC54rWH/jane-Smith.png',
-                              'https://i.postimg.cc/SRDScZk1/jacob-Smith.png',
-                              'https://i.postimg.cc/3rBxMwmj/james-Corner.png'
-                            ],
+                            people: memberCount,
+                            imageUrls: memberImages,
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
                                       AdminAndMemberSettingMain(
-                                    lockName: lockName,
-                                    lockLocation: lockLocation,
-                                    img: [
-                                      'https://i.postimg.cc/jSC54rWH/jane-Smith.png',
-                                      'https://i.postimg.cc/SRDScZk1/jacob-Smith.png',
-                                      'https://i.postimg.cc/3rBxMwmj/james-Corner.png'
-                                    ],
-                                    name: [
-                                      'Jane Smith',
-                                      'Jacob Smith',
-                                      'James Corner'
-                                    ],
+                                    isAdmin: isAdmin!,
+                                    lockId: widget.lockId,
                                     role: 'member',
                                   ),
                                 ),
@@ -164,31 +216,16 @@ class LockDetail extends StatelessWidget {
                           ),
                           IconCard(
                             cardType: 'guest',
-                            people: 2,
-                            imageUrls: [
-                              'https://i.postimg.cc/QCXN9LGW/jasper-Sanchez.png',
-                              'https://i.postimg.cc/3rBxMwmj/james-Corner.png'
-                            ],
+                            people: guestCount,
+                            imageUrls: guestImages,
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => GuestSettingMain(
-                                    lockName: lockName,
-                                    lockLocation: lockLocation,
-                                    img: [
-                                      'https://i.postimg.cc/QCXN9LGW/jasper-Sanchez.png',
-                                      'https://i.postimg.cc/3rBxMwmj/james-Corner.png'
-                                    ],
-                                    name: [
-                                      'Jasper Sanchez',
-                                      'thisisanamemorethan15'
-                                    ],
+                                    isAdmin: isAdmin!,
+                                    lockId: widget.lockId,
                                     role: 'guest',
-                                    dateTime: [
-                                      '2024-09-10T07:54:38',
-                                      '2024-10-30T07:54:38'
-                                    ],
                                   ),
                                 ),
                               );
@@ -201,29 +238,18 @@ class LockDetail extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          if (isAdmin!)
                           IconCard(
                             cardType: 'req',
-                            people: 2,
-                            imageUrls: [
-                              'https://i.postimg.cc/Fzgf8gm0/anna-House.png',
-                              'https://i.postimg.cc/BQnQJGBr/taylor-Wang.png'
-                            ],
+                            people: reqCount,
+                            imageUrls: reqImages,
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => RequestSettingMain(
-                                    lockName: lockName,
-                                    lockLocation: lockLocation,
-                                    img: [
-                                      'https://i.postimg.cc/Fzgf8gm0/anna-House.png',
-                                      'https://i.postimg.cc/BQnQJGBr/taylor-Wang.png'
-                                    ],
-                                    name: ['Anna House', 'Taylor Wang'],
-                                    dateTime: [
-                                      '2024-10-21T07:52:38',
-                                      '2024-09-10T07:54:38'
-                                    ],
+                                    lockId: widget.lockId,
+                                    role: 'req',
                                   ),
                                 ),
                               );

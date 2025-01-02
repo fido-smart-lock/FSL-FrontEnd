@@ -1,22 +1,31 @@
 import 'package:fido_smart_lock/pages/home.dart';
+import 'package:fido_smart_lock/pages/log_in/login_main.dart';
 import 'package:fido_smart_lock/pages/user_settings/support/faq.dart';
 import 'package:fido_smart_lock/pages/user_settings/support/support.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final storage = FlutterSecureStorage();
+  String? userId = await storage.read(key: 'userId'); // Check if user is logged in
+
+  runApp(MyApp(isLoggedIn: userId != null));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isLoggedIn;
+
+  const MyApp({super.key, required this.isLoggedIn});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Fido Smart-Lock',
       theme: _buildTheme(Brightness.dark),
-      home: Home(),
+      home: isLoggedIn ? Home() : LoginMain(),
       initialRoute: '/',
       routes: {
         '/home': (context) => Home(initialIndex: 0),

@@ -1,25 +1,55 @@
 import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/component/card/person_card.dart';
+import 'package:fido_smart_lock/helper/api.dart';
 import 'package:fido_smart_lock/helper/word.dart';
 import 'package:fido_smart_lock/pages/lock_management/role_setting/role_add.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class AdminAndMemberSettingMain extends StatelessWidget {
+class AdminAndMemberSettingMain extends StatefulWidget {
   const AdminAndMemberSettingMain(
       {super.key,
-      required this.lockName,
-      required this.lockLocation,
-      required this.name,
+      required this.lockId,
       required this.role,
-      required this.img});
+      required this.isAdmin});
 
-  final String lockName;
-  final String lockLocation;
-  final List<String> name;
   final String role;
-  final List<String> img;
+  final String lockId;
+  final bool isAdmin;
+
+  @override
+  State<AdminAndMemberSettingMain> createState() =>
+      _AdminAndMemberSettingMainState();
+}
+
+class _AdminAndMemberSettingMainState extends State<AdminAndMemberSettingMain> {
+  String? lockLocation = '';
+  String? lockName = '';
+  List<Map<String, dynamic>>? dataList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserLockRole();
+  }
+
+  Future<void> fetchUserLockRole() async {
+
+    String apiUri =
+        'https://fsl-1080584581311.us-central1.run.app/lock/role/${widget.lockId}/${widget.role}';
+
+    try {
+      var data = await getJsonData(apiUri: apiUri);
+      setState(() {
+        lockLocation = data['lockLocation'];
+        lockName = data['lockName'];
+        dataList = List<Map<String, dynamic>>.from(data['dataList']);
+      });
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,44 +62,45 @@ class AdminAndMemberSettingMain extends StatelessWidget {
           children: [
             Label(
               size: 'xxl',
-              label: lockName,
+              label: lockName!,
               isShadow: true,
             ),
             Label(
               size: 'l',
-              label: lockLocation,
+              label: lockLocation!,
               color: Colors.grey.shade300,
               isShadow: true,
             ),
           ],
         ),
         actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AdminAndMemberAdd(
-                      lockName: lockName,
-                      lockLocation: lockLocation,
-                      role: role,
+          if (widget.isAdmin)
+            Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AdminAndMemberAdd(
+                        lockName: lockName!,
+                        lockLocation: lockLocation!,
+                        role: widget.role,
+                      ),
                     ),
-                  ),
-                );
-              },
-              child: Icon(
-                CupertinoIcons.person_add,
-                size: 30,
-                color: Colors.white,
-                shadows: <Shadow>[
-                  Shadow(
-                      color: Colors.black.withOpacity(0.50), blurRadius: 15.0)
-                ],
+                  );
+                },
+                child: Icon(
+                  CupertinoIcons.person_add,
+                  size: 30,
+                  color: Colors.white,
+                  shadows: <Shadow>[
+                    Shadow(
+                        color: Colors.black.withOpacity(0.50), blurRadius: 15.0)
+                  ],
+                ),
               ),
-            ),
-          )
+            )
         ],
       ),
       child: Column(
@@ -78,21 +109,23 @@ class AdminAndMemberSettingMain extends StatelessWidget {
         children: [
           Label(
             size: 'xl',
-            label: capitalizeFirstLetter(role),
+            label: capitalizeFirstLetter(widget.role),
             isBold: true,
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: img.length, // Assumes all lists have the same length
+              itemCount: dataList?.length ?? 0, // Handle null safely
               itemBuilder: (context, index) {
+                final user = dataList![index]; // Get each user from dataList
                 return Padding(
                   padding: EdgeInsets.symmetric(vertical: 5),
                   child: Person(
-                    img: img[index],
-                    name: name[index],
-                    role: role,
+                    img: user['userImage'], // Pass user image
+                    name: concatenateNameAndSurname(user['userName'],
+                        user['userSurname']), // Concatenate name
+                    role: user['role'], // Pass role
                     button: 'remove',
-                    lockName: lockName,
+                    lockName: lockName!,
                   ),
                 );
               },
@@ -104,22 +137,47 @@ class AdminAndMemberSettingMain extends StatelessWidget {
   }
 }
 
-class GuestSettingMain extends StatelessWidget {
+class GuestSettingMain extends StatefulWidget {
   const GuestSettingMain(
       {super.key,
-      required this.lockName,
-      required this.lockLocation,
-      required this.name,
+      required this.lockId,
       required this.role,
-      required this.img,
-      required this.dateTime});
+      required this.isAdmin});
 
-  final String lockName;
-  final String lockLocation;
-  final List<String> name;
   final String role;
-  final List<String> img;
-  final List<String> dateTime;
+  final String lockId;
+  final bool isAdmin;
+
+  @override
+  State<GuestSettingMain> createState() => _GuestSettingMainState();
+}
+
+class _GuestSettingMainState extends State<GuestSettingMain> {
+  String? lockLocation = '';
+  String? lockName = '';
+  List<Map<String, dynamic>>? dataList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserLockRole();
+  }
+
+  Future<void> fetchUserLockRole() async {
+    String apiUri =
+        'https://fsl-1080584581311.us-central1.run.app/lock/role/${widget.lockId}/${widget.role}';
+
+    try {
+      var data = await getJsonData(apiUri: apiUri);
+      setState(() {
+        lockLocation = data['lockLocation'];
+        lockName = data['lockName'];
+        dataList = List<Map<String, dynamic>>.from(data['dataList']);
+      });
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,27 +190,28 @@ class GuestSettingMain extends StatelessWidget {
           children: [
             Label(
               size: 'xxl',
-              label: lockName,
+              label: lockName!,
               isShadow: true,
             ),
             Label(
               size: 'l',
-              label: lockLocation,
+              label: lockLocation!,
               color: Colors.grey.shade300,
               isShadow: true,
             ),
           ],
         ),
         actions: [
+          if (widget.isAdmin)
           GestureDetector(
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => GuestAdd(
-                    lockName: lockName,
-                    lockLocation: lockLocation,
-                    role: role,
+                    lockName: lockName!,
+                    lockLocation: lockLocation!,
+                    role: widget.role,
                   ),
                 ),
               );
@@ -178,22 +237,23 @@ class GuestSettingMain extends StatelessWidget {
         children: [
           Label(
             size: 'xl',
-            label: capitalizeFirstLetter(role),
+            label: capitalizeFirstLetter(widget.role),
             isBold: true,
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: img.length, // Assumes all lists have the same length
+              itemCount: dataList?.length ?? 0, // Handle null safely
               itemBuilder: (context, index) {
+                final user = dataList![index]; // Get each user from dataList
                 return Padding(
                   padding: EdgeInsets.symmetric(vertical: 5),
                   child: Person(
-                    img: img[index],
-                    name: name[index],
-                    role: role,
-                    dateTime: dateTime[index],
+                    img: user['userImage'], // Pass user image
+                    name: concatenateNameAndSurname(user['userName'],
+                        user['userSurname']), // Concatenate name
+                    role: user['role'], // Pass role
                     button: 'remove',
-                    lockName: lockName,
+                    lockName: lockName!,
                   ),
                 );
               },
@@ -205,20 +265,46 @@ class GuestSettingMain extends StatelessWidget {
   }
 }
 
-class RequestSettingMain extends StatelessWidget {
-  const RequestSettingMain(
-      {super.key,
-      required this.lockName,
-      required this.lockLocation,
-      required this.name,
-      required this.img,
-      required this.dateTime});
+class RequestSettingMain extends StatefulWidget {
+  const RequestSettingMain({
+    super.key,
+    required this.lockId,
+    required this.role,
+  });
 
-  final String lockName;
-  final String lockLocation;
-  final List<String> name;
-  final List<String> img;
-  final List<String> dateTime;
+  final String role;
+  final String lockId;
+
+  @override
+  State<RequestSettingMain> createState() => _RequestSettingMainState();
+}
+
+class _RequestSettingMainState extends State<RequestSettingMain> {
+  String? lockLocation = '';
+  String? lockName = '';
+  List<Map<String, dynamic>>? dataList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserLockRole();
+  }
+
+  Future<void> fetchUserLockRole() async {
+    String apiUri =
+        'https://fsl-1080584581311.us-central1.run.app/lock/role/${widget.lockId}/${widget.role}';
+
+    try {
+      var data = await getJsonData(apiUri: apiUri);
+      setState(() {
+        lockLocation = data['lockLocation'];
+        lockName = data['lockName'];
+        dataList = List<Map<String, dynamic>>.from(data['dataList']);
+      });
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -231,12 +317,12 @@ class RequestSettingMain extends StatelessWidget {
           children: [
             Label(
               size: 'xxl',
-              label: lockName,
+              label: lockName!,
               isShadow: true,
             ),
             Label(
               size: 'l',
-              label: lockLocation,
+              label: lockLocation!,
               color: Colors.grey.shade300,
               isShadow: true,
             ),
@@ -254,15 +340,18 @@ class RequestSettingMain extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: img.length, // Assumes all lists have the same length
+              itemCount: dataList?.length ?? 0, // Handle null safely
               itemBuilder: (context, index) {
+                final user = dataList![index]; // Get each user from dataList
                 return Padding(
                   padding: EdgeInsets.symmetric(vertical: 5),
-                  child: PersonRequest(
-                    img: img[index],
-                    name: name[index],
-                    lockName: lockName,
-                    dateTime: dateTime[index],
+                  child: Person(
+                    img: user['userImage'], // Pass user image
+                    name: concatenateNameAndSurname(user['userName'],
+                        user['userSurname']), // Concatenate name
+                    role: user['role'], // Pass role
+                    button: 'remove',
+                    lockName: lockName!,
                   ),
                 );
               },

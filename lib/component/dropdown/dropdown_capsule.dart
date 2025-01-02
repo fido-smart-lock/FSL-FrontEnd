@@ -7,8 +7,15 @@ import 'package:flutter/material.dart';
 
 class DropdownCapsule extends StatefulWidget {
   final List<String> items;
+  final String? selectedItem;
+  final Function(String) onSelected; // <-- Add this callback
 
-  const DropdownCapsule({super.key, required this.items});
+  const DropdownCapsule({
+    super.key,
+    required this.items,
+    this.selectedItem,
+    required this.onSelected, // <-- Make it required
+  });
 
   @override
   _DropdownCapsuleState createState() => _DropdownCapsuleState();
@@ -21,14 +28,15 @@ class _DropdownCapsuleState extends State<DropdownCapsule> {
   void initState() {
     super.initState();
     if (widget.items.isNotEmpty) {
-      _selectedItem = widget.items[0];
+      setState(() {
+        _selectedItem = widget.selectedItem ?? widget.items[0];
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final responsive = Responsive(context);
-
 
     return DropdownButtonHideUnderline(
       child: DropdownButton2<String>(
@@ -58,10 +66,12 @@ class _DropdownCapsuleState extends State<DropdownCapsule> {
         onChanged: (value) {
           setState(() {
             _selectedItem = value;
+
+            // Call the callback function when selection changes
+            widget.onSelected(value!);
           });
         },
         buttonStyleData: ButtonStyleData(
-          // height: 33,
           width: responsive.widthScale(130),
           padding: const EdgeInsets.only(left: 15, right: 10),
           decoration: BoxDecoration(
@@ -69,14 +79,14 @@ class _DropdownCapsuleState extends State<DropdownCapsule> {
             border: Border.all(
               color: Colors.transparent,
             ),
-            color: Color.fromRGBO(100, 72, 72, 1),
+            color: const Color.fromRGBO(100, 72, 72, 1),
           ),
           elevation: 2,
         ),
         iconStyleData: IconStyleData(
           icon: Transform.rotate(
             angle: 90 * pi / 180,
-            child: Icon(
+            child: const Icon(
               CupertinoIcons.play_fill,
             ),
           ),
@@ -89,18 +99,18 @@ class _DropdownCapsuleState extends State<DropdownCapsule> {
           width: responsive.widthScale(140),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
-            color: Color.fromRGBO(89, 66, 66, 1),
+            color: const Color.fromRGBO(89, 66, 66, 1),
           ),
-          offset: Offset(-10, -3),
+          offset: const Offset(-10, -3),
           scrollbarTheme: ScrollbarThemeData(
-            radius: Radius.circular(40),
+            radius: const Radius.circular(40),
             thickness: WidgetStateProperty.all(3),
             thumbVisibility: WidgetStateProperty.all(true),
           ),
         ),
-        menuItemStyleData: MenuItemStyleData(
+        menuItemStyleData: const MenuItemStyleData(
           height: 40,
-          padding: EdgeInsets.only(left: 14, right: 14)
+          padding: EdgeInsets.only(left: 14, right: 14),
         ),
       ),
     );

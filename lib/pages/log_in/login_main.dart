@@ -6,6 +6,7 @@ import 'package:fido_smart_lock/helper/size.dart';
 import 'package:fido_smart_lock/pages/home.dart';
 import 'package:fido_smart_lock/pages/log_in/signup/signup_main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class LoginMain extends StatefulWidget {
@@ -20,6 +21,7 @@ class _LoginMainState extends State<LoginMain> {
   late TextEditingController _passwordController;
   bool _isPasswordValid = true;
   bool _isEmailValid = true;
+  final storage = FlutterSecureStorage();
 
   @override
   void dispose() {
@@ -28,7 +30,7 @@ class _LoginMainState extends State<LoginMain> {
     super.dispose();
   }
 
-  void _onLogIn() {
+  Future<void> _onLogIn() async {
     setState(() {
       _isPasswordValid = _passwordController.text.trim().isNotEmpty;
       _isEmailValid = RegExp(
@@ -36,7 +38,12 @@ class _LoginMainState extends State<LoginMain> {
           .hasMatch(_emailController.text.trim());
     });
 
-    if (_isEmailValid && _isPasswordValid) {
+    if (_isEmailValid && _isPasswordValid){
+      // Hardcoded userId
+            String userId = "bs2623";
+            int userCode = 3390; //TODO: Replace with API call once ready
+            await storage.write(key: 'userId', value: userId);
+            await storage.write(key: 'userCode', value: userCode.toString());
       Navigator.push(
         context,
         MaterialPageRoute(

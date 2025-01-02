@@ -2,34 +2,101 @@ import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/dropdown/dropdown_capsule.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/component/card/lock_card.dart';
+import 'package:fido_smart_lock/helper/api.dart';
 import 'package:fido_smart_lock/pages/lock_management/create_new_lock/lock_create.dart';
 import 'package:fido_smart_lock/pages/lock_management/lock_detail/lock_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/gap.dart';
 
-class LockMain extends StatelessWidget {
-  static const List<String> dropdownItems = [
-    "Home",
-    "Office",
-    "Airbnbbbbb",
-  ];
-  final String name = 'John';
-  static final List<Map<String, String>> data = [
-    {
-      'img': 'https://i.postimg.cc/1tD3M3D2/front-Door.png',
-      'lockName': 'Front Door',
-    },
-    {
-      'img': 'https://i.postimg.cc/BbMswLbY/living-Room.png',
-      'lockName': 'Living Room',
-    },
-    // Add more data as needed
-  ];
-
+class LockMain extends StatefulWidget {
   const LockMain({super.key});
 
   @override
+  State<LockMain> createState() => _LockMainState();
+}
+
+class _LockMainState extends State<LockMain> {
+  List<String>? dropdownItems = [];
+  List<Map<String, dynamic>>? lockList = []; // <-- Correct type
+  String? userName = '';
+  String? userImage = '';
+  String? lockLocation = '';
+  bool isLoading = true;
+  String? selectedLocation; // <-- Track selected dropdown value
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserLockLocation();
+  }
+
+  Future<void> fetchUserLockLocation() async {
+    const storage = FlutterSecureStorage();
+    String? userId = await storage.read(key: 'userId');
+
+    if (userId != null) {
+      String apiUri =
+          'https://fsl-1080584581311.us-central1.run.app/lockLocation/user/$userId';
+
+      try {
+        var dataLockLocation = await getJsonData(apiUri: apiUri);
+        List<String> items = List<String>.from(dataLockLocation['dataList']);
+        setState(() {
+          dropdownItems = items;
+          selectedLocation =
+              items.isNotEmpty ? items[0] : null; // <-- Default selection
+          isLoading = false;
+        });
+        fetchUserLockList(); // Ensure locks are fetched after setting location
+      } catch (e) {
+        debugPrint('Error: $e');
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> fetchUserLockList() async {
+    const storage = FlutterSecureStorage();
+    String? userId = await storage.read(key: 'userId');
+
+
+    if (userId != null && selectedLocation != null) {
+      String apiUri =
+          'https://fsl-1080584581311.us-central1.run.app/lockList/$userId/$selectedLocation';
+
+      try {
+        var dataLockList = await getJsonData(apiUri: apiUri);
+        setState(() {
+          lockLocation = dataLockList['lockLocation'];
+          userName = dataLockList['userName'];
+          userImage = dataLockList['userImage'];
+          lockList = List<Map<String, dynamic>>.from(
+              dataLockList['dataList']);
+        });
+      } catch (e) {
+        debugPrint('Error: $e');
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } else {
+      debugPrint('User ID not found in secure storage.');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     return Background(
       child: Align(
         alignment: Alignment.topCenter,
@@ -38,10 +105,22 @@ class LockMain extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               CircleAvatar(
-                  radius: 35,
-                  backgroundImage: NetworkImage(
-                      'https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png')),
-              DropdownCapsule(items: dropdownItems),
+                radius: 35,
+                backgroundImage: NetworkImage(userImage ??
+                    'https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png'),
+              ),
+              isLoading
+                  ? const CircularProgressIndicator()
+                  : DropdownCapsule(
+                      items: dropdownItems ?? [],
+                      selectedItem: selectedLocation, // Pass default value
+                      onSelected: (value) {
+                        setState(() {
+                          selectedLocation = value; // Update the state
+                          fetchUserLockList(); // Fetch lock list when selection changes
+                        });
+                      },
+                    ),
             ],
           ),
           const Gap(20),
@@ -52,8 +131,11 @@ class LockMain extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Label(
-                      size: 'xxl', label: 'Good Day', name: name, isBold: true),
-                  Label(size: 'l', label: 'Manage Your Locks'),
+                      size: 'xxl',
+                      label: 'Good Day',
+                      name: userName,
+                      isBold: true),
+                  const Label(size: 'l', label: 'Manage Your Locks'),
                 ],
               )
             ],
@@ -66,18 +148,16 @@ class LockMain extends StatelessWidget {
               crossAxisSpacing: 10.0,
               mainAxisSpacing: 20.0,
               children: [
-                ...data.map((item) {
+                ...lockList!.map((item) {
                   return LockCard(
-                    img: item['img'],
+                    img: item['lockImage'],
                     name: item['lockName']!,
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => LockDetail(
-                              lockName: item['lockName']!,
-                              lockImg: item['img'],
-                              lockLocation: 'Home'),
+                              lockId: item['lockId']!), // Pass selected value
                         ),
                       );
                     },
@@ -87,7 +167,7 @@ class LockMain extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => LockCreate(),
+                      builder: (context) => const LockCreate(),
                     ),
                   );
                 })
