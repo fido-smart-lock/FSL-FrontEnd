@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/component/modal/confirmation_modal.dart';
@@ -63,8 +62,6 @@ class Person extends StatelessWidget {
       'datetime': expirationDateTime ?? "", // Avoid null
     };
 
-    debugPrint('Payload: ${jsonEncode(body)}'); // Debugging payload
-
     // Make POST request
     // ignore: unused_local_variable
     final response = await postJsonData(
@@ -122,7 +119,7 @@ class Person extends StatelessWidget {
                       label: role!,
                       color: Colors.grey,
                     )
-                  else if (role == 'guest')
+                  else if (role == 'guest' && dateTime != null)
                     Label(
                       size: 'xxs',
                       label: 'Exp: ${dateDotTimeFormat(dateTime!)}',

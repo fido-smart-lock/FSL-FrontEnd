@@ -63,7 +63,6 @@ class _AdminAndMemberAddState extends State<AdminAndMemberAdd> {
   @override
   Widget build(BuildContext context) {
     final responsive = Responsive(context);
-    debugPrint('userCode: $userCode');
 
     return Background(
       appBar: AppBar(
@@ -251,7 +250,7 @@ class _GuestAddState extends State<GuestAdd> {
                       onDateSelected: (date) {
                         setState(() {
                           _selectedDate = date;
-                          debugPrint('Date: $_selectedDate');
+                        
                         });
                       },
                     ),
@@ -272,7 +271,6 @@ class _GuestAddState extends State<GuestAdd> {
                       onTimeSelected: (time) {
                         setState(() {
                           _selectedTime = time;
-                          debugPrint('Time: $_selectedTime');
                         });
                       },
                     ),
@@ -296,7 +294,7 @@ class _GuestAddState extends State<GuestAdd> {
                       lockId: widget.lockId,
                       img: user['userImage'], // Pass user image
                       name: concatenateNameAndSurname(
-                          user['userName'], user['userSurname']),
+                          user['userName'] ?? '', user['userSurname'] ?? ''),
                       button: 'invite',
                       expirationDateTime: getIsoDateTime(),
                     ),

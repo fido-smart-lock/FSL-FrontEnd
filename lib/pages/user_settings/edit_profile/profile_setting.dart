@@ -22,18 +22,55 @@ class ProfileSetting extends StatefulWidget {
 }
 
 class _ProfileSettingState extends State<ProfileSetting> {
-  late TextEditingController _nameController;
-  late TextEditingController _surnameController;
+  String? userImage = '';
+
   late TextEditingController _emailController;
+  String? _imageUrl; // URL after uploading to Cloudinary
+  bool _isEmailValid = true;
   bool _isNameValid = true;
   bool _isSurnameValid = true;
-  bool _isEmailValid = true;
   late bool _isVerified = false;
-
+  late TextEditingController _nameController;
   File? _selectedImage; // Image file
-  String? _imageUrl; // URL after uploading to Cloudinary
+  late TextEditingController _surnameController;
 
-  String? userImage = '';
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _surnameController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController();
+    _surnameController = TextEditingController();
+    _emailController = TextEditingController();
+    _isVerified = false;
+
+    fetchUserProfile();
+
+    // Listener to reset name validity when user starts typing
+    _nameController.addListener(() {
+      setState(() {
+        _isNameValid = _nameController.text.trim().isNotEmpty;
+      });
+    });
+    _surnameController.addListener(() {
+      setState(() {
+        _isSurnameValid = _surnameController.text.trim().isNotEmpty;
+      });
+    });
+    _emailController.addListener(() {
+      setState(() {
+        _isEmailValid = RegExp(
+                r'^[^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*@([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}$')
+            .hasMatch(_emailController.text.trim());
+      });
+    });
+  }
 
   Future<void> updateProfile() async {
     const storage = FlutterSecureStorage();
@@ -48,8 +85,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
         'newLastName': _surnameController.text.trim(),
         'newImage': _imageUrl,
       };
-
-      debugPrint('Request body: $requestBody');
 
       String apiUri =
           'https://fsl-1080584581311.us-central1.run.app/user/editProfile';
@@ -99,14 +134,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
     }
   }
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _surnameController.dispose();
-    _emailController.dispose();
-    super.dispose();
-  }
-
   void _validateAndSave() {
     setState(() {
       _isNameValid = _nameController.text.trim().isNotEmpty;
@@ -121,36 +148,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
       updateProfile();
       fetchUserProfile();
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _nameController = TextEditingController();
-    _surnameController = TextEditingController();
-    _emailController = TextEditingController();
-    _isVerified = false;
-
-    fetchUserProfile();
-
-    // Listener to reset name validity when user starts typing
-    _nameController.addListener(() {
-      setState(() {
-        _isNameValid = _nameController.text.trim().isNotEmpty;
-      });
-    });
-    _surnameController.addListener(() {
-      setState(() {
-        _isSurnameValid = _surnameController.text.trim().isNotEmpty;
-      });
-    });
-    _emailController.addListener(() {
-      setState(() {
-        _isEmailValid = RegExp(
-                r'^[^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*@([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}$')
-            .hasMatch(_emailController.text.trim());
-      });
-    });
   }
 
   Future<void> _pickImageFromGallery() async {

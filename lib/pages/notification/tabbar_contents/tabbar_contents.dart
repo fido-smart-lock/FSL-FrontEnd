@@ -1,6 +1,7 @@
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/helper/api.dart';
 import 'package:fido_smart_lock/helper/size.dart';
+import 'package:fido_smart_lock/helper/word.dart';
 import 'package:flutter/material.dart';
 import 'package:fido_smart_lock/component/card/noti_card.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -80,7 +81,7 @@ class _TabBarContentsState extends State<TabBarContents> {
         setState(() {
           isDataLoaded = true;
           dataList = List<Map<String, dynamic>>.from(data['dataList']);
-          debugPrint('Data List: $dataList');
+          debugPrint('Data: $dataList');
         });
       } catch (e) {
         setState(() {
@@ -91,9 +92,9 @@ class _TabBarContentsState extends State<TabBarContents> {
       }
     } else {
       setState(() {
-          isDataLoaded = true;
-          dataList = [];
-        });
+        isDataLoaded = true;
+        dataList = [];
+      });
       debugPrint('User ID not found in secure storage.');
     }
   }
@@ -103,35 +104,36 @@ class _TabBarContentsState extends State<TabBarContents> {
     final responsive = Responsive(context);
 
     if (!isDataLoaded) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    else if (dataList!.isEmpty) {
-      return Center(
-        child: Column(
-          children: [
-            SvgPicture.asset(getSvg(widget.mode),
-                semanticsLabel: 'Empty State',
-                height: responsive.heightScale(150)),
-            SizedBox(
-              height: 20,
-            ),
-            Label(
-              size: 's',
-              label: _getMainTextLabel(widget.mode),
-              isBold: true,
-              color: Colors.grey,
-              isCenter: true,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Label(
-              size: 'xs',
-              label: _getSubTextLabel(widget.mode),
-              isCenter: true,
-              color: Colors.grey,
-            ),
-          ],
+      return Expanded(child: Center(child: CircularProgressIndicator()));
+    } else if (dataList!.isEmpty) {
+      return Expanded(
+        child: Center(
+          child: Column(
+            children: [
+              SvgPicture.asset(getSvg(widget.mode),
+                  semanticsLabel: 'Empty State',
+                  height: responsive.heightScale(150)),
+              SizedBox(
+                height: 20,
+              ),
+              Label(
+                size: 's',
+                label: _getMainTextLabel(widget.mode),
+                isBold: true,
+                color: Colors.grey,
+                isCenter: true,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Label(
+                size: 'xs',
+                label: _getSubTextLabel(widget.mode),
+                isCenter: true,
+                color: Colors.grey,
+              ),
+            ],
+          ),
         ),
       );
     } else {
@@ -148,10 +150,12 @@ class _TabBarContentsState extends State<TabBarContents> {
                 dateTime: item['dateTime'] ?? '',
                 mode: widget.mode,
                 subMode: item['subMode'] ?? (widget.subMode ?? ''),
+                lockId: item['lockId'] ?? '',
                 lockName: item['lockName'] ?? '',
                 lockLocation: item['lockLocation'] ?? '',
                 role: item['role'] ?? '',
-                name: item['name'] ?? '',
+                name: concatenateNameAndSurname(
+                        item['userName'] ?? '', item['userSurname'] ?? ''),
                 number: item['amount'] ?? 0,
               ),
               SizedBox(

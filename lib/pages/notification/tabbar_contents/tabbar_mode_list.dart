@@ -12,7 +12,9 @@ Map<String, dynamic> getModeConfig(BuildContext context,
     {String name = '',
     String role = '',
     String lockName = '',
-    String lockLocation = ''}) {
+    String lockLocation = '',
+    String lockId = ''}) {
+
   return {
     'warning': {
       'icon': CupertinoIcons.exclamationmark_shield,
@@ -39,6 +41,7 @@ Map<String, dynamic> getModeConfig(BuildContext context,
             builder: (context) => WarningView(
               lockLocation: lockLocation,
               lockName: lockName,
+              lockId: lockId,
             ),
           ),
         );

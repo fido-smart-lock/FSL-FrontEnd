@@ -1,11 +1,16 @@
 import 'dart:core';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 String timeDifference(String inputDateTimeString) {
   try {
     // Parse the input string to DateTime
     DateTime inputDateTime = DateTime.parse(inputDateTimeString);
-    DateTime now = DateTime.now();
+    DateTime now = DateTime.now().toLocal();
+
+    debugPrint('Input date: $inputDateTime');
+    debugPrint('Now: $now');
+    debugPrint('Difference: ${now.difference(inputDateTime)}');
 
     // Calculate the difference
     Duration difference = now.difference(inputDateTime);

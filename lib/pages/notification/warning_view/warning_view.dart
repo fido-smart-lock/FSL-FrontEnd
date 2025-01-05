@@ -1,28 +1,68 @@
 import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/card/noti_card.dart';
 import 'package:fido_smart_lock/component/label.dart';
+import 'package:fido_smart_lock/helper/api.dart';
 import 'package:fido_smart_lock/helper/size.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert'; // For JSON decoding
-import 'package:flutter/services.dart'; // For loading asset data
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_svg/svg.dart';
 
-class WarningView extends StatelessWidget {
+class WarningView extends StatefulWidget {
   const WarningView({
     super.key,
-    required this.lockLocation,
+    required this.lockId,
     required this.lockName,
+    required this.lockLocation,
   });
 
-  final String lockLocation;
+  final String lockId;
   final String lockName;
+  final String lockLocation;
   static const mode = 'warning';
   static const subMode = 'view';
 
-  // Method to load and parse JSON data
-  Future<List<Map<String, dynamic>>> _loadRiskData() async {
-    final String response = await rootBundle.loadString('assets/data/noti_risk_attempt.json');
-    final List<dynamic> data = json.decode(response);
-    return data.map((item) => item as Map<String, dynamic>).toList();
+  @override
+  State<WarningView> createState() => _WarningViewState();
+}
+
+class _WarningViewState extends State<WarningView> {
+  List<Map<String, dynamic>>? dataList = [];
+  bool isDataLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserNotification();
+  }
+
+  Future<void> fetchUserNotification() async {
+    const storage = FlutterSecureStorage();
+    String? userId = await storage.read(key: 'userId');
+
+    if (userId != null) {
+      String apiUri =
+          'https://fsl-1080584581311.us-central1.run.app/notification/warning/view/$userId/${widget.lockId}';
+
+      try {
+        var data = await getJsonData(apiUri: apiUri);
+        setState(() {
+          isDataLoaded = true;
+          dataList = List<Map<String, dynamic>>.from(data['dataList']);
+        });
+      } catch (e) {
+        setState(() {
+          isDataLoaded = true;
+          dataList = [];
+        });
+        debugPrint('Error: $e');
+      }
+    } else {
+      setState(() {
+        isDataLoaded = true;
+        dataList = [];
+      });
+      debugPrint('User ID not found in secure storage.');
+    }
   }
 
   @override
@@ -31,6 +71,7 @@ class WarningView extends StatelessWidget {
 
     return Background(
       appBar: AppBar(
+        centerTitle: true,
         title: Label(
           size: 'xl',
           label: 'View all risk attempts',
@@ -41,44 +82,73 @@ class WarningView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Label(size: 'm', label: '$lockLocation: $lockName', isBold: true,),
-          SizedBox(height: responsive.heightScale(10),),
-          Expanded(
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: _loadRiskData(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const Center(child: Text('Error loading data'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No risk attempts found'));
-                } else {
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      final item = snapshot.data![index];
-
-                      return Column(
-                        children: [
-                          NotiCard(
-                            notiId: item['notiId'] ?? '',
-                            dateTime: item['dateTime'] ?? '',
-                            mode: mode,
-                            subMode: subMode,
-                            error: item['error'] ?? '',
-                          ),
-                          SizedBox(
-                            height: responsive.heightScale(10),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }
-              },
-            ),
+          Label(
+            size: 'm',
+            label: '${widget.lockLocation}: ${widget.lockName}',
+            isBold: true,
           ),
+          SizedBox(
+            height: responsive.heightScale(10),
+          ),
+          if (!isDataLoaded) ...[
+            Expanded(child: Center(child: CircularProgressIndicator())),
+          ] else if (dataList!.isEmpty) ...[
+            Expanded(
+              child: Center(
+                child: Column(
+                  children: [
+                    SvgPicture.asset('assets/svg/restSecurity.svg',
+                        semanticsLabel: 'Empty State',
+                        height: responsive.heightScale(150)),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Label(
+                      size: 's',
+                      label: 'Everything in this lock looks secure!',
+                      isBold: true,
+                      color: Colors.grey,
+                      isCenter: true,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Label(
+                      size: 'xs',
+                      label:
+                          'sit back and relax,we will tell you if \'things\' happen.',
+                      isCenter: true,
+                      color: Colors.grey,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ] else ...[
+            Expanded(
+              child: ListView.builder(
+                itemCount: dataList?.length ?? 0,
+                itemBuilder: (context, index) {
+                  final item = dataList![index];
+
+                  return Column(
+                    children: [
+                      NotiCard(
+                        notiId: item['notiId'] ?? '',
+                        dateTime: item['dateTime'] ?? '',
+                        mode: WarningView.mode,
+                        subMode: WarningView.subMode,
+                        error: item['error'] ?? '',
+                      ),
+                      SizedBox(
+                        height: responsive.heightScale(10),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
         ],
       ),
     );

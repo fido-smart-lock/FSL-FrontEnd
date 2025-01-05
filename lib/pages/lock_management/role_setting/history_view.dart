@@ -37,7 +37,6 @@ class _HistoryViewState extends State<HistoryView> {
     try {
       var data = await getJsonData(apiUri: apiUri)
           .timeout(const Duration(seconds: 10));
-      debugPrint('API Response: ${data.toString()}');
 
       setState(() {
         dataList = data['dataList'] != null && data['dataList'] is List

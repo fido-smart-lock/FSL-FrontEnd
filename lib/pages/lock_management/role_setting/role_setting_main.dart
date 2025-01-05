@@ -44,6 +44,7 @@ class _AdminAndMemberSettingMainState extends State<AdminAndMemberSettingMain> {
       var data = await getJsonData(apiUri: apiUri);
       setState(() {
         dataList = List<Map<String, dynamic>>.from(data['dataList']);
+        debugPrint('DataList: $dataList');
       });
     } catch (e) {
       debugPrint('Error: $e');
@@ -173,6 +174,7 @@ class _GuestSettingMainState extends State<GuestSettingMain> {
       var data = await getJsonData(apiUri: apiUri);
       setState(() {
         dataList = List<Map<String, dynamic>>.from(data['dataList']);
+        debugPrint('DataList: $dataList');
       });
     } catch (e) {
       debugPrint('Error: $e');
@@ -245,16 +247,18 @@ class _GuestSettingMainState extends State<GuestSettingMain> {
             child: ListView.builder(
               itemCount: dataList?.length ?? 0, // Handle null safely
               itemBuilder: (context, index) {
-                final user = dataList![index]; // Get each user from dataList
+                final user = dataList![index];
+                debugPrint('user: $user'); // Get each user from dataList
                 return Padding(
                   padding: EdgeInsets.symmetric(vertical: 5),
                   child: Person(
                     img: user['userImage'], // Pass user image
-                    name: concatenateNameAndSurname(user['userName'],
-                        user['userSurname']), // Concatenate name
+                    name: concatenateNameAndSurname(user['userName'] ?? '',
+                        user['userSurname'] ?? ''), // Concatenate name
                     role: user['role'], // Pass role
                     button: 'remove',
                     lockName: widget.lockName,
+                    dateTime: user['dateTime'],
                   ),
                 );
               },

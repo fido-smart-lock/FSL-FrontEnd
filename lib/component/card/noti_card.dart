@@ -20,7 +20,8 @@ class NotiCard extends StatelessWidget {
       this.lockLocation = '',
       this.role = '',
       this.name = '',
-      this.error = ''});
+      this.error = '',
+      this.lockId = ''});
 
   final String notiId;
   final String mode;
@@ -32,6 +33,7 @@ class NotiCard extends StatelessWidget {
   final String role;
   final String name;
   final String error;
+  final String lockId;
 
   String _getMainTextLabel() {
     if (mode == 'warning') {
@@ -63,7 +65,8 @@ class NotiCard extends StatelessWidget {
             name: name,
             role: role,
             lockName: lockName,
-            lockLocation: lockLocation)[mode] ??
+            lockLocation: lockLocation,
+            lockId: lockId)[mode] ??
         {
           'icon': CupertinoIcons.question_circle,
           'color': Colors.grey,
@@ -83,6 +86,7 @@ class NotiCard extends StatelessWidget {
     final labelCapsuleButtonColor =
         config['LabelCapsuleButtonColor'] as Color? ?? Colors.white;
     const subColor = Colors.grey;
+
 
     return Container(
       padding: EdgeInsets.fromLTRB(15, 15, 20, 20),
