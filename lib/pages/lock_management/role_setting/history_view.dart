@@ -7,17 +7,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class HistoryView extends StatefulWidget {
-  const HistoryView({super.key, required this.lockId});
+  const HistoryView(
+      {super.key,
+      required this.lockId,
+      required this.lockName,
+      required this.lockLocation});
 
   final String lockId;
+  final String lockName;
+  final String lockLocation;
 
   @override
   _HistoryViewState createState() => _HistoryViewState();
 }
 
 class _HistoryViewState extends State<HistoryView> {
-  String? lockName;
-  String? lockLocation;
   List<Map<String, dynamic>>? dataList;
 
   @override
@@ -36,8 +40,6 @@ class _HistoryViewState extends State<HistoryView> {
       debugPrint('API Response: ${data.toString()}');
 
       setState(() {
-        lockLocation = data['lockLocation'] ?? 'Unknown Location';
-        lockName = data['lockName'] ?? 'Unknown Lock';
         dataList = data['dataList'] != null && data['dataList'] is List
             ? List<Map<String, dynamic>>.from(data['dataList'])
             : [];
@@ -45,8 +47,6 @@ class _HistoryViewState extends State<HistoryView> {
     } catch (e) {
       debugPrint('Error: $e');
       setState(() {
-        lockLocation = null;
-        lockName = null;
         dataList = null;
       });
     }
@@ -93,12 +93,12 @@ class _HistoryViewState extends State<HistoryView> {
             children: [
               Label(
                 size: 'xxl',
-                label: lockName ?? 'Loading...',
+                label: widget.lockName,
                 isShadow: true,
               ),
               Label(
                 size: 'l',
-                label: lockLocation ?? 'Loading...',
+                label: widget.lockLocation,
                 color: Colors.grey.shade300,
                 isShadow: true,
               ),
@@ -118,10 +118,9 @@ class _HistoryViewState extends State<HistoryView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                      width: responsive.widthScale(200),
-                      height: responsive.heightScale(200),
-                    child: Image.network('https://i.postimg.cc/ncPjMvKy/svgviewer-png-output.png')),
+                  SvgPicture.asset('assets/svg/findHistory.svg',
+                      semanticsLabel: 'No History Found',
+                      height: responsive.heightScale(400)),
                   const SizedBox(
                     height: 20,
                   ),
@@ -173,12 +172,12 @@ class _HistoryViewState extends State<HistoryView> {
           children: [
             Label(
               size: 'xxl',
-              label: lockName ?? 'Loading...',
+              label: widget.lockName,
               isShadow: true,
             ),
             Label(
               size: 'l',
-              label: lockLocation ?? 'Loading...',
+              label: widget.lockLocation,
               color: Colors.grey.shade300,
               isShadow: true,
             ),

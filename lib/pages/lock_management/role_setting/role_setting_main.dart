@@ -12,11 +12,15 @@ class AdminAndMemberSettingMain extends StatefulWidget {
       {super.key,
       required this.lockId,
       required this.role,
-      required this.isAdmin});
+      required this.isAdmin,
+      required this.lockName,
+      required this.lockLocation});
 
   final String role;
   final String lockId;
   final bool isAdmin;
+  final String lockName;
+  final String lockLocation;
 
   @override
   State<AdminAndMemberSettingMain> createState() =>
@@ -24,8 +28,6 @@ class AdminAndMemberSettingMain extends StatefulWidget {
 }
 
 class _AdminAndMemberSettingMainState extends State<AdminAndMemberSettingMain> {
-  String? lockLocation = '';
-  String? lockName = '';
   List<Map<String, dynamic>>? dataList = [];
 
   @override
@@ -35,15 +37,12 @@ class _AdminAndMemberSettingMainState extends State<AdminAndMemberSettingMain> {
   }
 
   Future<void> fetchUserLockRole() async {
-
     String apiUri =
         'https://fsl-1080584581311.us-central1.run.app/lock/role/${widget.lockId}/${widget.role}';
 
     try {
       var data = await getJsonData(apiUri: apiUri);
       setState(() {
-        lockLocation = data['lockLocation'];
-        lockName = data['lockName'];
         dataList = List<Map<String, dynamic>>.from(data['dataList']);
       });
     } catch (e) {
@@ -62,12 +61,12 @@ class _AdminAndMemberSettingMainState extends State<AdminAndMemberSettingMain> {
           children: [
             Label(
               size: 'xxl',
-              label: lockName!,
+              label: widget.lockName,
               isShadow: true,
             ),
             Label(
               size: 'l',
-              label: lockLocation!,
+              label: widget.lockLocation,
               color: Colors.grey.shade300,
               isShadow: true,
             ),
@@ -84,8 +83,8 @@ class _AdminAndMemberSettingMainState extends State<AdminAndMemberSettingMain> {
                     MaterialPageRoute(
                       builder: (context) => AdminAndMemberAdd(
                         lockId: widget.lockId,
-                        lockName: lockName!,
-                        lockLocation: lockLocation!,
+                        lockName: widget.lockName,
+                        lockLocation: widget.lockLocation,
                         role: widget.role,
                       ),
                     ),
@@ -126,7 +125,7 @@ class _AdminAndMemberSettingMainState extends State<AdminAndMemberSettingMain> {
                         user['userSurname']), // Concatenate name
                     role: user['role'], // Pass role
                     button: 'remove',
-                    lockName: lockName!,
+                    lockName: widget.lockName,
                   ),
                 );
               },
@@ -143,19 +142,21 @@ class GuestSettingMain extends StatefulWidget {
       {super.key,
       required this.lockId,
       required this.role,
-      required this.isAdmin});
+      required this.isAdmin,
+      required this.lockName,
+      required this.lockLocation});
 
   final String role;
   final String lockId;
   final bool isAdmin;
+  final String lockName;
+  final String lockLocation;
 
   @override
   State<GuestSettingMain> createState() => _GuestSettingMainState();
 }
 
 class _GuestSettingMainState extends State<GuestSettingMain> {
-  String? lockLocation = '';
-  String? lockName = '';
   List<Map<String, dynamic>>? dataList = [];
 
   @override
@@ -171,8 +172,6 @@ class _GuestSettingMainState extends State<GuestSettingMain> {
     try {
       var data = await getJsonData(apiUri: apiUri);
       setState(() {
-        lockLocation = data['lockLocation'];
-        lockName = data['lockName'];
         dataList = List<Map<String, dynamic>>.from(data['dataList']);
       });
     } catch (e) {
@@ -191,12 +190,12 @@ class _GuestSettingMainState extends State<GuestSettingMain> {
           children: [
             Label(
               size: 'xxl',
-              label: lockName!,
+              label: widget.lockName,
               isShadow: true,
             ),
             Label(
               size: 'l',
-              label: lockLocation!,
+              label: widget.lockLocation,
               color: Colors.grey.shade300,
               isShadow: true,
             ),
@@ -204,33 +203,33 @@ class _GuestSettingMainState extends State<GuestSettingMain> {
         ),
         actions: [
           if (widget.isAdmin)
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => GuestAdd(
-                    lockId: widget.lockId,
-                    lockName: lockName!,
-                    lockLocation: lockLocation!,
-                    role: widget.role,
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GuestAdd(
+                      lockId: widget.lockId,
+                      lockName: widget.lockName,
+                      lockLocation: widget.lockLocation,
+                      role: widget.role,
+                    ),
                   ),
+                );
+              },
+              child: Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: Icon(
+                  CupertinoIcons.person_add,
+                  size: 30,
+                  color: Colors.white,
+                  shadows: <Shadow>[
+                    Shadow(
+                        color: Colors.black.withOpacity(0.50), blurRadius: 15.0)
+                  ],
                 ),
-              );
-            },
-            child: Padding(
-              padding: EdgeInsets.only(right: 20.0),
-              child: Icon(
-                CupertinoIcons.person_add,
-                size: 30,
-                color: Colors.white,
-                shadows: <Shadow>[
-                  Shadow(
-                      color: Colors.black.withOpacity(0.50), blurRadius: 15.0)
-                ],
               ),
-            ),
-          )
+            )
         ],
       ),
       child: Column(
@@ -255,7 +254,7 @@ class _GuestSettingMainState extends State<GuestSettingMain> {
                         user['userSurname']), // Concatenate name
                     role: user['role'], // Pass role
                     button: 'remove',
-                    lockName: lockName!,
+                    lockName: widget.lockName,
                   ),
                 );
               },
@@ -272,18 +271,20 @@ class RequestSettingMain extends StatefulWidget {
     super.key,
     required this.lockId,
     required this.role,
+    required this.lockName,
+    required this.lockLocation,
   });
 
   final String role;
   final String lockId;
+  final String lockName;
+  final String lockLocation;
 
   @override
   State<RequestSettingMain> createState() => _RequestSettingMainState();
 }
 
 class _RequestSettingMainState extends State<RequestSettingMain> {
-  String? lockLocation = '';
-  String? lockName = '';
   List<Map<String, dynamic>>? dataList = [];
 
   @override
@@ -299,8 +300,6 @@ class _RequestSettingMainState extends State<RequestSettingMain> {
     try {
       var data = await getJsonData(apiUri: apiUri);
       setState(() {
-        lockLocation = data['lockLocation'];
-        lockName = data['lockName'];
         dataList = List<Map<String, dynamic>>.from(data['dataList']);
       });
     } catch (e) {
@@ -319,12 +318,12 @@ class _RequestSettingMainState extends State<RequestSettingMain> {
           children: [
             Label(
               size: 'xxl',
-              label: lockName!,
+              label: widget.lockName,
               isShadow: true,
             ),
             Label(
               size: 'l',
-              label: lockLocation!,
+              label: widget.lockLocation,
               color: Colors.grey.shade300,
               isShadow: true,
             ),
@@ -348,13 +347,12 @@ class _RequestSettingMainState extends State<RequestSettingMain> {
                 return Padding(
                   padding: EdgeInsets.symmetric(vertical: 5),
                   child: Person(
-
                     img: user['userImage'], // Pass user image
                     name: concatenateNameAndSurname(user['userName'],
                         user['userSurname']), // Concatenate name
                     role: user['role'], // Pass role
                     button: 'remove',
-                    lockName: lockName!,
+                    lockName: widget.lockName,
                   ),
                 );
               },

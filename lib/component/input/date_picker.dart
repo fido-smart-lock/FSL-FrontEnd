@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DatePickerWidget extends StatefulWidget {
-  const DatePickerWidget({super.key});
+  const DatePickerWidget({super.key, this.onDateSelected});
+
+  final ValueChanged<DateTime>? onDateSelected;
 
   @override
   _DatePickerWidgetState createState() => _DatePickerWidgetState();
@@ -29,6 +31,9 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
       setState(() {
         _selectedDate = picked;
       });
+      if (widget.onDateSelected != null) {
+        widget.onDateSelected!(picked);
+      }
     }
   }
 

@@ -88,6 +88,9 @@ flutter:
     - assets/svg/approved.svg
     - assets/svg/dreamMail.svg
     - assets/svg/knight.svg
+    - assets/svg/findHistory.svg
+    - assets/svg/findMail.svg
+    - assets/svg/restSecurity.svg
     - assets/data/noti_warning.json
     - assets/data/noti_req.json
     - assets/data/noti_connect.json

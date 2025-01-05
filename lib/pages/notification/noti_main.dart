@@ -34,7 +34,7 @@ class NotiMain extends StatelessWidget {
               ),
               Tab(
                 icon: Icon(CupertinoIcons.check_mark_circled),
-                text: 'Connected',
+                text: 'Connect',
               ),
               Tab(
                 icon: Icon(CupertinoIcons.ellipses_bubble),

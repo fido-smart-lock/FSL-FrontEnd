@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 class NotiCard extends StatelessWidget {
   const NotiCard(
       {super.key,
+      required this.notiId,
       required this.dateTime,
       required this.mode,
       this.number = 1,
@@ -21,6 +22,7 @@ class NotiCard extends StatelessWidget {
       this.name = '',
       this.error = ''});
 
+  final String notiId;
   final String mode;
   final String subMode;
   final String dateTime;

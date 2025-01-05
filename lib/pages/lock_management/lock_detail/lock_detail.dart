@@ -183,6 +183,8 @@ class _LockDetailState extends State<LockDetail> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => AdminAndMemberSettingMain(
+                                lockLocation: lockLocation!,
+                                lockName: lockName!,
                                 isAdmin: isAdmin!,
                                 lockId: widget.lockId,
                                 role: 'admin',
@@ -206,6 +208,8 @@ class _LockDetailState extends State<LockDetail> {
                                 MaterialPageRoute(
                                   builder: (context) =>
                                       AdminAndMemberSettingMain(
+                                    lockLocation: lockLocation!,
+                                    lockName: lockName!,
                                     isAdmin: isAdmin!,
                                     lockId: widget.lockId,
                                     role: 'member',
@@ -223,6 +227,8 @@ class _LockDetailState extends State<LockDetail> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => GuestSettingMain(
+                                    lockLocation: lockLocation!,
+                                    lockName: lockName!,
                                     isAdmin: isAdmin!,
                                     lockId: widget.lockId,
                                     role: 'guest',
@@ -239,22 +245,24 @@ class _LockDetailState extends State<LockDetail> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (isAdmin!)
-                          IconCard(
-                            cardType: 'req',
-                            people: reqCount,
-                            imageUrls: reqImages,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => RequestSettingMain(
-                                    lockId: widget.lockId,
-                                    role: 'req',
+                            IconCard(
+                              cardType: 'req',
+                              people: reqCount,
+                              imageUrls: reqImages,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => RequestSettingMain(
+                                      lockLocation: lockLocation!,
+                                      lockName: lockName!,
+                                      lockId: widget.lockId,
+                                      role: 'req',
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
+                                );
+                              },
+                            ),
                           IconCard(
                             cardType: 'his',
                             people: 0,
@@ -263,8 +271,9 @@ class _LockDetailState extends State<LockDetail> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => HistoryView(
-                                    lockId: widget.lockId
-                                  ),
+                                      lockId: widget.lockId,
+                                      lockName: lockName!,
+                                      lockLocation: lockLocation!),
                                 ),
                               );
                             },

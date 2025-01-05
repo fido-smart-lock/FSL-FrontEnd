@@ -124,7 +124,7 @@ class _AdminAndMemberAddState extends State<AdminAndMemberAdd> {
                   padding: EdgeInsets.symmetric(vertical: 5),
                   child: Person(
                     desUserId: user['userId'],
-                    role: widget.role,
+                    invitedRole: widget.role,
                     lockId: widget.lockId,
                     img: user['userImage'], // Pass user image
                     name: concatenateNameAndSurname(
@@ -160,6 +160,8 @@ class GuestAdd extends StatefulWidget {
 
 class _GuestAddState extends State<GuestAdd> {
   List<Map<String, dynamic>>? dataList;
+  DateTime? _selectedDate;
+  TimeOfDay? _selectedTime;
 
   Future<void> fetchUser(String invitedUserCode) async {
     String apiUri =
@@ -172,7 +174,24 @@ class _GuestAddState extends State<GuestAdd> {
       });
     } catch (e) {
       debugPrint('Error: $e');
+      setState(() {
+        dataList = []; // Set to empty to prevent null errors
+      });
     }
+  }
+
+  String? getIsoDateTime() {
+    if (_selectedDate != null && _selectedTime != null) {
+      final DateTime dateTime = DateTime(
+        _selectedDate!.year,
+        _selectedDate!.month,
+        _selectedDate!.day,
+        _selectedTime!.hour,
+        _selectedTime!.minute,
+      );
+      return dateTime.toIso8601String();
+    }
+    return null;
   }
 
   @override
@@ -228,23 +247,37 @@ class _GuestAddState extends State<GuestAdd> {
                     SizedBox(
                       height: responsive.widthScale(3),
                     ),
-                    DatePickerWidget(),
+                    DatePickerWidget(
+                      onDateSelected: (date) {
+                        setState(() {
+                          _selectedDate = date;
+                          debugPrint('Date: $_selectedDate');
+                        });
+                      },
+                    ),
                   ],
                 ),
                 SizedBox(
                   width: responsive.widthScale(10),
                 ),
                 Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Label(size: 's', label: 'Time'),
                     SizedBox(
                       height: responsive.widthScale(3),
                     ),
-                    TimePickerWidget(),
+                    TimePickerWidget(
+                      onTimeSelected: (time) {
+                        setState(() {
+                          _selectedTime = time;
+                          debugPrint('Time: $_selectedTime');
+                        });
+                      },
+                    ),
                   ],
-                )
+                ),
               ],
             ),
             SizedBox(
@@ -254,17 +287,18 @@ class _GuestAddState extends State<GuestAdd> {
               child: ListView.builder(
                 itemCount: dataList?.length ?? 0, // Handle null safely
                 itemBuilder: (context, index) {
-                  final user = dataList![index]; // Get each user from dataList
+                  final user = dataList![index];
                   return Padding(
                     padding: EdgeInsets.symmetric(vertical: 5),
                     child: Person(
                       desUserId: user['userId'],
-                      role: widget.role,
+                      invitedRole: widget.role,
                       lockId: widget.lockId,
                       img: user['userImage'], // Pass user image
                       name: concatenateNameAndSurname(
                           user['userName'], user['userSurname']),
                       button: 'invite',
+                      expirationDateTime: getIsoDateTime(),
                     ),
                   );
                 },

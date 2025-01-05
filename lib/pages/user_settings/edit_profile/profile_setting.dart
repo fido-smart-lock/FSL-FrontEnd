@@ -1,17 +1,15 @@
-import 'dart:convert';
-
 import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/input/textfield_input.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/helper/Image.dart';
+import 'package:fido_smart_lock/helper/api.dart';
 import 'package:fido_smart_lock/helper/size.dart';
 import 'package:fido_smart_lock/helper/userid.dart';
 import 'package:fido_smart_lock/pages/log_in/login_main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
-import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -32,16 +30,73 @@ class _ProfileSettingState extends State<ProfileSetting> {
   bool _isEmailValid = true;
   late bool _isVerified = false;
 
-  final storage = FlutterSecureStorage();
-
   File? _selectedImage; // Image file
   String? _imageUrl; // URL after uploading to Cloudinary
 
-  Future<Map<String, dynamic>> _loadProfileData() async {
-    final String response =
-        await rootBundle.loadString('assets/data/profile_setting.json');
-    final Map<String, dynamic> data = json.decode(response);
-    return data;
+  String? userImage = '';
+
+  Future<void> updateProfile() async {
+    const storage = FlutterSecureStorage();
+    String? userId = await storage.read(key: 'userId'); // Retrieve userId
+
+    if (userId != null) {
+      // Prepare the request body
+      Map<String, dynamic> requestBody = {
+        'userId': userId,
+        'newEmail': _emailController.text.trim(),
+        'newFirstName': _nameController.text.trim(),
+        'newLastName': _surnameController.text.trim(),
+        'newImage': _imageUrl,
+      };
+
+      debugPrint('Request body: $requestBody');
+
+      String apiUri =
+          'https://fsl-1080584581311.us-central1.run.app/user/editProfile';
+
+      try {
+        // ignore: unused_local_variable
+        var response = await putJsonData(apiUri: apiUri, body: requestBody);
+
+        // Check response and handle success
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile updated successfully!')),
+        );
+        Navigator.pop(context); // Navigate back after success
+      } catch (e) {
+        // Handle error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update profile: $e')),
+        );
+      }
+    } else {
+      debugPrint('User ID not found in secure storage.');
+    }
+  }
+
+  Future<void> fetchUserProfile() async {
+    const storage = FlutterSecureStorage();
+    String? userId = await storage.read(key: 'userId');
+
+    if (userId != null) {
+      String apiUri =
+          'https://fsl-1080584581311.us-central1.run.app/userDetail/$userId';
+
+      try {
+        var dataProfile = await getJsonData(apiUri: apiUri);
+        setState(() {
+          _isVerified = dataProfile['isEmailVerified'];
+          _nameController.text = dataProfile['userName'];
+          _surnameController.text = dataProfile['userSurname'];
+          _emailController.text = dataProfile['userEmail'];
+          userImage = dataProfile['userImage'];
+        });
+      } catch (e) {
+        debugPrint('Error: $e');
+      }
+    } else {
+      debugPrint('User ID not found in secure storage.');
+    }
   }
 
   @override
@@ -63,7 +118,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
 
     // Only proceed if both name and location are valid
     if (_isNameValid && _isSurnameValid && _isEmailValid) {
-      Navigator.pop(context);
+      updateProfile();
+      fetchUserProfile();
     }
   }
 
@@ -75,14 +131,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
     _emailController = TextEditingController();
     _isVerified = false;
 
-    _loadProfileData().then((data) {
-      setState(() {
-        _nameController.text = data['name'] ?? '';
-        _surnameController.text = data['surname'] ?? '';
-        _emailController.text = data['email'] ?? '';
-        _isVerified = data['isVerified'] ?? false;
-      });
-    });
+    fetchUserProfile();
 
     // Listener to reset name validity when user starts typing
     _nameController.addListener(() {
@@ -217,8 +266,10 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         child: CircleAvatar(
                           radius: 50,
                           backgroundImage: NetworkImage(
-                              _imageUrl ??
-                                'https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png',),
+                            _imageUrl ??
+                                userImage ??
+                                'https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png',
+                          ),
                         ),
                       ),
                     ),
@@ -288,7 +339,9 @@ class _ProfileSettingState extends State<ProfileSetting> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Button(
-              onTap: _validateAndSave, // Trigger validation and navigation
+              onTap: () {
+                _validateAndSave(); // Validate inputs
+              }, // Trigger validation and navigation
               label: 'Save Change',
             ),
           ),

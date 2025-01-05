@@ -73,6 +73,8 @@ Map<String, dynamic> getModeConfig(BuildContext context,
           context,
           MaterialPageRoute(
             builder: (context) => HistoryView(
+              lockLocation: lockLocation,
+              lockName: lockName,
               lockId: '4',
             ),
           ),

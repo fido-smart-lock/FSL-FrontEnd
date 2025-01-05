@@ -62,6 +62,7 @@ class WarningView extends StatelessWidget {
                       return Column(
                         children: [
                           NotiCard(
+                            notiId: item['notiId'] ?? '',
                             dateTime: item['dateTime'] ?? '',
                             mode: mode,
                             subMode: subMode,

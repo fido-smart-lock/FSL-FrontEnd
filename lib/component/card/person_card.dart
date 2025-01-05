@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/component/modal/confirmation_modal.dart';
@@ -20,8 +19,10 @@ class Person extends StatelessWidget {
   final String? button;
   final String? lockName;
   final String? dateTime;
+  final String? expirationDateTime;
   final String desUserId; // From parent component
-  final String lockId; // From parent component
+  final String lockId;
+  final String invitedRole; // From parent component
 
   const Person({
     super.key,
@@ -31,11 +32,13 @@ class Person extends StatelessWidget {
     this.button,
     this.lockName,
     this.dateTime,
-    this.desUserId = '', // Receive from parent
-    this.lockId = '',   // Receive from parent
+    this.desUserId = '',
+    this.lockId = '',
+    this.invitedRole = '',
+    this.expirationDateTime
   });
 
-//TODO: Recheck 422 error
+
   Future<void> sendInviteRequest(BuildContext context) async {
   const storage = FlutterSecureStorage();
 
@@ -55,14 +58,15 @@ class Person extends StatelessWidget {
     final body = {
       'srcUserId': srcUserId,
       'desUserId': desUserId,
-      'role': role ?? "", // Default empty string
+      'role': invitedRole, // Default empty string
       'lockId': lockId,
-      'datetime': dateTime ?? DateTime.now().toIso8601String(), // Avoid null
+      'datetime': expirationDateTime ?? "", // Avoid null
     };
 
     debugPrint('Payload: ${jsonEncode(body)}'); // Debugging payload
 
     // Make POST request
+    // ignore: unused_local_variable
     final response = await postJsonData(
       apiUri: 'https://fsl-1080584581311.us-central1.run.app/invitation',
       body: body,
@@ -99,7 +103,7 @@ class Person extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: responsive.radiusScale(23),
-                backgroundImage: NetworkImage(img!),
+                backgroundImage: NetworkImage(img ?? ''),
               ),
               SizedBox(
                 width: responsive.widthScale(7),
