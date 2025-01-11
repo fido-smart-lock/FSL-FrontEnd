@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/helper/api.dart';
 import 'package:fido_smart_lock/helper/size.dart';
@@ -81,7 +83,6 @@ class _TabBarContentsState extends State<TabBarContents> {
         setState(() {
           isDataLoaded = true;
           dataList = List<Map<String, dynamic>>.from(data['dataList']);
-          debugPrint('Data: $dataList');
         });
       } catch (e) {
         setState(() {
@@ -96,6 +97,53 @@ class _TabBarContentsState extends State<TabBarContents> {
         dataList = [];
       });
       debugPrint('User ID not found in secure storage.');
+    }
+  }
+
+  Future<void> deleteAllNotificationWarning(String lockId) async {
+    final apiUri =
+        'https://fsl-1080584581311.us-central1.run.app/delete/notification/warning/$lockId';
+
+    try {
+      final response = await deleteJsonData(apiUri: apiUri);
+      debugPrint('Delete successful: $response');
+      await fetchUserNotification();
+    } catch (e) {
+      debugPrint('Error deleting notification warning: $e');
+    }
+  }
+
+  Future<void> declineInvitation(String notiId) async {
+    debugPrint('Decline invitation with notiId: $notiId');
+    final apiUri =
+        'https://fsl-1080584581311.us-central1.run.app/declineInvitation/$notiId';
+
+    try {
+      final response = await deleteJsonData(apiUri: apiUri);
+      debugPrint('Delete successful: $response');
+      await fetchUserNotification();
+    } catch (e) {
+      debugPrint('Error deleting notification warning: $e');
+    }
+  }
+
+  Future<void> acceptAllRequest(String lockId, [String? expireDatetime]) async {
+    Map<String, dynamic> requestBody = {
+      'lockId': lockId,
+      'expireDatetime': expireDatetime ?? ''
+    };
+
+    debugPrint('accept all request body: $requestBody');
+
+    String apiUri =
+        'https://fsl-1080584581311.us-central1.run.app/acceptAllRequest';
+
+    try {
+      var response = await putJsonData(apiUri: apiUri, body: requestBody);
+      debugPrint('accept all request: $response');
+      await fetchUserNotification();
+    } catch (e) {
+      debugPrint('Error accepting all request: $e');
     }
   }
 
@@ -155,8 +203,13 @@ class _TabBarContentsState extends State<TabBarContents> {
                 lockLocation: item['lockLocation'] ?? '',
                 role: item['role'] ?? '',
                 name: concatenateNameAndSurname(
-                        item['userName'] ?? '', item['userSurname'] ?? ''),
+                    item['userName'] ?? '', item['userSurname'] ?? ''),
                 number: item['amount'] ?? 0,
+                onDeleteAllNotification: (lockId) =>
+                    deleteAllNotificationWarning(lockId),
+                onDeclineInvitation: (notiId) => declineInvitation(notiId),
+                onAcceptAllRequest: (lockId, expireDatetime) =>
+                    acceptAllRequest(lockId, expireDatetime),
               ),
               SizedBox(
                 height: responsive.heightScale(10),

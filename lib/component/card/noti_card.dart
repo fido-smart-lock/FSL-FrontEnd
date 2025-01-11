@@ -21,7 +21,11 @@ class NotiCard extends StatelessWidget {
       this.role = '',
       this.name = '',
       this.error = '',
-      this.lockId = ''});
+      this.lockId = '',
+      this.onDeleteNotification,
+      this.onDeleteAllNotification,
+      this.onDeclineInvitation,
+      this.onAcceptAllRequest});
 
   final String notiId;
   final String mode;
@@ -34,6 +38,10 @@ class NotiCard extends StatelessWidget {
   final String name;
   final String error;
   final String lockId;
+  final Future<void> Function(String notiId)? onDeleteNotification;
+  final Future<void> Function(String lockId)? onDeleteAllNotification;
+  final Future<void> Function(String lockId, String expireDatetime)? onAcceptAllRequest;
+  final Future<void> Function(String notiId)? onDeclineInvitation;
 
   String _getMainTextLabel() {
     if (mode == 'warning') {
@@ -52,7 +60,7 @@ class NotiCard extends StatelessWidget {
         return '${addLabelPossessive(lockName)} request is $subMode!';
       } else if (subMode == 'invite') {
         return '$lockName $role invitation';
-      }
+      } 
     }
     return '';
   }
@@ -66,7 +74,11 @@ class NotiCard extends StatelessWidget {
             role: role,
             lockName: lockName,
             lockLocation: lockLocation,
-            lockId: lockId)[mode] ??
+            lockId: lockId,
+            onDeleteAllNotification: onDeleteAllNotification,
+            onDeclineInvitation: onDeclineInvitation,
+            notiId: notiId,
+            onAcceptAllRequest: onAcceptAllRequest)[mode] ??
         {
           'icon': CupertinoIcons.question_circle,
           'color': Colors.grey,
@@ -219,9 +231,8 @@ class NotiCard extends StatelessWidget {
                         message:
                             'Are you sure you want to ignore this risk? It can be a serious threat to your security.',
                         isCanNotUndone: true,
-                        onProceed: () {
-                          Navigator.of(context).pop();
-                          // Additional actions for "Proceed" go here
+                        onProceed: () async {
+                          onDeleteNotification!(notiId);
                         },
                       );
                     },

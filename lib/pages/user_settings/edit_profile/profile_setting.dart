@@ -168,13 +168,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
       setState(() {
         _imageUrl = uploadedUrl; // Store the uploaded image URL
       });
-
-      //TODO: Save image URL to database+config the API
-      //   // Step 3: Save image URL to database
-      //   await saveImageUrlToDatabase(_imageUrl!);
-      // } else {
-      //   print('Failed to upload image');
-      // }
     }
   }
 

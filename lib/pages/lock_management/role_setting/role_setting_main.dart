@@ -299,7 +299,7 @@ class _RequestSettingMainState extends State<RequestSettingMain> {
 
   Future<void> fetchUserLockRole() async {
     String apiUri =
-        'https://fsl-1080584581311.us-central1.run.app/lock/role/${widget.lockId}/${widget.role}';
+        'https://fsl-1080584581311.us-central1.run.app/request/${widget.lockId}';
 
     try {
       var data = await getJsonData(apiUri: apiUri);

@@ -72,7 +72,7 @@ class _DropdownCapsuleState extends State<DropdownCapsule> {
           });
         },
         buttonStyleData: ButtonStyleData(
-          width: responsive.widthScale(130),
+          width: responsive.widthScale(150),
           padding: const EdgeInsets.only(left: 15, right: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),

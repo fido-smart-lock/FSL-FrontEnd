@@ -1,3 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:io';
+
 import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/input/capsule.dart';
@@ -5,22 +9,28 @@ import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/component/card/lock_card.dart';
 import 'package:fido_smart_lock/component/input/textfield_input.dart';
 import 'package:fido_smart_lock/component/modal/confirmation_modal.dart';
+import 'package:fido_smart_lock/helper/api.dart';
+import 'package:fido_smart_lock/helper/image.dart';
 import 'package:fido_smart_lock/pages/home.dart';
 import 'package:fido_smart_lock/pages/lock_management/create_new_lock/lock_location_customize.dart';
 import 'package:fido_smart_lock/pages/lock_management/create_new_lock/lock_request.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/gap.dart';
+import 'package:image_picker/image_picker.dart';
 
 class LockSetting extends StatefulWidget {
-  const LockSetting(
-      {super.key,
-      required this.appBarTitle,
-      this.option,
-      this.img,
-      this.name,
-      this.location,
-      this.isSettingFromLock = false});
+  const LockSetting({
+    super.key,
+    required this.appBarTitle,
+    this.option,
+    this.img,
+    this.name,
+    this.location,
+    this.isSettingFromLock = false,
+    required this.lockId,
+  });
 
   final String appBarTitle;
   final String? option;
@@ -28,6 +38,7 @@ class LockSetting extends StatefulWidget {
   final String? name;
   final String? location;
   final bool isSettingFromLock;
+  final String lockId;
 
   @override
   _LockSettingState createState() => _LockSettingState();
@@ -38,16 +49,15 @@ class _LockSettingState extends State<LockSetting> {
   String? _selectedLocation;
   bool _isNameValid = true;
   bool _isLocationValid = true;
-
-  static const List<String> lockLocation = [
-    "Home",
-    "Office",
-    "Airbnbbbbb",
-  ];
+  List<String>? lockLocationList = [];
+  bool isDataLoaded = false;
+  File? _selectedImage;
+  String? _imageUrl;
 
   @override
   void initState() {
     super.initState();
+    fetchUserLockLocation();
     // Initialize the controller with the passed name or leave it empty
     _nameController = TextEditingController(
         text: widget.name?.isNotEmpty == true ? widget.name : "");
@@ -61,6 +71,129 @@ class _LockSettingState extends State<LockSetting> {
             .isNotEmpty; // Reset to valid when typing
       });
     });
+  }
+
+  Future<void> fetchUserLockLocation() async {
+    const storage = FlutterSecureStorage();
+    String? userId = await storage.read(key: 'userId');
+
+    if (userId != null) {
+      String apiUri =
+          'https://fsl-1080584581311.us-central1.run.app/lockLocation/user/$userId';
+
+      try {
+        var dataLockLocation = await getJsonData(apiUri: apiUri);
+        setState(() {
+          lockLocationList = List<String>.from(dataLockLocation['dataList']);
+          isDataLoaded = true;
+        });
+      } catch (e) {
+        debugPrint('Error: $e');
+        setState(() {
+          isDataLoaded = false;
+        });
+      }
+    } else {
+      setState(() {
+        isDataLoaded = false;
+      });
+    }
+  }
+
+  Future<void> updateLockSetting() async {
+    const storage = FlutterSecureStorage();
+    String? userId = await storage.read(key: 'userId');
+
+    if (userId != null) {
+      Map<String, dynamic> requestBody = {
+        'userId': userId,
+        'lockId': widget.lockId,
+        'newLockName': _nameController.text.trim(),
+        'newLockLocation': _selectedLocation,
+        'newLockImage': _imageUrl,
+      };
+      debugPrint('Request Body: $requestBody');
+
+      String apiUri =
+          'https://fsl-1080584581311.us-central1.run.app/editLockDetail';
+
+      try {
+        // ignore: unused_local_variable
+        var response = await putJsonData(apiUri: apiUri, body: requestBody);
+
+        // Check response and handle success
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Lock detail has been updated successfully!')),
+        );
+        Navigator.pop(context);
+      } catch (e) {
+        // Handle error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update: $e')),
+        );
+      }
+    } else {
+      debugPrint('User ID not found in secure storage.');
+    }
+  }
+
+  Future<void> postNewLock() async {
+    const storage = FlutterSecureStorage();
+    String? userId = await storage.read(key: 'userId');
+
+    if (userId != null) {
+      Map<String, dynamic> requestBody = {
+        "userId": userId,
+        "lockId": widget.lockId,
+        "lockName": _nameController.text.trim(),
+        "lockLocation": _selectedLocation,
+        "lockImage": _imageUrl
+      };
+
+      String apiUri = 
+          'https://fsl-1080584581311.us-central1.run.app/newLock';
+
+      try {
+        // ignore: unused_local_variable
+        var response = await postJsonData(apiUri: apiUri, body: requestBody);
+
+        // Check response and handle success
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Lock has been create successfully!')),
+        );
+        Navigator.pop(context); // Navigate back after success
+      } catch (e) {
+        // Handle error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update: $e')),
+        );
+      }
+    } else {
+      debugPrint('User ID not found in secure storage.');
+    }
+  }
+
+  Future<void> _pickImageFromGallery() async {
+    // Step 1: Pick image from gallery
+    final returnedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (returnedImage == null) return;
+
+    setState(() {
+      _selectedImage = File(returnedImage.path); // Store the selected image
+    });
+
+    // Step 2: Upload image to Cloudinary
+    String? uploadedUrl = await uploadImageToCloudinary(_selectedImage!);
+
+    if (uploadedUrl != null) {
+      setState(() {
+        _imageUrl = uploadedUrl; // Store the uploaded image URL
+      });
+    }
   }
 
   @override
@@ -77,7 +210,7 @@ class _LockSettingState extends State<LockSetting> {
     });
   }
 
-  void _validateAndSave() {
+  Future<void> _validateAndSave() async {
     setState(() {
       // Check if name is empty and if location is selected
       _isNameValid = _nameController.text.trim().isNotEmpty;
@@ -87,15 +220,21 @@ class _LockSettingState extends State<LockSetting> {
     // Only proceed if both name and location are valid
     if (_isNameValid && _isLocationValid) {
       if (widget.option == 'request') {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => RequestAccess(),
+            builder: (context) => RequestAccess(
+              lockId: widget.lockId,
+              lockName: _nameController.text.trim(),
+              lockLocation: _selectedLocation!,
+              lockImage: _imageUrl ?? '',
+            ),
           ),
         );
       } else if (widget.isSettingFromLock) {
-        Navigator.pop(context);
+        await updateLockSetting();
       } else {
+        await postNewLock();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -118,22 +257,22 @@ class _LockSettingState extends State<LockSetting> {
           title: Label(size: 'xxl', label: widget.appBarTitle),
           actions: [
             if (widget.isSettingFromLock)
-            Padding(
-              padding: EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                onTap: () {
-                  showConfirmationModal(context,
-                      message:
-                          'Are you sure you want to delete this lock?',
-                      isCanNotUndone: true,
-                      onProceed: () {});
-                },
-                child: Icon(
-                  CupertinoIcons.trash,
-                  color: Colors.red,
+              Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () {
+                    showConfirmationModal(context,
+                        message: 'Are you sure you want to delete this lock?',
+                        isCanNotUndone: true, onProceed: () async {
+                      //TODO: add delete lock function
+                    });
+                  },
+                  child: Icon(
+                    CupertinoIcons.trash,
+                    color: Colors.red,
+                  ),
                 ),
-              ),
-            )
+              )
           ],
         ),
         child: Align(
@@ -141,21 +280,20 @@ class _LockSettingState extends State<LockSetting> {
           child: Column(
             children: [
               ListView.builder(
-                  shrinkWrap: true, // Prevents unnecessary scrolling issues
-                  itemCount: 1, // Replace with the actual number of items
+                  shrinkWrap: true,
+                  itemCount: 1,
                   itemBuilder: (context, index) {
                     return IntrinsicHeight(
                       child: Column(
                         children: [
                           LockCard(
                             isBadged: true,
-                            img: widget.img,
+                            img: _imageUrl ?? widget.img,
                             name: _nameController.text.isNotEmpty
                                 ? _nameController.text
-                                : "New Lock", // Display the name from the controller
+                                : "New Lock",
                             onTap: () {
-                              //TODO: add image picker
-                              
+                              _pickImageFromGallery();
                             },
                           ),
                           const Gap(20),
@@ -166,8 +304,7 @@ class _LockSettingState extends State<LockSetting> {
                             labelColor:
                                 _isNameValid ? Colors.white : Colors.red,
                             mode: 'maxLength',
-                            isValid:
-                                _isNameValid, // Change color based on validation
+                            isValid: _isNameValid,
                           ),
                           const Gap(20),
                           Align(
@@ -180,8 +317,7 @@ class _LockSettingState extends State<LockSetting> {
                                   label: 'Lock Location',
                                   color: _isLocationValid
                                       ? Colors.white
-                                      : Colors
-                                          .red, // Change color based on validation
+                                      : Colors.red,
                                 ),
                                 GestureDetector(
                                   onTap: () {
@@ -211,16 +347,15 @@ class _LockSettingState extends State<LockSetting> {
                           Align(
                             alignment: Alignment.topLeft,
                             child: Wrap(
-                              spacing: 8.0,
-                              runSpacing: 8.0,
-                              children: lockLocation.map((location) {
-                                return LocationCapsule(
-                                  location: location,
-                                  isSelected: _selectedLocation == location,
-                                  onTap: () => _onLocationSelected(location),
-                                );
-                              }).toList(),
-                            ),
+                                spacing: 8.0,
+                                runSpacing: 8.0,
+                                children: lockLocationList!.map((location) {
+                                  return LocationCapsule(
+                                    location: location,
+                                    isSelected: _selectedLocation == location,
+                                    onTap: () => _onLocationSelected(location),
+                                  );
+                                }).toList()),
                           ),
                         ],
                       ),
@@ -230,7 +365,7 @@ class _LockSettingState extends State<LockSetting> {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Button(
-                  onTap: _validateAndSave, // Trigger validation and navigation
+                  onTap: _validateAndSave,
                   label: 'Save Change',
                 ),
               ),

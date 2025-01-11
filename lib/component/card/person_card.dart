@@ -136,8 +136,8 @@ class Person extends StatelessWidget {
                 showConfirmationModal(context,
                     message:
                         'Do you want to remove $name from $role of $lockName lock?',
-                    onProceed: () {
-                      // Future code for removing a person
+                    onProceed: () async{
+                      //TODO: Future code for removing a person
                     });
               },
             )
@@ -151,7 +151,7 @@ class Person extends StatelessWidget {
                       'Do you want to add $name as $role of $lockName lock?',
                   description:
                       'This person will have full control of the lock.',
-                  onProceed: () {
+                  onProceed: () async {
                     sendInviteRequest(context); // Call API on Proceed
                   },
                 );
@@ -241,7 +241,7 @@ class PersonRequest extends StatelessWidget {
                 showConfirmationWithDateTimeModal(context,
                     message:
                         'Do you want to accept $name request to unlock $lockName?',
-                    onProceed: () {});
+                    onProceed: () async {});
               },
             )
           ],

@@ -13,8 +13,11 @@ Map<String, dynamic> getModeConfig(BuildContext context,
     String role = '',
     String lockName = '',
     String lockLocation = '',
-    String lockId = ''}) {
-
+    String lockId = '',
+    String notiId = '',
+    Function(String lockId)? onDeleteAllNotification,
+    Function(String lockId)? onDeclineInvitation,
+    Function(String lockId, String expireDatetime)? onAcceptAllRequest}) {
   return {
     'warning': {
       'icon': CupertinoIcons.exclamationmark_shield,
@@ -28,8 +31,8 @@ Map<String, dynamic> getModeConfig(BuildContext context,
           message:
               'Are you sure you want to ignore all these risks? It can be a serious threat to your security.',
           isCanNotUndone: true,
-          onProceed: () {
-            Navigator.of(context).pop();
+          onProceed: () async {
+            onDeleteAllNotification!(lockId);
             // Additional actions for "Proceed" go here
           },
         );
@@ -55,14 +58,30 @@ Map<String, dynamic> getModeConfig(BuildContext context,
       'labelCapsuleButton': 'Accept All',
       'onTapText': () {
         //TODO: navigate to LockRequest page
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HistoryView(
+              lockLocation: lockLocation,
+              lockName: lockName,
+              lockId: '4',
+            ),
+          ),
+        );
       },
       'onTapCapsuleButton': () {
-        showConfirmationWithDateTimeModal(context,
-            message: 'Do you want to accept all request to unlock $lockName?',
-            onProceed: () {
-          Navigator.of(context).pop();
-          // Additional actions for "Proceed" go here
-        });
+        showConfirmationWithDateTimeModal(
+          context,
+          message: 'Do you want to accept all request to unlock $lockName?',
+          onProceed: () async {
+            // Combine selected date and time here (if needed, use internal state)
+            String expireDatetime = DateTime.now().toIso8601String();
+
+            if (onAcceptAllRequest != null) {
+              await onAcceptAllRequest(lockId, expireDatetime);
+            }
+          },
+        );
       },
     },
     'connect': {
@@ -91,17 +110,20 @@ Map<String, dynamic> getModeConfig(BuildContext context,
       'LabelCapsuleButtonColor': Colors.grey[850],
       'labelText': 'Decline',
       'labelCapsuleButton': 'Accept',
-      'onTapText': () {},
+      'onTapText': () async {
+        onDeclineInvitation!(notiId);
+      },
       'onTapCapsuleButton': () {
         showConfirmationModal(
           context,
           message:
               'Do you want to accept\n$name invitation as a ${capitalizeFirstLetter(role)} of $lockName?',
-          onProceed: () {
+          onProceed: () async {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => LockSetting(
+                  lockId: lockId,
                   appBarTitle: 'Set up lock',
                 ),
               ),

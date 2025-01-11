@@ -2,27 +2,105 @@ import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/component/card/person_card.dart';
+import 'package:fido_smart_lock/helper/api.dart';
 import 'package:fido_smart_lock/pages/home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/gap.dart';
 import 'package:lottie/lottie.dart';
 
-class RequestAccess extends StatelessWidget {
-  const RequestAccess({super.key});
+class RequestAccess extends StatefulWidget {
+  const RequestAccess({
+    super.key,
+    this.lockId = '',
+    this.lockName = '',
+    this.lockLocation = '',
+    this.lockImage = '',
+  });
 
-  static final List<Map<String, String>> data = [
-    {
-      'img': 'https://i.postimg.cc/1tD3M3D2/front-Door.png',
-      'name': 'Front Door',
-      'role': 'Admin',
-    },
-    {
-      'img': 'https://i.postimg.cc/BbMswLbY/living-Room.png',
-      'name': 'Living Room',
-      'role': 'Admin'
-    },
-    // Add more data as needed
-  ];
+  final String lockId;
+  final String lockName;
+  final String lockLocation;
+  final String lockImage;
+
+  @override
+  State<RequestAccess> createState() => _RequestAccessState();
+}
+
+class _RequestAccessState extends State<RequestAccess> {
+  List<Map<String, dynamic>>? dataList = [];
+  bool isDataLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchLockAdmin();
+  }
+
+  Future<void> fetchLockAdmin() async {
+    const storage = FlutterSecureStorage();
+    String? userId = await storage.read(key: 'userId');
+
+    if (userId != null) {
+      String apiUri =
+          'https://fsl-1080584581311.us-central1.run.app/admin/lock/${widget.lockId}';
+
+      try {
+        var data = await getJsonData(apiUri: apiUri);
+        setState(() {
+          isDataLoaded = true;
+          dataList = List<Map<String, dynamic>>.from(data['dataList']);
+        });
+      } catch (e) {
+        setState(() {
+          isDataLoaded = true;
+          dataList = [];
+        });
+        debugPrint('Error: $e');
+      }
+    } else {
+      setState(() {
+        isDataLoaded = true;
+        dataList = [];
+      });
+      debugPrint('User ID not found in secure storage.');
+    }
+  }
+
+  Future<void> postNewLockRequest() async {
+    const storage = FlutterSecureStorage();
+    String? userId = await storage.read(key: 'userId');
+
+    if (userId != null) {
+      Map<String, dynamic> requestBody = {
+        "userId": userId,
+        "lockId": widget.lockId,
+        "lockName": widget.lockName,
+        "lockLocation": widget.lockLocation,
+        "lockImage": widget.lockImage,
+      };
+
+      String apiUri = 
+          'https://fsl-1080584581311.us-central1.run.app/request';
+
+      try {
+        // ignore: unused_local_variable
+        var response = await postJsonData(apiUri: apiUri, body: requestBody);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Lock detail has been updated successfully!')),
+        );
+        Navigator.pop(context); // Navigate back after success
+      } catch (e) {
+        // Handle error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update: $e')),
+        );
+      }
+    } else {
+      debugPrint('User ID not found in secure storage.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,12 +122,12 @@ class RequestAccess extends StatelessWidget {
           SizedBox(
             height: 550.0, // Set the height of the ListView
             child: ListView.separated(
-              itemCount: data.length,
+              itemCount: dataList!.length,
               separatorBuilder: (BuildContext context, int index) {
                 return SizedBox(height: 15);
               },
               itemBuilder: (BuildContext context, int index) {
-                final item = data[index];
+                final item = dataList![index];
                 return Person(
                   name: item['name']!,
                   img: item['img']!,
@@ -67,13 +145,14 @@ class RequestAccess extends StatelessWidget {
                   Label(
                     size: 's',
                     label:
-                        'You can only have an access to the lock as an ‘invited guest’ if you want to be a ‘member’ please contact the admin of the lock directly.',
+                        'You can only have an access to the lock as an \'invited guest\' if you want to be a \'member\' please contact the admin of the lock directly.',
                     color: Colors.grey,
                     isCenter: true,
                   ),
                   Gap(15),
                   Button(
-                    onTap: () {
+                    onTap: () async {
+                      await postNewLockRequest();
                       Navigator.push(
                         context,
                         MaterialPageRoute(

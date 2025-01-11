@@ -4,50 +4,59 @@ import 'dart:async';
 
 Future<Map<String, dynamic>?> startNFCReading() async {
   try {
-    // Check if NFC is available on the device
     bool isAvailable = await NfcManager.instance.isAvailable();
 
     if (!isAvailable) {
-      debugPrint('NFC not available.');
-      return null; // Return null if NFC is not available
+      debugPrint('NFC not available on this device.');
+      return Future.error('NFC not available on this device.');
     }
 
-    // Completer to capture the NFC tag data asynchronously
     final Completer<Map<String, dynamic>?> completer = Completer();
 
-    // Start NFC session and listen for discovered tags
     NfcManager.instance.startSession(
       onDiscovered: (NfcTag tag) async {
-        debugPrint('NFC Tag Detected: ${tag.data}');
-
-        // Complete the future with the tag data
-        completer.complete(tag.data);
-
-        // Stop the session after receiving the tag
-        await NfcManager.instance.stopSession();
+        try {
+          debugPrint('NFC Tag Detected: ${tag.data}');
+          completer.complete(tag.data); // Complete with tag data
+        } catch (e) {
+          debugPrint('Error processing NFC tag: $e');
+          completer.completeError('Failed to process NFC tag.');
+        } finally {
+          await NfcManager.instance.stopSession();
+        }
       },
     );
 
-    // Return the result once the tag is discovered
+    // Add a timeout to stop the session after 10 seconds
+    Future.delayed(Duration(seconds: 60), () {
+      if (!completer.isCompleted) {
+        completer.completeError('NFC session timed out.');
+        NfcManager.instance.stopSession();
+      }
+    });
+
     return completer.future;
   } catch (e) {
     debugPrint('Error reading NFC: $e');
-    return null; // Return null in case of an error
+    NfcManager.instance.stopSession();
+    return Future.error('Error reading NFC: $e');
   }
 }
 
-String? extractNfcUid(Map<String, dynamic> tagData) {
+Future<String> extractNfcUid(Map<String, dynamic> tagData) async {
   try {
-    // Check for 'nfca' key, which commonly contains the identifier
+    // Prioritize checking for 'nfca', but check other keys if necessary
     if (tagData.containsKey('nfca')) {
       List<int> identifier = tagData['nfca']['identifier'];
-
-      // Convert the identifier list to a hex string UID
       String uid = identifier.map((e) => e.toRadixString(16).padLeft(2, '0')).join(':');
-      return uid; // Return UID as a string
+      return uid;
+    } else if (tagData.containsKey('ndef')) {
+      // Example handling for NDEF tags (adjust based on actual tag structure)
+      debugPrint('NDEF tag detected: ${tagData['ndef']}');
+      return Future.error('NDEF tags not supported for UID extraction.');
     }
   } catch (e) {
     debugPrint('Error extracting NFC UID: $e');
   }
-  return null; // Return null if UID is not found
+  return Future.error('Failed to extract NFC UID');
 }

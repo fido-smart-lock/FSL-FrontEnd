@@ -9,8 +9,11 @@ import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 void showConfirmationWithDateTimeModal(
   BuildContext context, {
   required String message,
-  required VoidCallback onProceed,
+  required Future<void> Function() onProceed,
 }) {
+  DateTime selectedDate = DateTime.now();
+  TimeOfDay selectedTime = TimeOfDay.now();
+
   WoltModalSheet.show(
     context: context,
     pageListBuilder: (context) {
@@ -43,7 +46,11 @@ void showConfirmationWithDateTimeModal(
                             color: Colors.white.withOpacity(0.75),
                           ),
                           Gap(3),
-                          DatePickerWidget(),
+                          DatePickerWidget(
+                            onDateSelected: (date) {
+                              selectedDate = date;
+                            },
+                          ),
                         ],
                       ),
                       Column(
@@ -55,7 +62,11 @@ void showConfirmationWithDateTimeModal(
                               label: 'Time',
                               color: Colors.white.withOpacity(0.75)),
                           Gap(3),
-                          TimePickerWidget(),
+                          TimePickerWidget(
+                            onTimeSelected: (time) {
+                              selectedTime = time;
+                            },
+                          ),
                         ],
                       )
                     ],
@@ -74,10 +85,27 @@ void showConfirmationWithDateTimeModal(
                     child: Label(size: 'xs', label: 'Cancel')),
                 Gap(20),
                 CapsuleButton(
-                  label: 'Proceed',
-                  buttonColor: Colors.green,
-                  labelColor: Colors.white,
-                )
+                    label: 'Proceed',
+                    buttonColor: Colors.green,
+                    labelColor: Colors.white,
+                    onTap: () async {
+                      Navigator.of(context).pop(); // Close the modal
+
+                      // Combine the selected date and time into a DateTime object
+                      DateTime combinedDateTime = DateTime(
+                        selectedDate.year,
+                        selectedDate.month,
+                        selectedDate.day,
+                        selectedTime.hour,
+                        selectedTime.minute,
+                      );
+
+                      // Perform the API call or any other logic here
+                      debugPrint(
+                          'Selected DateTime: ${combinedDateTime.toIso8601String()}');
+                      await onProceed();
+                    }
+                    )
               ],
             ),
           ),

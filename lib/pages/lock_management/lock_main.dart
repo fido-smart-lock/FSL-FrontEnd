@@ -3,8 +3,8 @@ import 'package:fido_smart_lock/component/dropdown/dropdown_capsule.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/component/card/lock_card.dart';
 import 'package:fido_smart_lock/helper/api.dart';
-import 'package:fido_smart_lock/pages/lock_management/create_new_lock/lock_create.dart';
 import 'package:fido_smart_lock/pages/lock_management/lock_detail/lock_detail.dart';
+import 'package:fido_smart_lock/pages/lock_management/lock_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/gap.dart';
@@ -167,7 +167,7 @@ class _LockMainState extends State<LockMain> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const LockCreate(),
+                      builder: (context) => const LockScan(),
                     ),
                   );
                 })

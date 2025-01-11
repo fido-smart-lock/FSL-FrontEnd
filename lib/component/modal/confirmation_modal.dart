@@ -5,13 +5,11 @@ import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/label.dart';
 
-void showConfirmationModal(
-  BuildContext context, {
-  required String message,
-  required VoidCallback onProceed,
-  String description = '',
-  bool isCanNotUndone = false
-}) {
+void showConfirmationModal(BuildContext context,
+    {required String message,
+    required Future<void> Function() onProceed,
+    String description = '',
+    bool isCanNotUndone = false}) {
   WoltModalSheet.show(
     context: context,
     pageListBuilder: (context) {
@@ -28,13 +26,13 @@ void showConfirmationModal(
                   isBold: true,
                   isCenter: true,
                 ),
-                if (description.isNotEmpty) 
-                Label(
-                  size: 's',
-                  label: description,
-                  isCenter: true,
-                ),
-                if(isCanNotUndone)
+                if (description.isNotEmpty)
+                  Label(
+                    size: 's',
+                    label: description,
+                    isCenter: true,
+                  ),
+                if (isCanNotUndone)
                   Label(
                     size: 'xs',
                     label: 'This action cannot be undone',
@@ -58,7 +56,10 @@ void showConfirmationModal(
                   label: 'Proceed',
                   buttonColor: Colors.green,
                   labelColor: Colors.white,
-                  onTap: onProceed,
+                  onTap: () async {
+                    Navigator.of(context).pop(); // Close the modal first (optional)
+                    await onProceed(); // Execute the async function
+                  },
                 ),
               ],
             ),

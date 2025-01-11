@@ -65,6 +65,19 @@ class _WarningViewState extends State<WarningView> {
     }
   }
 
+  Future<void> deleteNotificationWarning(String notiId) async {
+    final apiUri =
+        'https://fsl-1080584581311.us-central1.run.app/delete/notification/warning/${widget.lockId}/$notiId';
+
+    try {
+      final response = await deleteJsonData(apiUri: apiUri);
+      debugPrint('Delete successful: $response');
+      await fetchUserNotification();
+    } catch (e) {
+      debugPrint('Error deleting notification warning: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final responsive = Responsive(context);
@@ -134,12 +147,14 @@ class _WarningViewState extends State<WarningView> {
                   return Column(
                     children: [
                       NotiCard(
-                        notiId: item['notiId'] ?? '',
-                        dateTime: item['dateTime'] ?? '',
-                        mode: WarningView.mode,
-                        subMode: WarningView.subMode,
-                        error: item['error'] ?? '',
-                      ),
+                          notiId: item['notiId'] ?? '',
+                          dateTime: item['dateTime'] ?? '',
+                          mode: WarningView.mode,
+                          subMode: WarningView.subMode,
+                          error: item['error'] ?? '',
+                          lockId: item['lockId'] ?? '',
+                          onDeleteNotification: (notiId) =>
+                              deleteNotificationWarning(notiId)),
                       SizedBox(
                         height: responsive.heightScale(10),
                       ),

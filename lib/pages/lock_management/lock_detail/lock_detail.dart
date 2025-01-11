@@ -49,6 +49,7 @@ class _LockDetailState extends State<LockDetail> {
 
       try {
         var data = await getJsonData(apiUri: apiUri);
+        debugPrint('Data: $data');
         setState(() {
           lockLocation = data['lockLocation'];
           lockName = data['lockName'];
@@ -68,16 +69,16 @@ class _LockDetailState extends State<LockDetail> {
   @override
   Widget build(BuildContext context) {
     List<String> adminImages = dataList
-            ?.where((user) => user['role'] == 'admin')
-            .map<String>((user) => user['userImage'] as String)
-            .toList() ??
-        [];
+        ?.where((user) => user['role'] == 'admin')
+        .map<String>((user) => user['userImage'] as String? ?? '')
+        .toList() ??
+    [];
 
     int adminCount = adminImages.length;
 
     List<String> memberImages = dataList
             ?.where((user) => user['role'] == 'member')
-            .map<String>((user) => user['userImage'] as String)
+            .map<String>((user) => user['userImage'] as String? ?? '')
             .toList() ??
         [];
 
@@ -85,7 +86,7 @@ class _LockDetailState extends State<LockDetail> {
 
     List<String> guestImages = dataList
             ?.where((user) => user['role'] == 'guest')
-            .map<String>((user) => user['userImage'] as String)
+            .map<String>((user) => user['userImage'] as String? ?? '')
             .toList() ??
         [];
 
@@ -93,7 +94,7 @@ class _LockDetailState extends State<LockDetail> {
 
     List<String> reqImages = dataList
             ?.where((user) => user['role'] == 'req')
-            .map<String>((user) => user['userImage'] as String)
+            .map<String>((user) => user['userImage'] as String? ?? '')
             .toList() ??
         [];
 
@@ -128,6 +129,7 @@ class _LockDetailState extends State<LockDetail> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => LockSetting(
+                      lockId: widget.lockId,
                       appBarTitle: 'Lock Setting',
                       img: lockImage,
                       name: lockName,
@@ -161,8 +163,9 @@ class _LockDetailState extends State<LockDetail> {
               children: [
                 SecurityStatus(status: securityStatus!),
                 ScanButton(
+                  lockId: widget.lockId,
                   lockName: lockName!,
-                  lockLocation: lockImage!,
+                  lockLocation: lockLocation!,
                 )
               ],
             ),

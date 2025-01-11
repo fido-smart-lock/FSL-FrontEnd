@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:fido_smart_lock/component/background/background.dart';
-import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/label.dart';
+import 'package:fido_smart_lock/helper/api.dart';
 import 'package:fido_smart_lock/helper/nfc.dart';
 import 'package:fido_smart_lock/helper/size.dart';
 import 'package:fido_smart_lock/pages/lock_management/lock_scan_pass.dart';
@@ -10,13 +10,96 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-class LockScan extends StatelessWidget {
+class LockScan extends StatefulWidget {
   final String? option;
+  final String? lockId;
   final String lockName;
   final String lockLocation;
 
   const LockScan(
-      {super.key, this.option, this.lockName = '', this.lockLocation = ''});
+      {super.key,
+      this.option,
+      this.lockName = '',
+      this.lockLocation = '',
+      this.lockId});
+
+  @override
+  State<LockScan> createState() => _LockScanState();
+}
+
+class _LockScanState extends State<LockScan> {
+  bool? isInDatabase;
+
+  Future<void> checkExistingLock(String lockId) async {
+    String apiUri =
+        'https://fsl-1080584581311.us-central1.run.app/admin/lock/$lockId';
+
+    try {
+      var data = await getJsonData(apiUri: apiUri);
+      setState(() {
+        isInDatabase = data['isInDatabase'];
+      });
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    startNfcScan(); // Start scanning as soon as the page is built
+  }
+
+  Future<void> startNfcScan() async {
+    try {
+      final tagData = await startNFCReading();
+      final uid = await extractNfcUid(tagData!);
+
+      if (widget.lockId == uid) {
+        if (widget.option == 'inLock') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LockScanPass(
+                lockName: widget.lockName,
+                lockLocation: widget.lockLocation,
+              ),
+            ),
+          );
+        } else if (widget.option == 'inLockFinal') {
+          Navigator.popUntil(context, ModalRoute.withName('/'));
+        }
+      } else if (widget.lockId != uid) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Lock ID does not match, please try again'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      } else {
+        await checkExistingLock(uid);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LockSetting(
+              lockId: uid,
+              appBarTitle:
+                  isInDatabase == false ? 'Create New Lock' : 'Set up lock',
+              option: isInDatabase == true ? 'request' : 'register',
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error scanning NFC tag. Please try again.'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,19 +111,19 @@ class LockScan extends StatelessWidget {
     return Background(
       appBar: AppBar(
         centerTitle: true,
-        title: option == 'inLock'
+        title: widget.option == 'inLock'
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Label(
                     size: 'xxl',
-                    label: lockName,
+                    label: widget.lockName,
                     isShadow: true,
                   ),
                   Label(
                     size: 'l',
-                    label: lockLocation,
+                    label: widget.lockLocation,
                     color: Colors.grey.shade300,
                     isShadow: true,
                   ),
@@ -49,7 +132,10 @@ class LockScan extends StatelessWidget {
             : Label(size: 'xxl', label: 'Scan Your Lock'),
       ),
       child: Center(
-        child: Column(children: [
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
           Stack(
             alignment: Alignment.center,
             clipBehavior: Clip.none,
@@ -101,44 +187,54 @@ class LockScan extends StatelessWidget {
               )
             ],
           ),
-          Spacer(),
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: Button(
-                  onTap: () async {
-                    final tagData = await startNFCReading();
-                    final uid = extractNfcUid(tagData!);
-                    debugPrint('UID: $uid');
-                    if(uid != null) {
-                      if (option == 'inLock') {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => LockScanPass(
-                            lockName: lockName,
-                            lockLocation: lockLocation,
-                          ),
-                        ),
-                      );
-                    } else if (option == 'inLockFinal') {
-                      Navigator.popUntil(context, ModalRoute.withName('/'));
-                    } else {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => LockSetting(
-                            appBarTitle: option == 'register'
-                                ? 'Create New Lock'
-                                : 'Set Up Lock',
-                            option: option,
-                          ),
-                        ),
-                      );
-                    }
-                    }
-                    
-                  },
-                  label: 'Scan')),
+          // Spacer(),
+          // Align(
+          //     alignment: Alignment.bottomCenter,
+          //     child: Button(
+          //         onTap: () async {
+          //           final tagData = await startNFCReading();
+          //           final uid = await extractNfcUid(tagData!);
+
+          //           if (widget.lockId == uid) {
+          //             if (widget.option == 'inLock') {
+          //               Navigator.push(
+          //                 context,
+          //                 MaterialPageRoute(
+          //                   builder: (context) => LockScanPass(
+          //                     lockName: widget.lockName,
+          //                     lockLocation: widget.lockLocation,
+          //                   ),
+          //                 ),
+          //               );
+          //             } else if (widget.option == 'inLockFinal') {
+          //               Navigator.popUntil(context, ModalRoute.withName('/'));
+          //             }
+          //           } else if (widget.lockId != uid) {
+          //             ScaffoldMessenger.of(context).showSnackBar(
+          //               SnackBar(
+          //                 content:
+          //                     Text('Lock ID does not match, please try again'),
+          //                 duration: const Duration(seconds: 2),
+          //               ),
+          //             );
+          //           } else {
+          //             await checkExistingLock(uid);
+          //             Navigator.push(
+          //               context,
+          //               MaterialPageRoute(
+          //                 builder: (context) => LockSetting(
+          //                   lockId: uid,
+          //                   appBarTitle: isInDatabase == false
+          //                       ? 'Create New Lock'
+          //                       : 'Set up lock',
+          //                   option:
+          //                       isInDatabase == true ? 'request' : 'register',
+          //                 ),
+          //               ),
+          //             );
+          //           }
+          //         },
+          //         label: 'Scan')),
         ]),
       ),
     );

@@ -58,8 +58,8 @@ class Button extends StatelessWidget {
           ),
         ),
         SizedBox(
-            height: 30,
-          ),
+          height: 30,
+        ),
       ],
     );
   }
@@ -112,8 +112,12 @@ class CapsuleButton extends StatelessWidget {
 
 class ScanButton extends StatelessWidget {
   const ScanButton(
-      {super.key, required this.lockName, required this.lockLocation});
+      {super.key,
+      required this.lockName,
+      required this.lockLocation,
+      required this.lockId});
 
+  final String lockId;
   final String lockName;
   final String lockLocation;
 
@@ -126,6 +130,7 @@ class ScanButton extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => LockScan(
               option: 'inLock',
+              lockId: lockId,
               lockName: lockName,
               lockLocation: lockLocation,
             ),

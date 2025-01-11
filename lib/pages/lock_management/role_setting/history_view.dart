@@ -70,13 +70,36 @@ class _HistoryViewState extends State<HistoryView> {
     final responsive = Responsive(context);
 
     if (dataList == null) {
-      return const Center(
+      return Background(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Label(
+                size: 'xxl',
+                label: widget.lockName,
+                isShadow: true,
+              ),
+              Label(
+                size: 'l',
+                label: widget.lockLocation,
+                color: Colors.grey.shade300,
+                isShadow: true,
+              ),
+            ],
+          ),
+        ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 10),
-            Label(size: 'm', label: 'Fetching history... Please wait.')
+            Label(
+              size: 'xl',
+              label: 'History',
+              isBold: true,
+            ),
+            Expanded(child: Center(child: CircularProgressIndicator())),
           ],
         ),
       );
@@ -192,21 +215,27 @@ class _HistoryViewState extends State<HistoryView> {
             isBold: true,
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: dataList!.length,
-              itemBuilder: (context, index) {
-                DateTime date = DateTime.parse(dataList![index]['dateTime']);
-                String title = _isToday(date)
-                    ? 'Today'
-                    : _isYesterday(date)
-                        ? 'Yesterday'
-                        : 'Earlier';
-                return _buildHistorySection(
-                  title: title,
-                  indices: [index],
-                  responsive: responsive,
-                );
-              },
+            child: ListView(
+              children: [
+                if (todayIndices.isNotEmpty)
+                  _buildHistorySection(
+                    title: 'Today',
+                    indices: todayIndices,
+                    responsive: responsive,
+                  ),
+                if (yesterdayIndices.isNotEmpty)
+                  _buildHistorySection(
+                    title: 'Yesterday',
+                    indices: yesterdayIndices,
+                    responsive: responsive,
+                  ),
+                if (earlierIndices.isNotEmpty)
+                  _buildHistorySection(
+                    title: 'Earlier',
+                    indices: earlierIndices,
+                    responsive: responsive,
+                  ),
+              ],
             ),
           ),
         ],
@@ -230,8 +259,7 @@ class _HistoryViewState extends State<HistoryView> {
         ...indices.map((index) => Padding(
               padding: EdgeInsets.symmetric(vertical: 2.5),
               child: PersonHistoryCard(
-                img: dataList![index]['userImage'] ??
-                    'https://via.placeholder.com/150',
+                img: dataList![index]['userImage'] ?? '',
                 name: dataList![index]['userName'] ?? 'Unknown',
                 status: dataList![index]['status'] ?? 'Unknown',
                 dateTime: dataList![index]['dateTime'],
