@@ -1,3 +1,5 @@
+// ignore_for_file: await_only_futures
+
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/component/modal/confirmation_modal.dart';
@@ -7,7 +9,6 @@ import 'package:fido_smart_lock/helper/word.dart';
 import 'package:fido_smart_lock/pages/notification/tabbar_contents/tabbar_mode_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 class NotiCard extends StatelessWidget {
   const NotiCard(
       {super.key,
@@ -25,7 +26,9 @@ class NotiCard extends StatelessWidget {
       this.onDeleteNotification,
       this.onDeleteAllNotification,
       this.onDeclineInvitation,
-      this.onAcceptAllRequest});
+      this.onAcceptAllRequest,
+      this.onDeclineRemoval,
+      this.onAcceptRemoval});
 
   final String notiId;
   final String mode;
@@ -40,8 +43,11 @@ class NotiCard extends StatelessWidget {
   final String lockId;
   final Future<void> Function(String notiId)? onDeleteNotification;
   final Future<void> Function(String lockId)? onDeleteAllNotification;
-  final Future<void> Function(String lockId, String expireDatetime)? onAcceptAllRequest;
+  final Future<void> Function(String lockId, String expireDatetime)?
+      onAcceptAllRequest;
   final Future<void> Function(String notiId)? onDeclineInvitation;
+  final Future<void> Function(String lockId)? onDeclineRemoval;
+  final Future<void> Function(String lockId)? onAcceptRemoval;
 
   String _getMainTextLabel() {
     if (mode == 'warning') {
@@ -60,7 +66,10 @@ class NotiCard extends StatelessWidget {
         return '${addLabelPossessive(lockName)} request is $subMode!';
       } else if (subMode == 'invite') {
         return '$lockName $role invitation';
-      } 
+      } else if (subMode == 'removal') {
+        //TODO: check the real status name
+        return 'Your admin access to the lock is pending removal';
+      }
     }
     return '';
   }
@@ -98,7 +107,6 @@ class NotiCard extends StatelessWidget {
     final labelCapsuleButtonColor =
         config['LabelCapsuleButtonColor'] as Color? ?? Colors.white;
     const subColor = Colors.grey;
-
 
     return Container(
       padding: EdgeInsets.fromLTRB(15, 15, 20, 20),
@@ -144,7 +152,7 @@ class NotiCard extends StatelessWidget {
                         label: 'location $lockLocation: $lockName',
                         color: subColor,
                       ),
-                    if ((mode == 'req') || (mode == 'connect'))
+                    if ((mode == 'connect'))
                       Label(
                         size: 'xs',
                         label: 'by $name',
@@ -166,6 +174,12 @@ class NotiCard extends StatelessWidget {
                       Label(
                         size: 'xs',
                         label: 'invited by $name',
+                        color: subColor,
+                      ),
+                    if ((mode == 'other') && (subMode == 'removal'))
+                      Label(
+                        size: 'xs',
+                        label: 'Approve or decline this action',
                         color: subColor,
                       ),
                     if ((mode == 'warning') && (subMode == 'view'))
@@ -194,6 +208,34 @@ class NotiCard extends StatelessWidget {
                   buttonColor: color,
                   onTapText: onTapText,
                   onTapCapsuleButton: onTapCapsuleButton,
+                ),
+              ],
+            ),
+          if (((mode == 'other') && (subMode == 'removal')))
+            Column(
+              children: [
+                SizedBox(
+                  height: responsive.heightScale(10),
+                ),
+                DoubleButton(
+                  labelText: 'Decline',
+                  labelCapsuleButton: 'Approve',
+                  labelCapsuleButtonColor: Colors.grey.shade900,
+                  buttonColor: Colors.lightBlueAccent,
+                  onTapText: () async {
+                    await onDeclineRemoval!(lockId);
+                  },
+                  onTapCapsuleButton: () {
+                    showConfirmationModal(
+                      context,
+                      message:
+                          'Approving will remove your admin access to $lockName. You won\'t be able to manage this smart lock after this action',
+                      isCanNotUndone: true,
+                      onProceed: () async {
+                        await onAcceptRemoval!(lockId);
+                      },
+                    );
+                  },
                 ),
               ],
             ),

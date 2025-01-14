@@ -28,6 +28,12 @@ class _SettingsMainState extends State<SettingsMain> {
     fetchUserProfile();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    fetchUserProfile();
+  }
+
   Future<void> fetchUserProfile() async {
     const storage = FlutterSecureStorage();
     String? userId = await storage.read(key: 'userId');

@@ -83,6 +83,7 @@ class _TabBarContentsState extends State<TabBarContents> {
         setState(() {
           isDataLoaded = true;
           dataList = List<Map<String, dynamic>>.from(data['dataList']);
+          debugPrint('DataList: $dataList');
         });
       } catch (e) {
         setState(() {
@@ -144,6 +145,42 @@ class _TabBarContentsState extends State<TabBarContents> {
       await fetchUserNotification();
     } catch (e) {
       debugPrint('Error accepting all request: $e');
+    }
+  }
+
+  Future<void> acceptRemoval(String lockId) async {
+    const storage = FlutterSecureStorage();
+    String? userId = await storage.read(key: 'userId');
+
+    if (userId != null) {
+      String apiUri =
+          'https://fsl-1080584581311.us-central1.run.app/acceptRemoval/$userId/$lockId';
+      try {
+        // ignore: unused_local_variable
+        var response = await putJsonDataWithoutBody(apiUri: apiUri);
+        debugPrint('accept removal: $response');
+        await fetchUserNotification();
+      } catch (e) {
+        debugPrint('Error while decline: $e');
+      }
+    } else {
+      debugPrint('User ID not found in secure storage.');
+    }
+  }
+
+  Future<void> declineRemoval(String lockId) async {
+    const storage = FlutterSecureStorage();
+    String? userId = await storage.read(key: 'userId');
+
+    final apiUri =
+        'https://fsl-1080584581311.us-central1.run.app//declineRemoval/$userId/$lockId';
+
+    try {
+      final response = await deleteJsonData(apiUri: apiUri);
+      debugPrint('decline successful: $response');
+      await fetchUserNotification();
+    } catch (e) {
+      debugPrint('Error deleting notification warning: $e');
     }
   }
 
@@ -210,6 +247,8 @@ class _TabBarContentsState extends State<TabBarContents> {
                 onDeclineInvitation: (notiId) => declineInvitation(notiId),
                 onAcceptAllRequest: (lockId, expireDatetime) =>
                     acceptAllRequest(lockId, expireDatetime),
+                onDeclineRemoval: (lockId) => declineRemoval(lockId),
+                onAcceptRemoval: (lockId) => acceptRemoval(lockId),
               ),
               SizedBox(
                 height: responsive.heightScale(10),

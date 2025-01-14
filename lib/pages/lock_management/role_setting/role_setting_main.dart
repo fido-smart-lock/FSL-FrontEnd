@@ -44,10 +44,29 @@ class _AdminAndMemberSettingMainState extends State<AdminAndMemberSettingMain> {
       var data = await getJsonData(apiUri: apiUri);
       setState(() {
         dataList = List<Map<String, dynamic>>.from(data['dataList']);
-        debugPrint('DataList: $dataList');
       });
     } catch (e) {
       debugPrint('Error: $e');
+    }
+  }
+
+  Future<void> deleteUserFromLock(String userId, String lockId) async {
+
+    final apiUri =
+        'https://fsl-1080584581311.us-central1.run.app/deleteUserFromLock';
+
+    Map<String, dynamic> requestBody = {
+      "userId": userId,
+      "lockId": lockId,
+    };
+
+    try {
+      final response = await deleteJsonDataWithRequestBody(
+          apiUri: apiUri, body: requestBody);
+      debugPrint('Delete successful: $response');
+      await fetchUserLockRole();
+    } catch (e) {
+      debugPrint('Error deleting user from lock: $e');
     }
   }
 
@@ -121,12 +140,17 @@ class _AdminAndMemberSettingMainState extends State<AdminAndMemberSettingMain> {
                 return Padding(
                   padding: EdgeInsets.symmetric(vertical: 5),
                   child: Person(
+                    isAdmin: widget.isAdmin,
                     img: user['userImage'], // Pass user image
                     name: concatenateNameAndSurname(user['userName'],
                         user['userSurname']), // Concatenate name
                     role: user['role'], // Pass role
                     button: 'remove',
                     lockName: widget.lockName,
+                    lockId: widget.lockId,
+                    userId: user['userId'],
+                    isWaitingForApproval: user['isWaitingForApproval'],
+                    onRemovePeople: (userId, lockId) => deleteUserFromLock(userId, lockId),
                   ),
                 );
               },
@@ -174,10 +198,29 @@ class _GuestSettingMainState extends State<GuestSettingMain> {
       var data = await getJsonData(apiUri: apiUri);
       setState(() {
         dataList = List<Map<String, dynamic>>.from(data['dataList']);
-        debugPrint('DataList: $dataList');
       });
     } catch (e) {
       debugPrint('Error: $e');
+    }
+  }
+
+  Future<void> deleteUserFromLock(String userId,String lockId) async {
+
+    final apiUri =
+        'https://fsl-1080584581311.us-central1.run.app/deleteUserFromLock';
+
+    Map<String, dynamic> requestBody = {
+      "userId": userId,
+      "lockId": lockId,
+    };
+    debugPrint('Request Body: $requestBody');
+    try {
+      final response = await deleteJsonDataWithRequestBody(
+          apiUri: apiUri, body: requestBody);
+      debugPrint('Delete successful: $response');
+      await fetchUserLockRole();
+    } catch (e) {
+      debugPrint('Error deleting user from lock: $e');
     }
   }
 
@@ -248,17 +291,21 @@ class _GuestSettingMainState extends State<GuestSettingMain> {
               itemCount: dataList?.length ?? 0, // Handle null safely
               itemBuilder: (context, index) {
                 final user = dataList![index];
-                debugPrint('user: $user'); // Get each user from dataList
                 return Padding(
                   padding: EdgeInsets.symmetric(vertical: 5),
                   child: Person(
+                    isAdmin: widget.isAdmin,
                     img: user['userImage'], // Pass user image
                     name: concatenateNameAndSurname(user['userName'] ?? '',
                         user['userSurname'] ?? ''), // Concatenate name
                     role: user['role'], // Pass role
                     button: 'remove',
                     lockName: widget.lockName,
+                    lockId: widget.lockId,
                     dateTime: user['dateTime'],
+                    userId: user['userId'],
+                    isWaitingForApproval: user['isWaitingForApproval'],
+                    onRemovePeople: (userId, lockId) => deleteUserFromLock(userId ,lockId),
                   ),
                 );
               },
@@ -294,10 +341,10 @@ class _RequestSettingMainState extends State<RequestSettingMain> {
   @override
   void initState() {
     super.initState();
-    fetchUserLockRole();
+    fetchUserLockRequest();
   }
 
-  Future<void> fetchUserLockRole() async {
+  Future<void> fetchUserLockRequest() async {
     String apiUri =
         'https://fsl-1080584581311.us-central1.run.app/request/${widget.lockId}';
 
@@ -308,6 +355,39 @@ class _RequestSettingMainState extends State<RequestSettingMain> {
       });
     } catch (e) {
       debugPrint('Error: $e');
+    }
+  }
+
+  Future<void> acceptRequest(String notiId, [String? expireDatetime]) async {
+    Map<String, dynamic> requestBody = {
+      'reqId': notiId,
+      'expireDatetime': expireDatetime ?? ''
+    };
+
+    debugPrint('accept all request body: $requestBody');
+
+    String apiUri =
+        'https://fsl-1080584581311.us-central1.run.app/acceptRequest';
+
+    try {
+      var response = await putJsonData(apiUri: apiUri, body: requestBody);
+      debugPrint('accept request: $response');
+      await fetchUserLockRequest();
+    } catch (e) {
+      debugPrint('Error accepting request: $e');
+    }
+  }
+
+  Future<void> declineRequest(String notiId) async {
+    final apiUri =
+        'https://fsl-1080584581311.us-central1.run.app/delete/notification/warning/$notiId';
+
+    try {
+      final response = await deleteJsonData(apiUri: apiUri);
+      debugPrint('Delete successful: $response');
+      await fetchUserLockRequest();
+    } catch (e) {
+      debugPrint('Error deleting notification warning: $e');
     }
   }
 
@@ -347,17 +427,20 @@ class _RequestSettingMainState extends State<RequestSettingMain> {
             child: ListView.builder(
               itemCount: dataList?.length ?? 0, // Handle null safely
               itemBuilder: (context, index) {
-                final user = dataList![index]; // Get each user from dataList
+                final user = dataList![index];
                 return Padding(
                   padding: EdgeInsets.symmetric(vertical: 5),
-                  child: Person(
-                    img: user['userImage'], // Pass user image
-                    name: concatenateNameAndSurname(user['userName'],
-                        user['userSurname']), // Concatenate name
-                    role: user['role'], // Pass role
-                    button: 'remove',
-                    lockName: widget.lockName,
-                  ),
+                  child: PersonRequest(
+                      notiId: user['notiId'] ?? '',
+                      lockId: widget.lockId,
+                      img: user['userImage'], // Pass user image
+                      name: concatenateNameAndSurname(user['userName'],
+                          user['userSurname']), // Concatenate name
+                      role: user['role'], // Pass role
+                      lockName: widget.lockName,
+                      dateTime: user['dateTime'],
+                      onAcceptRequest: (notiId, expireDatetime) =>
+                          acceptRequest(notiId, expireDatetime)),
                 );
               },
             ),

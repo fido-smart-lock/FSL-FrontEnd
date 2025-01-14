@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:io';
-
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/input/capsule.dart';
@@ -21,16 +21,16 @@ import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 
 class LockSetting extends StatefulWidget {
-  const LockSetting({
-    super.key,
-    required this.appBarTitle,
-    this.option,
-    this.img,
-    this.name,
-    this.location,
-    this.isSettingFromLock = false,
-    required this.lockId,
-  });
+  const LockSetting(
+      {super.key,
+      required this.appBarTitle,
+      this.option,
+      this.img,
+      this.name,
+      this.location,
+      this.isSettingFromLock = false,
+      required this.lockId,
+      this.userRole = ''});
 
   final String appBarTitle;
   final String? option;
@@ -39,6 +39,7 @@ class LockSetting extends StatefulWidget {
   final String? location;
   final bool isSettingFromLock;
   final String lockId;
+  final String userRole;
 
   @override
   _LockSettingState createState() => _LockSettingState();
@@ -112,7 +113,6 @@ class _LockSettingState extends State<LockSetting> {
         'newLockLocation': _selectedLocation,
         'newLockImage': _imageUrl,
       };
-      debugPrint('Request Body: $requestBody');
 
       String apiUri =
           'https://fsl-1080584581311.us-central1.run.app/editLockDetail';
@@ -122,16 +122,40 @@ class _LockSettingState extends State<LockSetting> {
         var response = await putJsonData(apiUri: apiUri, body: requestBody);
 
         // Check response and handle success
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Lock detail has been updated successfully!')),
+        final snackBar = SnackBar(
+          elevation: 0,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          content: AwesomeSnackbarContent(
+            title: 'Great!',
+            message: 'Lock detail has been update successfully!',
+            contentType: ContentType.success,
+          ),
         );
+
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(snackBar);
         Navigator.pop(context);
       } catch (e) {
-        // Handle error
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update: $e')),
+        RegExp regExp = RegExp(r'(\d{3})'); // Matches three digits (e.g., 409)
+        String? statusCode = regExp.stringMatch(e.toString());
+
+        final snackBar = SnackBar(
+          elevation: 0,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          content: AwesomeSnackbarContent(
+            title: 'Oh no!',
+            message:
+                'Something went wrong, please try again. status code $statusCode',
+            contentType: ContentType.failure,
+          ),
         );
+
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(snackBar);
       }
     } else {
       debugPrint('User ID not found in secure storage.');
@@ -151,27 +175,96 @@ class _LockSettingState extends State<LockSetting> {
         "lockImage": _imageUrl
       };
 
-      String apiUri = 
-          'https://fsl-1080584581311.us-central1.run.app/newLock';
+      String apiUri = 'https://fsl-1080584581311.us-central1.run.app/newLock';
 
       try {
         // ignore: unused_local_variable
         var response = await postJsonData(apiUri: apiUri, body: requestBody);
 
-        // Check response and handle success
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Lock has been create successfully!')),
+        final snackBar = SnackBar(
+          elevation: 0,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          content: AwesomeSnackbarContent(
+            title: 'Great!',
+            message: 'Lock has been create successfully.',
+            contentType: ContentType.success,
+          ),
         );
+
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(snackBar);
         Navigator.pop(context); // Navigate back after success
       } catch (e) {
-        // Handle error
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update: $e')),
+        RegExp regExp = RegExp(r'(\d{3})'); // Matches three digits (e.g., 409)
+        String? statusCode = regExp.stringMatch(e.toString());
+
+        final snackBar = SnackBar(
+          elevation: 0,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          content: AwesomeSnackbarContent(
+            title: 'Oh no!',
+            message:
+                'Something went wrong, please try again. status code $statusCode',
+            contentType: ContentType.failure,
+          ),
         );
+
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(snackBar);
       }
     } else {
       debugPrint('User ID not found in secure storage.');
+    }
+  }
+
+  Future<void> acceptInvitation() async {
+    const storage = FlutterSecureStorage();
+    String? userId = await storage.read(key: 'userId');
+
+    Map<String, dynamic> requestBody = {
+      "userId": userId,
+      "lockId": widget.lockId,
+      "userRole": widget.userRole,
+      "lockName": _nameController.text.trim(),
+      "lockLocation": _selectedLocation,
+      "lockImage": _imageUrl
+    };
+
+    debugPrint('accept invitation request body: $requestBody');
+
+    String apiUri =
+        'https://fsl-1080584581311.us-central1.run.app/acceptInvitation';
+
+    try {
+      var response = await putJsonData(apiUri: apiUri, body: requestBody);
+      debugPrint('accept invitation: $response');
+    } catch (e) {
+      debugPrint('Error accepting invitation: $e');
+    }
+  }
+
+  Future<void> deleteLock() async {
+    const storage = FlutterSecureStorage();
+    String? userId = await storage.read(key: 'userId');
+
+    final apiUri =
+        'https://fsl-1080584581311.us-central1.run.app/deleteLockFromUser';
+
+    Map<String, dynamic> requestBody = {
+      "userId": userId,
+      "lockId": widget.lockId,
+    };
+
+    try {
+      final response = await deleteJsonDataWithRequestBody(
+          apiUri: apiUri, body: requestBody);
+      debugPrint('Delete successful: $response');
+    } catch (e) {
+      debugPrint('Error deleting lock: $e');
     }
   }
 
@@ -233,6 +326,29 @@ class _LockSettingState extends State<LockSetting> {
         );
       } else if (widget.isSettingFromLock) {
         await updateLockSetting();
+      } else if (widget.option == 'accept') {
+        await acceptInvitation();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Home(initialIndex: 0),
+          ),
+        );
+
+        final snackBar = SnackBar(
+          elevation: 0,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          content: AwesomeSnackbarContent(
+            title: 'Great!',
+            message: 'You have accepted the invitation!',
+            contentType: ContentType.success,
+          ),
+        );
+
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(snackBar);
       } else {
         await postNewLock();
         Navigator.pushReplacement(
@@ -264,7 +380,13 @@ class _LockSettingState extends State<LockSetting> {
                     showConfirmationModal(context,
                         message: 'Are you sure you want to delete this lock?',
                         isCanNotUndone: true, onProceed: () async {
-                      //TODO: add delete lock function
+                      await deleteLock();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Home(initialIndex: 0),
+                        ),
+                      );
                     });
                   },
                   child: Icon(

@@ -1,3 +1,4 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/input/textfield_input.dart';
@@ -93,16 +94,40 @@ class _ProfileSettingState extends State<ProfileSetting> {
         // ignore: unused_local_variable
         var response = await putJsonData(apiUri: apiUri, body: requestBody);
 
-        // Check response and handle success
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile updated successfully!')),
+        final snackBar = SnackBar(
+          elevation: 0,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          content: AwesomeSnackbarContent(
+            title: 'Great!',
+            message: 'Profile updated successfully!',
+            contentType: ContentType.success,
+          ),
         );
+
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(snackBar);
         Navigator.pop(context); // Navigate back after success
       } catch (e) {
-        // Handle error
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update profile: $e')),
+        RegExp regExp = RegExp(r'(\d{3})'); // Matches three digits (e.g., 409)
+        String? statusCode = regExp.stringMatch(e.toString());
+
+        final snackBar = SnackBar(
+          elevation: 0,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          content: AwesomeSnackbarContent(
+            title: 'Oh no!',
+            message:
+                'Something went wrong, please try again. status code $statusCode',
+            contentType: ContentType.failure,
+          ),
         );
+
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(snackBar);
       }
     } else {
       debugPrint('User ID not found in secure storage.');

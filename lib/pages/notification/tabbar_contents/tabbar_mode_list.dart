@@ -4,6 +4,7 @@ import 'package:fido_smart_lock/component/modal/confirmation_with_date_time_moda
 import 'package:fido_smart_lock/helper/word.dart';
 import 'package:fido_smart_lock/pages/lock_management/lock_setting.dart';
 import 'package:fido_smart_lock/pages/lock_management/role_setting/history_view.dart';
+import 'package:fido_smart_lock/pages/lock_management/role_setting/role_setting_main.dart';
 import 'package:fido_smart_lock/pages/notification/warning_view/warning_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -61,11 +62,11 @@ Map<String, dynamic> getModeConfig(BuildContext context,
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => HistoryView(
-              lockLocation: lockLocation,
-              lockName: lockName,
-              lockId: '4',
-            ),
+            builder: (context) => RequestSettingMain(
+                lockId: lockId,
+                role: role,
+                lockName: lockName,
+                lockLocation: lockLocation),
           ),
         );
       },
@@ -74,7 +75,6 @@ Map<String, dynamic> getModeConfig(BuildContext context,
           context,
           message: 'Do you want to accept all request to unlock $lockName?',
           onProceed: () async {
-            // Combine selected date and time here (if needed, use internal state)
             String expireDatetime = DateTime.now().toIso8601String();
 
             if (onAcceptAllRequest != null) {
@@ -97,7 +97,7 @@ Map<String, dynamic> getModeConfig(BuildContext context,
             builder: (context) => HistoryView(
               lockLocation: lockLocation,
               lockName: lockName,
-              lockId: '4',
+              lockId: lockId,
             ),
           ),
         );
@@ -107,7 +107,7 @@ Map<String, dynamic> getModeConfig(BuildContext context,
     'other': {
       'icon': CupertinoIcons.ellipses_bubble,
       'color': Colors.lightBlueAccent,
-      'LabelCapsuleButtonColor': Colors.grey[850],
+      'LabelCapsuleButtonColor': Colors.grey[900],
       'labelText': 'Decline',
       'labelCapsuleButton': 'Accept',
       'onTapText': () async {
@@ -125,6 +125,8 @@ Map<String, dynamic> getModeConfig(BuildContext context,
                 builder: (context) => LockSetting(
                   lockId: lockId,
                   appBarTitle: 'Set up lock',
+                  userRole: role,
+                  option: 'accept',
                 ),
               ),
             );

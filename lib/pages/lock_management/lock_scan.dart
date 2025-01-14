@@ -1,4 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/helper/api.dart';
@@ -70,12 +71,23 @@ class _LockScanState extends State<LockScan> {
           Navigator.popUntil(context, ModalRoute.withName('/'));
         }
       } else if (widget.lockId != uid) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Lock ID does not match, please try again'),
-            duration: const Duration(seconds: 2),
+        
+        final snackBar = SnackBar(
+          elevation: 0,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          content: AwesomeSnackbarContent(
+            title: 'Oh no!',
+            message:
+                'Lock ID does not match, please try again',
+            contentType: ContentType.failure,
           ),
         );
+
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(snackBar);
+
       } else {
         await checkExistingLock(uid);
         Navigator.push(
@@ -92,12 +104,21 @@ class _LockScanState extends State<LockScan> {
       }
     } catch (e) {
       debugPrint('Error: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error scanning NFC tag. Please try again.'),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      final snackBar = SnackBar(
+          elevation: 0,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          content: AwesomeSnackbarContent(
+            title: 'Oh no!',
+            message:
+                'Error scanning NFC tag. Please try again.',
+            contentType: ContentType.failure,
+          ),
+        );
+
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(snackBar);
     }
   }
 
@@ -135,107 +156,107 @@ class _LockScanState extends State<LockScan> {
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-          Stack(
-            alignment: Alignment.center,
-            clipBehavior: Clip.none,
             children: [
-              Container(
-                width: outerCircleSize,
-                height: outerCircleSize,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color.fromARGB(255, 34, 51, 102)),
+              Stack(
+                alignment: Alignment.center,
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: outerCircleSize,
+                    height: outerCircleSize,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color.fromARGB(255, 34, 51, 102)),
+                  ),
+                  Container(
+                    width: innerCircleSize,
+                    height: innerCircleSize,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color.fromARGB(255, 68, 102, 153)),
+                  ),
+                  SvgPicture.asset('assets/svg/scan.svg',
+                      semanticsLabel: 'Phone Scan',
+                      height: responsive.heightScale(400)),
+                ],
               ),
-              Container(
-                width: innerCircleSize,
-                height: innerCircleSize,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color.fromARGB(255, 68, 102, 153)),
+              SizedBox(height: responsive.heightScale(75)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SvgPicture.asset('assets/svg/nfc.svg',
+                      semanticsLabel: 'Phone Scan',
+                      height: responsive.heightScale(20)),
+                  Gap(10),
+                  Flexible(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Label(
+                            size: 's',
+                            label: 'Connect via NFC',
+                            isBold: true,
+                          ),
+                          Label(
+                              size: 'xs',
+                              label:
+                                  'Hold your phone near to the lock, using NFC phone will automatically connect to the lock.',
+                              color: Colors.grey[400]),
+                        ]),
+                  )
+                ],
               ),
-              SvgPicture.asset('assets/svg/scan.svg',
-                  semanticsLabel: 'Phone Scan',
-                  height: responsive.heightScale(400)),
-            ],
-          ),
-          SizedBox(height: responsive.heightScale(75)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SvgPicture.asset('assets/svg/nfc.svg',
-                  semanticsLabel: 'Phone Scan',
-                  height: responsive.heightScale(20)),
-              Gap(10),
-              Flexible(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Label(
-                        size: 's',
-                        label: 'Connect via NFC',
-                        isBold: true,
-                      ),
-                      Label(
-                          size: 'xs',
-                          label:
-                              'Hold your phone near to the lock, using NFC phone will automatically connect to the lock.',
-                          color: Colors.grey[400]),
-                    ]),
-              )
-            ],
-          ),
-          // Spacer(),
-          // Align(
-          //     alignment: Alignment.bottomCenter,
-          //     child: Button(
-          //         onTap: () async {
-          //           final tagData = await startNFCReading();
-          //           final uid = await extractNfcUid(tagData!);
+              // Spacer(),
+              // Align(
+              //     alignment: Alignment.bottomCenter,
+              //     child: Button(
+              //         onTap: () async {
+              //           final tagData = await startNFCReading();
+              //           final uid = await extractNfcUid(tagData!);
 
-          //           if (widget.lockId == uid) {
-          //             if (widget.option == 'inLock') {
-          //               Navigator.push(
-          //                 context,
-          //                 MaterialPageRoute(
-          //                   builder: (context) => LockScanPass(
-          //                     lockName: widget.lockName,
-          //                     lockLocation: widget.lockLocation,
-          //                   ),
-          //                 ),
-          //               );
-          //             } else if (widget.option == 'inLockFinal') {
-          //               Navigator.popUntil(context, ModalRoute.withName('/'));
-          //             }
-          //           } else if (widget.lockId != uid) {
-          //             ScaffoldMessenger.of(context).showSnackBar(
-          //               SnackBar(
-          //                 content:
-          //                     Text('Lock ID does not match, please try again'),
-          //                 duration: const Duration(seconds: 2),
-          //               ),
-          //             );
-          //           } else {
-          //             await checkExistingLock(uid);
-          //             Navigator.push(
-          //               context,
-          //               MaterialPageRoute(
-          //                 builder: (context) => LockSetting(
-          //                   lockId: uid,
-          //                   appBarTitle: isInDatabase == false
-          //                       ? 'Create New Lock'
-          //                       : 'Set up lock',
-          //                   option:
-          //                       isInDatabase == true ? 'request' : 'register',
-          //                 ),
-          //               ),
-          //             );
-          //           }
-          //         },
-          //         label: 'Scan')),
-        ]),
+              //           if (widget.lockId == uid) {
+              //             if (widget.option == 'inLock') {
+              //               Navigator.push(
+              //                 context,
+              //                 MaterialPageRoute(
+              //                   builder: (context) => LockScanPass(
+              //                     lockName: widget.lockName,
+              //                     lockLocation: widget.lockLocation,
+              //                   ),
+              //                 ),
+              //               );
+              //             } else if (widget.option == 'inLockFinal') {
+              //               Navigator.popUntil(context, ModalRoute.withName('/'));
+              //             }
+              //           } else if (widget.lockId != uid) {
+              //             ScaffoldMessenger.of(context).showSnackBar(
+              //               SnackBar(
+              //                 content:
+              //                     Text('Lock ID does not match, please try again'),
+              //                 duration: const Duration(seconds: 2),
+              //               ),
+              //             );
+              //           } else {
+              //             await checkExistingLock(uid);
+              //             Navigator.push(
+              //               context,
+              //               MaterialPageRoute(
+              //                 builder: (context) => LockSetting(
+              //                   lockId: uid,
+              //                   appBarTitle: isInDatabase == false
+              //                       ? 'Create New Lock'
+              //                       : 'Set up lock',
+              //                   option:
+              //                       isInDatabase == true ? 'request' : 'register',
+              //                 ),
+              //               ),
+              //             );
+              //           }
+              //         },
+              //         label: 'Scan')),
+            ]),
       ),
     );
   }

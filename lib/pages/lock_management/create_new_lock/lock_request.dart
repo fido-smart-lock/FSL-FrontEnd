@@ -1,3 +1,4 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/label.dart';
@@ -7,7 +8,7 @@ import 'package:fido_smart_lock/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/gap.dart';
-import 'package:lottie/lottie.dart';
+// import 'package:lottie/lottie.dart';
 
 class RequestAccess extends StatefulWidget {
   const RequestAccess({
@@ -80,22 +81,44 @@ class _RequestAccessState extends State<RequestAccess> {
         "lockImage": widget.lockImage,
       };
 
-      String apiUri = 
-          'https://fsl-1080584581311.us-central1.run.app/request';
+      String apiUri = 'https://fsl-1080584581311.us-central1.run.app/request';
 
       try {
         // ignore: unused_local_variable
         var response = await postJsonData(apiUri: apiUri, body: requestBody);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Lock detail has been updated successfully!')),
+        final snackBar = SnackBar(
+          elevation: 0,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          content: AwesomeSnackbarContent(
+            title: 'Great!',
+            message: 'Lock detail has been updated successfully!',
+            contentType: ContentType.success,
+          ),
         );
+
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(snackBar);
         Navigator.pop(context); // Navigate back after success
       } catch (e) {
-        // Handle error
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update: $e')),
+        RegExp regExp = RegExp(r'(\d{3})'); // Matches three digits (e.g., 409)
+        String? statusCode = regExp.stringMatch(e.toString());
+
+        final snackBar = SnackBar(
+          elevation: 0,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          content: AwesomeSnackbarContent(
+            title: 'Oh no!',
+            message: 'Something went wrong, please try again. status code $statusCode',
+            contentType: ContentType.failure,
+          ),
         );
+
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(snackBar);
       }
     } else {
       debugPrint('User ID not found in secure storage.');
@@ -156,9 +179,23 @@ class _RequestAccessState extends State<RequestAccess> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => RequestSend(),
+                          builder: (context) => const Home(initialIndex: 0),
                         ),
                       );
+                      final snackBar = SnackBar(
+                        elevation: 0,
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: Colors.transparent,
+                        content: AwesomeSnackbarContent(
+                          title: 'Great!',
+                          message: 'Request sent successfully!',
+                          contentType: ContentType.success,
+                        ),
+                      );
+
+                      ScaffoldMessenger.of(context)
+                        ..hideCurrentSnackBar()
+                        ..showSnackBar(snackBar);
                     },
                     label: 'Proceed',
                     color: Colors.green,
@@ -171,40 +208,40 @@ class _RequestAccessState extends State<RequestAccess> {
   }
 }
 
-class RequestSend extends StatelessWidget {
-  const RequestSend({super.key});
+// class RequestSend extends StatelessWidget {
+//   const RequestSend({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Background(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Label(size: 'xxl', label: 'Request Access'),
-        ),
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: Column(
-            children: [
-              Gap(130),
-              Transform.scale(
-                  scale: 2.3,
-                  child: Lottie.network(
-                    'https://lottie.host/47234022-509e-409a-a8c9-e6da53f5ca3b/B1wGjwm0U4.json',
-                  )),
-              Label(size: 'xl', label: 'Request Send!'),
-              Gap(250),
-              Button(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Home(initialIndex: 0),
-                      ),
-                    );
-                  },
-                  label: 'Woohoo!')
-            ],
-          ),
-        ));
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Background(
+//         appBar: AppBar(
+//           centerTitle: true,
+//           title: Label(size: 'xxl', label: 'Request Access'),
+//         ),
+//         child: Align(
+//           alignment: Alignment.topCenter,
+//           child: Column(
+//             children: [
+//               Gap(130),
+//               Transform.scale(
+//                   scale: 2.3,
+//                   child: Lottie.network(
+//                     'https://lottie.host/47234022-509e-409a-a8c9-e6da53f5ca3b/B1wGjwm0U4.json',
+//                   )),
+//               Label(size: 'xl', label: 'Request Send!'),
+//               Gap(250),
+//               Button(
+//                   onTap: () {
+//                     Navigator.pushReplacement(
+//                       context,
+//                       MaterialPageRoute(
+//                         builder: (context) => const Home(initialIndex: 0),
+//                       ),
+//                     );
+//                   },
+//                   label: 'Woohoo!')
+//             ],
+//           ),
+//         ));
+//   }
+// }
