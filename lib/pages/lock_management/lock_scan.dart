@@ -70,7 +70,7 @@ class _LockScanState extends State<LockScan> {
         } else if (widget.option == 'inLockFinal') {
           Navigator.popUntil(context, ModalRoute.withName('/'));
         }
-      } else if (widget.lockId != uid) {
+      } else if (widget.lockId != null && widget.lockId != uid) {
         
         final snackBar = SnackBar(
           elevation: 0,

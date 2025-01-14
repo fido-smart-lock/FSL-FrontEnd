@@ -1,9 +1,12 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/input/textfield_input.dart';
 import 'package:fido_smart_lock/component/label.dart';
+import 'package:fido_smart_lock/helper/api.dart';
 import 'package:fido_smart_lock/helper/size.dart';
 import 'package:fido_smart_lock/pages/log_in/signup/signup_email_sent.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SignUpMain extends StatefulWidget {
@@ -44,7 +47,7 @@ class _SignUpMainState extends State<SignUpMain> {
     super.dispose();
   }
 
-  void _validateAndSave() {
+  Future<void> _validateAndSave() async {
     setState(() {
       _isNameValid = _nameController.text.trim().isNotEmpty;
       _isSurnameValid = _surnameController.text.trim().isNotEmpty;
@@ -64,12 +67,13 @@ class _SignUpMainState extends State<SignUpMain> {
         _isEmailValid &&
         _isPasswordValid &&
         _isConfirmPasswordValid) {
+      await createAccount(context);
       Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SignUpEmailSent(),
-          ),
-        );
+        context,
+        MaterialPageRoute(
+          builder: (context) => SignUpEmailSent(),
+        ),
+      );
     }
   }
 
@@ -97,8 +101,8 @@ class _SignUpMainState extends State<SignUpMain> {
     _emailController.addListener(() {
       setState(() {
         _isEmailValid = RegExp(
-              r'^[^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*@([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}$')
-          .hasMatch(_emailController.text.trim());
+                r'^[^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*@([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}$')
+            .hasMatch(_emailController.text.trim());
       });
     });
 
@@ -109,8 +113,7 @@ class _SignUpMainState extends State<SignUpMain> {
             _passwordController.text.trim().contains(RegExp(r'[A-Z]'));
         _isHaveLowerCase =
             _passwordController.text.trim().contains(RegExp(r'[a-z]'));
-        _isHaveNumber =
-            _passwordController.text.trim().contains(RegExp(r'\d'));
+        _isHaveNumber = _passwordController.text.trim().contains(RegExp(r'\d'));
         _isHaveSpecialChar =
             _passwordController.text.trim().contains(RegExp(r'[!@#\$&*~]'));
 
@@ -132,6 +135,43 @@ class _SignUpMainState extends State<SignUpMain> {
                     _passwordController.text.trim());
       });
     });
+  }
+
+  Future<void> createAccount(BuildContext context) async {
+    try {
+      final body = {
+        'email': _emailController.text.trim(),
+        'password': _passwordController.text.trim(),
+        'firstName': _nameController.text.trim(), // Default empty string
+        'lastName': _surnameController.text.trim(),
+        'userImage': '',
+      };
+
+      // ignore: unused_local_variable
+      final response = await postJsonData(
+        apiUri: 'https://fsl-1080584581311.us-central1.run.app/signup',
+        body: body,
+      );
+    } catch (e) {
+      RegExp regExp = RegExp(r'(\d{3})'); // Matches three digits (e.g., 409)
+      String? statusCode = regExp.stringMatch(e.toString());
+
+      final snackBar = SnackBar(
+        elevation: 0,
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.transparent,
+        content: AwesomeSnackbarContent(
+          title: 'Oh no!',
+          message:
+              'Something went wrong, please try again. status code $statusCode',
+          contentType: ContentType.failure,
+        ),
+      );
+
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(snackBar);
+    }
   }
 
   String _getPasswordValidationMessage() {
@@ -180,13 +220,12 @@ class _SignUpMainState extends State<SignUpMain> {
             height: responsive.heightScale(15),
           ),
           CustomTextField(
-            controller: _emailController,
-            labelText: 'Email',
-            labelColor: _isEmailValid ? Colors.white : Colors.red,
-            mode: 'verified',
-            isValid: _isEmailValid,
-            validateText: "please fill the correct email."
-          ),
+              controller: _emailController,
+              labelText: 'Email',
+              labelColor: _isEmailValid ? Colors.white : Colors.red,
+              mode: 'verified',
+              isValid: _isEmailValid,
+              validateText: "please fill the correct email."),
           CustomTextField(
             controller: _passwordController,
             labelText: 'Enter password',
@@ -207,9 +246,8 @@ class _SignUpMainState extends State<SignUpMain> {
             validateText: 'Passwords do not match.',
           ),
           SizedBox(
-            height: responsive.heightScale(20),
+            height: responsive.heightScale(185),
           ),
-          Spacer(),
           Align(
             alignment: Alignment.bottomCenter,
             child: Button(
@@ -217,10 +255,15 @@ class _SignUpMainState extends State<SignUpMain> {
               label: 'Sign Up',
             ),
           ),
-          SizedBox(height: responsive.heightScale(10)),
-          Label(size: 'xs',isCenter: true, label: 'By selecting Sign up, I agree to\nTerms of Service & Privacy Policy', color: Colors.grey,),
+          Label(
+            size: 'xs',
+            isCenter: true,
+            label:
+                'By selecting Sign up, I agree to Terms of Service & Privacy Policy',
+            color: Colors.grey,
+          ),
           SizedBox(
-            height: responsive.heightScale(30),
+            height: responsive.heightScale(20),
           ),
         ],
       ),

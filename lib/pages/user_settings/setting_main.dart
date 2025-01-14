@@ -82,7 +82,7 @@ class _SettingsMainState extends State<SettingsMain> {
                   //user profile
                   CircleAvatar(
                     backgroundImage: NetworkImage(userImage ??
-                        'https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png'),
+                        ''),
                     radius: responsive.radiusScale(50),
                   ),
                   SizedBox(

@@ -1,7 +1,9 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/input/textfield_input.dart';
 import 'package:fido_smart_lock/component/label.dart';
+import 'package:fido_smart_lock/helper/api.dart';
 import 'package:fido_smart_lock/helper/size.dart';
 import 'package:fido_smart_lock/pages/home.dart';
 import 'package:fido_smart_lock/pages/log_in/signup/signup_main.dart';
@@ -38,18 +40,8 @@ class _LoginMainState extends State<LoginMain> {
           .hasMatch(_emailController.text.trim());
     });
 
-    if (_isEmailValid && _isPasswordValid){
-      // Hardcoded userId
-            String userId = "bs2623";
-            int userCode = 6462; //TODO: Replace with API call once ready
-            await storage.write(key: 'userId', value: userId);
-            await storage.write(key: 'userCode', value: userCode.toString());
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const Home(initialIndex: 0),
-        ),
-      );
+    if (_isEmailValid && _isPasswordValid) {
+      await logIn();
     }
   }
 
@@ -70,6 +62,58 @@ class _LoginMainState extends State<LoginMain> {
         _isEmailValid = _emailController.text.trim().isNotEmpty;
       });
     });
+  }
+
+  Future<void> logIn() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    try {
+      final responseBody = await postJsonDataWithoutBody(
+        apiUri:
+            'https://fsl-1080584581311.us-central1.run.app/login/$email/$password',
+      );
+
+      // Check if the response body is not empty
+      if (responseBody != null && responseBody.isNotEmpty) {
+        String userId = responseBody['userId'];
+        int userCode = responseBody['userCode'];
+
+        debugPrint('$userId, $userCode');
+
+        await storage.write(key: 'userId', value: userId);
+        await storage.write(key: 'userCode', value: userCode.toString());
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Home(initialIndex: 0),
+          ),
+        );
+      } else {
+        throw Exception("Empty response body");
+      }
+    } catch (e) {
+      debugPrint('$e');
+      RegExp regExp = RegExp(r'(\d{3})');
+      String? statusCode = regExp.stringMatch(e.toString());
+
+      final snackBar = SnackBar(
+        elevation: 0,
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.transparent,
+        content: AwesomeSnackbarContent(
+          title: 'Oh no!',
+          message:
+              'Something went wrong, please try again. Status code $statusCode',
+          contentType: ContentType.failure,
+        ),
+      );
+
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(snackBar);
+    }
   }
 
   @override

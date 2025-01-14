@@ -63,7 +63,7 @@ class _LockLocationCreateState extends State<LockLocationCreate> {
               'https://fsl-1080584581311.us-central1.run.app/lockLocation/$userId/$location');
       Navigator.pop(context, true);
     } catch (e) {
-      RegExp regExp = RegExp(r'(\d{3})'); // Matches three digits (e.g., 409)
+      RegExp regExp = RegExp(r'(\d{3})');
       String? statusCode = regExp.stringMatch(e.toString());
 
       final snackBar = SnackBar(

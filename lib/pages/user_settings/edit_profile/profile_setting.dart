@@ -138,6 +138,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
     const storage = FlutterSecureStorage();
     String? userId = await storage.read(key: 'userId');
 
+    debugPrint('in setting: $userId');
+
     if (userId != null) {
       String apiUri =
           'https://fsl-1080584581311.us-central1.run.app/userDetail/$userId';
@@ -204,9 +206,19 @@ class _ProfileSettingState extends State<ProfileSetting> {
         _surnameController.text.isEmpty &&
         _emailController.text.isEmpty) {
       // Display a loading indicator until data is loaded
-      return const Center(child: CircularProgressIndicator());
+      return Background(
+          appBar: AppBar(
+              centerTitle: true,
+              title: Label(
+                size: 'xxl',
+                label: 'Edit Profile',
+                isShadow: true,
+              )),
+          child: Expanded(
+              child: Center(
+            child: CircularProgressIndicator(),
+          )));
     }
-
     return Background(
       appBar: AppBar(
         centerTitle: true,
@@ -283,7 +295,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                           backgroundImage: NetworkImage(
                             _imageUrl ??
                                 userImage ??
-                                'https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png',
+                                '',
                           ),
                         ),
                       ),

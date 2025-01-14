@@ -35,6 +35,8 @@ class _LockMainState extends State<LockMain> {
     const storage = FlutterSecureStorage();
     String? userId = await storage.read(key: 'userId');
 
+    debugPrint('in app: $userId');
+
     if (userId != null) {
       String apiUri =
           'https://fsl-1080584581311.us-central1.run.app/lockLocation/user/$userId';
@@ -66,8 +68,9 @@ class _LockMainState extends State<LockMain> {
     const storage = FlutterSecureStorage();
     String? userId = await storage.read(key: 'userId');
 
+    debugPrint('in fetchUserLockList: $userId');
 
-    if (userId != null && selectedLocation != null) {
+    if (userId != null) {
       String apiUri =
           'https://fsl-1080584581311.us-central1.run.app/lockList/$userId/$selectedLocation';
 
@@ -77,8 +80,7 @@ class _LockMainState extends State<LockMain> {
           lockLocation = dataLockList['lockLocation'];
           userName = dataLockList['userName'];
           userImage = dataLockList['userImage'];
-          lockList = List<Map<String, dynamic>>.from(
-              dataLockList['dataList']);
+          lockList = List<Map<String, dynamic>>.from(dataLockList['dataList']);
         });
       } catch (e) {
         debugPrint('Error: $e');
@@ -96,7 +98,6 @@ class _LockMainState extends State<LockMain> {
 
   @override
   Widget build(BuildContext context) {
-
     return Background(
       child: Align(
         alignment: Alignment.topCenter,
@@ -106,21 +107,22 @@ class _LockMainState extends State<LockMain> {
             children: <Widget>[
               CircleAvatar(
                 radius: 35,
-                backgroundImage: NetworkImage(userImage ??
-                    'https://i.postimg.cc/jdtLgPgX/jonathan-Smith.png'),
+                backgroundImage: NetworkImage(userImage ?? ''),
               ),
               isLoading
                   ? const CircularProgressIndicator()
-                  : DropdownCapsule(
-                      items: dropdownItems ?? [],
-                      selectedItem: selectedLocation, // Pass default value
-                      onSelected: (value) {
-                        setState(() {
-                          selectedLocation = value; // Update the state
-                          fetchUserLockList(); // Fetch lock list when selection changes
-                        });
-                      },
-                    ),
+                  : lockList!.isEmpty
+                      ? SizedBox(width: 50,)
+                      : DropdownCapsule(
+                          items: dropdownItems ?? [],
+                          selectedItem: selectedLocation, // Pass default value
+                          onSelected: (value) {
+                            setState(() {
+                              selectedLocation = value; // Update the state
+                              fetchUserLockList(); // Fetch lock list when selection changes
+                            });
+                          },
+                        ),
             ],
           ),
           const Gap(20),

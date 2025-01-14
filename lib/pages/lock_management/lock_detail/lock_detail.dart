@@ -137,7 +137,9 @@ class _LockDetailState extends State<LockDetail> {
                       isSettingFromLock: true,
                     ),
                   ),
-                );
+                ).then((value) {
+                  fetchUserLockDetail();
+                });
               },
               child: Icon(
                 CupertinoIcons.gear,

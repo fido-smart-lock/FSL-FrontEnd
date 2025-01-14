@@ -136,7 +136,7 @@ class _LockSettingState extends State<LockSetting> {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(snackBar);
-        Navigator.pop(context);
+        Navigator.pop(context, true);
       } catch (e) {
         RegExp regExp = RegExp(r'(\d{3})'); // Matches three digits (e.g., 409)
         String? statusCode = regExp.stringMatch(e.toString());
