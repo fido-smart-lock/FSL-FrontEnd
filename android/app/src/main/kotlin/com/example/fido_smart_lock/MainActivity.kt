@@ -1,4 +1,4 @@
-package com.example.fido_smart_lock
+package com.example.fidosmartlock
 
 import io.flutter.embedding.android.FlutterActivity
 

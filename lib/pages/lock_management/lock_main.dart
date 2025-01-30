@@ -44,6 +44,7 @@ class _LockMainState extends State<LockMain> {
       try {
         var dataLockLocation = await getJsonData(apiUri: apiUri);
         List<String> items = List<String>.from(dataLockLocation['dataList']);
+        debugPrint('location $items');
         setState(() {
           dropdownItems = items;
           selectedLocation =
@@ -76,11 +77,13 @@ class _LockMainState extends State<LockMain> {
 
       try {
         var dataLockList = await getJsonData(apiUri: apiUri);
+
         setState(() {
           lockLocation = dataLockList['lockLocation'];
           userName = dataLockList['userName'];
           userImage = dataLockList['userImage'];
           lockList = List<Map<String, dynamic>>.from(dataLockList['dataList']);
+          debugPrint('locklist: $lockList');
         });
       } catch (e) {
         debugPrint('Error: $e');
@@ -111,15 +114,15 @@ class _LockMainState extends State<LockMain> {
               ),
               isLoading
                   ? const CircularProgressIndicator()
-                  : lockList!.isEmpty
+                  : dropdownItems!.isEmpty
                       ? SizedBox(width: 50,)
                       : DropdownCapsule(
                           items: dropdownItems ?? [],
-                          selectedItem: selectedLocation, // Pass default value
+                          selectedItem: selectedLocation,
                           onSelected: (value) {
                             setState(() {
-                              selectedLocation = value; // Update the state
-                              fetchUserLockList(); // Fetch lock list when selection changes
+                              selectedLocation = value;
+                              fetchUserLockList();
                             });
                           },
                         ),

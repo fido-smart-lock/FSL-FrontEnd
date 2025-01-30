@@ -24,9 +24,18 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace 'com.example.fido_smart_lock'  // Make sure the syntax is correct here (single quotes)
+    namespace 'com.example.fidosmartlock'  // Make sure the syntax is correct here (single quotes)
     compileSdkVersion 35  // Ensure "compileSdk" is "compileSdkVersion"
     ndkVersion "25.1.8937393"
+
+    signingConfigs {
+        fidosmartlock {
+            keyAlias 'testing'
+            keyPassword 'testing'
+            storeFile file('C:\\Users\\LENOVO\\Desktop\\senior proj\\fido-smart-lock\\android\\testing.keystore')
+            storePassword 'testing'
+        }
+    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -38,18 +47,18 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.fido_smart_lock"
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        applicationId = "com.example.fidosmartlock"
+        minSdkVersion 28
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
 
     buildTypes {
-        release {
-            signingConfig signingConfigs.debug
-        }
+    debug {
+        signingConfig signingConfigs.fidosmartlock
     }
+}
 }
 
 flutter {

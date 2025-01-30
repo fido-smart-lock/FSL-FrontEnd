@@ -2,7 +2,7 @@ import 'package:fido_smart_lock/component/background/background.dart';
 import 'package:fido_smart_lock/component/button.dart';
 import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/helper/size.dart';
-import 'package:fido_smart_lock/pages/log_in/signup/signup_complete.dart';
+import 'package:fido_smart_lock/pages/authentication/signup/signup_complete.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
