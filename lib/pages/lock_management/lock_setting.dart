@@ -234,14 +234,11 @@ class _LockSettingState extends State<LockSetting> {
       "lockImage": _imageUrl
     };
 
-    debugPrint('accept invitation request body: $requestBody');
-
     String apiUri =
         'https://fsl-1080584581311.us-central1.run.app/acceptInvitation';
 
     try {
       var response = await putJsonData(apiUri: apiUri, body: requestBody);
-      debugPrint('accept invitation: $response');
     } catch (e) {
       debugPrint('Error accepting invitation: $e');
     }
@@ -260,9 +257,7 @@ class _LockSettingState extends State<LockSetting> {
     };
 
     try {
-      final response = await deleteJsonDataWithRequestBody(
-          apiUri: apiUri, body: requestBody);
-      debugPrint('Delete successful: $response');
+      await deleteJsonDataWithRequestBody(apiUri: apiUri, body: requestBody);
     } catch (e) {
       debugPrint('Error deleting lock: $e');
     }

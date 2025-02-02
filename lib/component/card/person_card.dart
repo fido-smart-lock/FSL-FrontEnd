@@ -288,7 +288,6 @@ class PersonRequest extends StatelessWidget {
                     onProceed: () async {
                   String expireDatetime = DateTime.now().toIso8601String();
 
-                  debugPrint('Accept request: $notiId, $expireDatetime');
 
                   if (onAcceptRequest != null) {
                     await onAcceptRequest!(notiId, expireDatetime);

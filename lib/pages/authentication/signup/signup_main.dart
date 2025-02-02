@@ -163,7 +163,6 @@ class SignUpMain extends HookWidget implements CorbadoScreen<SignupInitBlock> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      debugPrint('Navigate to login');
                       block.navigateToLogin();
                     },
                     child: Label(

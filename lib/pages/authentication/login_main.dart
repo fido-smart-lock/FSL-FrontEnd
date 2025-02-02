@@ -42,7 +42,6 @@ class LoginMain extends HookWidget implements CorbadoScreen<LoginInitBlock> {
         String userId = responseBody['userId'];
         int userCode = responseBody['userCode'];
 
-        debugPrint('$userId, $userCode');
 
         await storage.write(key: 'userId', value: userId);
         await storage.write(key: 'userCode', value: userCode.toString());

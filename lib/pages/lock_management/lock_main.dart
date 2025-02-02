@@ -35,7 +35,6 @@ class _LockMainState extends State<LockMain> {
     const storage = FlutterSecureStorage();
     String? userId = await storage.read(key: 'userId');
 
-    debugPrint('in app: $userId');
 
     if (userId != null) {
       String apiUri =
@@ -44,7 +43,6 @@ class _LockMainState extends State<LockMain> {
       try {
         var dataLockLocation = await getJsonData(apiUri: apiUri);
         List<String> items = List<String>.from(dataLockLocation['dataList']);
-        debugPrint('location $items');
         setState(() {
           dropdownItems = items;
           selectedLocation =
@@ -69,7 +67,6 @@ class _LockMainState extends State<LockMain> {
     const storage = FlutterSecureStorage();
     String? userId = await storage.read(key: 'userId');
 
-    debugPrint('in fetchUserLockList: $userId');
 
     if (userId != null) {
       String apiUri =
@@ -83,7 +80,6 @@ class _LockMainState extends State<LockMain> {
           userName = dataLockList['userName'];
           userImage = dataLockList['userImage'];
           lockList = List<Map<String, dynamic>>.from(dataLockList['dataList']);
-          debugPrint('locklist: $lockList');
         });
       } catch (e) {
         debugPrint('Error: $e');
@@ -92,7 +88,6 @@ class _LockMainState extends State<LockMain> {
         });
       }
     } else {
-      debugPrint('User ID not found in secure storage.');
       setState(() {
         isLoading = false;
       });

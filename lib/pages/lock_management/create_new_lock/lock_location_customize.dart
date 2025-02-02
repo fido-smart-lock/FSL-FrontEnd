@@ -67,9 +67,7 @@ class _LockLocationCustomizeState extends State<LockLocationCustomize> {
     };
 
     try {
-      final response = await deleteJsonDataWithRequestBody(
-          apiUri: apiUri, body: requestBody);
-      debugPrint('Delete successful: $response');
+      await deleteJsonDataWithRequestBody(apiUri: apiUri, body: requestBody);
       await fetchUserLockLocation();
     } catch (e) {
       String errorMessage;
@@ -77,10 +75,10 @@ class _LockLocationCustomizeState extends State<LockLocationCustomize> {
       String? statusCode = regExp.stringMatch(e.toString());
 
       if (statusCode == '409') {
-        errorMessage =
-            'Unable to delete the location as it is in use.';
+        errorMessage = 'Unable to delete the location as it is in use.';
       } else {
-        errorMessage = 'Something went wrong, please try again. status code $statusCode';
+        errorMessage =
+            'Something went wrong, please try again. status code $statusCode';
       }
 
       // Show the mapped error message in the SnackBar

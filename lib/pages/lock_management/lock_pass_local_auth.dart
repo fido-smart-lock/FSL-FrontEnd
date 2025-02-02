@@ -32,13 +32,10 @@ class _LockPassLocalAuthState extends State<LockPassLocalAuth> {
     canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
     final List<BiometricType> availableBiometrics =
         await auth.getAvailableBiometrics();
-    debugPrint('Biometrics: $availableBiometrics');
-    debugPrint('Can authenticate: $canAuthenticateWithBiometrics');
 
     if (availableBiometrics.contains(BiometricType.strong) ||
         availableBiometrics.contains(BiometricType.fingerprint)) {
       try {
-        debugPrint('Authenticating');
         final bool didAuthenticate = await auth.authenticate(
             localizedReason: 'Please authenticate to unlock the smart lock',
             options: const AuthenticationOptions(

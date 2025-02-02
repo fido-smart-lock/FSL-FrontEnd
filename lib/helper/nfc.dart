@@ -7,7 +7,6 @@ Future<Map<String, dynamic>?> startNFCReading() async {
     bool isAvailable = await NfcManager.instance.isAvailable();
 
     if (!isAvailable) {
-      debugPrint('NFC not available on this device.');
       return Future.error('NFC not available on this device.');
     }
 
@@ -16,10 +15,8 @@ Future<Map<String, dynamic>?> startNFCReading() async {
     NfcManager.instance.startSession(
       onDiscovered: (NfcTag tag) async {
         try {
-          debugPrint('NFC Tag Detected: ${tag.data}');
           completer.complete(tag.data); // Complete with tag data
         } catch (e) {
-          debugPrint('Error processing NFC tag: $e');
           completer.completeError('Failed to process NFC tag.');
         } finally {
           await NfcManager.instance.stopSession();
@@ -37,7 +34,6 @@ Future<Map<String, dynamic>?> startNFCReading() async {
 
     return completer.future;
   } catch (e) {
-    debugPrint('Error reading NFC: $e');
     NfcManager.instance.stopSession();
     return Future.error('Error reading NFC: $e');
   }
@@ -52,7 +48,6 @@ Future<String> extractNfcUid(Map<String, dynamic> tagData) async {
       return uid;
     } else if (tagData.containsKey('ndef')) {
       // Example handling for NDEF tags (adjust based on actual tag structure)
-      debugPrint('NDEF tag detected: ${tagData['ndef']}');
       return Future.error('NDEF tags not supported for UID extraction.');
     }
   } catch (e) {

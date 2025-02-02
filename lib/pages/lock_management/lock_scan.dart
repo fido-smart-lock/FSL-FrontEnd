@@ -65,7 +65,6 @@ class _LockScanState extends State<LockScan> {
       if (responseBody != null && responseBody.isNotEmpty) {
         setState(() {
           token = responseBody['token'];
-          debugPrint('token: $token');
         });
       } else {
         throw Exception("Empty response body");
@@ -106,7 +105,6 @@ class _LockScanState extends State<LockScan> {
             'Authorization': 'Bearer $token',
           };
 
-          debugPrint('header: $header');
 
           if (widget.lockId == uid) {
             isTokenValid = await postJsonDataWithoutBody(
@@ -114,7 +112,6 @@ class _LockScanState extends State<LockScan> {
                     'https://fsl-1080584581311.us-central1.run.app/unlockDoor',
                 headers: header);
             if (isTokenValid) {
-              debugPrint('Door should be unlocked');
               await http.get(Uri.parse('http://172.20.10.6/set-state'));
               Navigator.pushReplacement(context,
                 MaterialPageRoute(

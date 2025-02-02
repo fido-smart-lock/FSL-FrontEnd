@@ -15,7 +15,6 @@ class PasskeyAppendScreen extends HookWidget
   Future<void> logIn(String email, BuildContext context) async {
     
     try {
-      debugPrint('login email : $email');
       final responseBody = await postJsonDataWithoutBody(
         apiUri: 'https://fsl-1080584581311.us-central1.run.app/login/$email',
       );
