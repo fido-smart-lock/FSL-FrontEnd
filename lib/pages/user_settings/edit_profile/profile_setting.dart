@@ -6,8 +6,6 @@ import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/helper/Image.dart';
 import 'package:fido_smart_lock/helper/api.dart';
 import 'package:fido_smart_lock/helper/size.dart';
-import 'package:fido_smart_lock/helper/userid.dart';
-import 'package:fido_smart_lock/pages/log_in/login_main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
@@ -130,7 +128,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
           ..showSnackBar(snackBar);
       }
     } else {
-      debugPrint('User ID not found in secure storage.');
     }
   }
 
@@ -227,31 +224,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
           label: 'Edit Profile',
           isShadow: true,
         ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: GestureDetector(
-              onTap: () async {
-                removeUserIdAndUserCode();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => LoginMain(),
-                  ),
-                );
-              },
-              child: Icon(
-                Icons.logout_rounded,
-                size: 30,
-                color: Colors.red,
-                shadows: <Shadow>[
-                  Shadow(
-                      color: Colors.black.withOpacity(0.50), blurRadius: 15.0)
-                ],
-              ),
-            ),
-          )
-        ],
+        
       ),
       child: Column(
         children: [

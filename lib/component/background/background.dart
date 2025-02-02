@@ -62,7 +62,7 @@ class Background extends StatelessWidget {
                 left: 35,
                 top: disabledTopPadding == true
                     ? 10.0
-                    : 40.0, // Apply padding conditionally
+                    : 40.0,
               ),
               child: child,
             ),

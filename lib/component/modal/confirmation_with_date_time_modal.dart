@@ -101,8 +101,6 @@ void showConfirmationWithDateTimeModal(
                       );
 
                       // Perform the API call or any other logic here
-                      debugPrint(
-                          'Selected DateTime: ${combinedDateTime.toIso8601String()}');
                       await onProceed();
                     }
                     )

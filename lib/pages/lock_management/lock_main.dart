@@ -35,7 +35,6 @@ class _LockMainState extends State<LockMain> {
     const storage = FlutterSecureStorage();
     String? userId = await storage.read(key: 'userId');
 
-    debugPrint('in app: $userId');
 
     if (userId != null) {
       String apiUri =
@@ -68,7 +67,6 @@ class _LockMainState extends State<LockMain> {
     const storage = FlutterSecureStorage();
     String? userId = await storage.read(key: 'userId');
 
-    debugPrint('in fetchUserLockList: $userId');
 
     if (userId != null) {
       String apiUri =
@@ -76,6 +74,7 @@ class _LockMainState extends State<LockMain> {
 
       try {
         var dataLockList = await getJsonData(apiUri: apiUri);
+
         setState(() {
           lockLocation = dataLockList['lockLocation'];
           userName = dataLockList['userName'];
@@ -89,7 +88,6 @@ class _LockMainState extends State<LockMain> {
         });
       }
     } else {
-      debugPrint('User ID not found in secure storage.');
       setState(() {
         isLoading = false;
       });
@@ -111,15 +109,15 @@ class _LockMainState extends State<LockMain> {
               ),
               isLoading
                   ? const CircularProgressIndicator()
-                  : lockList!.isEmpty
+                  : dropdownItems!.isEmpty
                       ? SizedBox(width: 50,)
                       : DropdownCapsule(
                           items: dropdownItems ?? [],
-                          selectedItem: selectedLocation, // Pass default value
+                          selectedItem: selectedLocation,
                           onSelected: (value) {
                             setState(() {
-                              selectedLocation = value; // Update the state
-                              fetchUserLockList(); // Fetch lock list when selection changes
+                              selectedLocation = value;
+                              fetchUserLockList();
                             });
                           },
                         ),

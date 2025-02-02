@@ -29,7 +29,6 @@ class CustomTextField extends StatefulWidget {
 
 class _CustomTextFieldState extends State<CustomTextField> {
   late FocusNode _focusNode;
-  bool _isObscured = true;
 
   @override
   void initState() {
@@ -60,7 +59,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 controller: widget.controller,
                 focusNode: _focusNode,
                 maxLength: widget.maxLength,
-                obscureText: widget.mode == 'password' && _isObscured,
                 cursorColor: widget.isValid ? Colors.grey : Colors.red,
                 decoration: InputDecoration(
                   labelText: widget.labelText,
@@ -91,21 +89,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
                         fontSize: responsiveFontSize,
                       ),
                     ),
-                  ),
-                ),
-              if (widget.mode == 'password')
-                Positioned(
-                  right: 0,
-                  bottom: responsiveFontSize * 0.5,
-                  child: IconButton(
-                    icon: Icon(
-                      _isObscured ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _isObscured = !_isObscured; // Toggle the obscured state
-                      });
-                    },
                   ),
                 ),
             ],
