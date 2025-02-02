@@ -65,6 +65,7 @@ class SignUpMain extends HookWidget implements CorbadoScreen<SignupInitBlock> {
         body: body,
       );
     } catch (e) {
+      debugPrint('Error: $e');
       final regExp = RegExp(r'(\d{3})');
       final statusCode = regExp.stringMatch(e.toString());
 
@@ -99,15 +100,6 @@ class SignUpMain extends HookWidget implements CorbadoScreen<SignupInitBlock> {
     final isEmailValid = useState(true);
 
     final responsive = Responsive(context);
-
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final maybeError = block.error;
-        if (maybeError != null) {
-          debugPrint('Error: ${maybeError.detailedError()}');
-        }
-      });
-    }, [block.error]);
 
     return Background(
       appBar: AppBar(

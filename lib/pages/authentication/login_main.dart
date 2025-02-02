@@ -95,15 +95,6 @@ class LoginMain extends HookWidget implements CorbadoScreen<LoginInitBlock> {
         emailController.removeListener(emailListener);
       };
     }, [emailController]);
-
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final maybeError = block.error;
-        if (maybeError != null) {
-          debugPrint('Error: ${maybeError.translatedError}');
-        }
-      });
-    }, [block.error]);
  
     return Background(
       child: SingleChildScrollView(

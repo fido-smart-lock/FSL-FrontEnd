@@ -68,6 +68,7 @@ dependencies:
   flutter_riverpod: ^2.6.1
   hooks_riverpod: ^2.6.1
   flutter_hooks: ^0.20.5
+  local_auth: ^2.3.0
 
 dev_dependencies:
   flutter_test:

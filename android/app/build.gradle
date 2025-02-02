@@ -28,15 +28,6 @@ android {
     compileSdkVersion 35  // Ensure "compileSdk" is "compileSdkVersion"
     ndkVersion "25.1.8937393"
 
-    signingConfigs {
-        fidosmartlock {
-            keyAlias 'testing'
-            keyPassword 'testing'
-            storeFile file('C:\\Users\\LENOVO\\Desktop\\senior proj\\fido-smart-lock\\android\\testing.keystore')
-            storePassword 'testing'
-        }
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -54,11 +45,6 @@ android {
         versionName flutterVersionName
     }
 
-    buildTypes {
-    debug {
-        signingConfig signingConfigs.fidosmartlock
-    }
-}
 }
 
 flutter {

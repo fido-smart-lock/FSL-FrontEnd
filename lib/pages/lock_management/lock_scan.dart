@@ -5,11 +5,15 @@ import 'package:fido_smart_lock/component/label.dart';
 import 'package:fido_smart_lock/helper/api.dart';
 import 'package:fido_smart_lock/helper/nfc.dart';
 import 'package:fido_smart_lock/helper/size.dart';
-import 'package:fido_smart_lock/pages/lock_management/lock_scan_pass.dart';
+import 'package:fido_smart_lock/pages/home.dart';
+import 'package:fido_smart_lock/pages/lock_management/lock_pass_local_auth.dart';
+// import 'package:fido_smart_lock/pages/lock_management/lock_scan_pass.dart';
 import 'package:fido_smart_lock/pages/lock_management/lock_setting.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:http/http.dart' as http;
 
 class LockScan extends StatefulWidget {
   final String? option;
@@ -45,6 +49,32 @@ class _LockScanState extends State<LockScan> {
     }
   }
 
+  String token = '';
+  bool isTokenValid = false;
+  final storage = FlutterSecureStorage();
+
+  Future<void> getToken() async {
+    try {
+      String? userId = await storage.read(key: 'userId');
+
+      final responseBody = await postJsonDataWithoutBody(
+        apiUri:
+            'https://fsl-1080584581311.us-central1.run.app/generateToken/$userId/${widget.lockId}',
+      );
+
+      if (responseBody != null && responseBody.isNotEmpty) {
+        setState(() {
+          token = responseBody['token'];
+          debugPrint('token: $token');
+        });
+      } else {
+        throw Exception("Empty response body");
+      }
+    } catch (e) {
+      debugPrint('$e');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -61,25 +91,46 @@ class _LockScanState extends State<LockScan> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => LockScanPass(
+              builder: (context) => LockPassLocalAuth(
                 lockName: widget.lockName,
                 lockLocation: widget.lockLocation,
+                lockId: widget.lockId!,
               ),
             ),
           );
         } else if (widget.option == 'inLockFinal') {
-          Navigator.popUntil(context, ModalRoute.withName('/'));
+          await getToken();
+
+          final header = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          };
+
+          debugPrint('header: $header');
+
+          if (widget.lockId == uid) {
+            isTokenValid = await postJsonDataWithoutBody(
+                apiUri:
+                    'https://fsl-1080584581311.us-central1.run.app/unlockDoor',
+                headers: header);
+            if (isTokenValid) {
+              debugPrint('Door should be unlocked');
+              await http.get(Uri.parse('http://172.20.10.6/set-state'));
+              Navigator.pushReplacement(context,
+                MaterialPageRoute(
+                  builder: (context) => const Home(initialIndex: 0),
+                ),);
+            }
+          }
         }
       } else if (widget.lockId != null && widget.lockId != uid) {
-        
         final snackBar = SnackBar(
           elevation: 0,
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.transparent,
           content: AwesomeSnackbarContent(
             title: 'Oh no!',
-            message:
-                'Lock ID does not match, please try again',
+            message: 'Lock ID does not match, please try again',
             contentType: ContentType.failure,
           ),
         );
@@ -87,7 +138,6 @@ class _LockScanState extends State<LockScan> {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(snackBar);
-
       } else {
         await checkExistingLock(uid);
         Navigator.push(
@@ -105,20 +155,19 @@ class _LockScanState extends State<LockScan> {
     } catch (e) {
       debugPrint('Error: $e');
       final snackBar = SnackBar(
-          elevation: 0,
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.transparent,
-          content: AwesomeSnackbarContent(
-            title: 'Oh no!',
-            message:
-                'Error scanning NFC tag. Please try again.',
-            contentType: ContentType.failure,
-          ),
-        );
+        elevation: 0,
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.transparent,
+        content: AwesomeSnackbarContent(
+          title: 'Oh no!',
+          message: 'Error scanning NFC tag. Please try again.',
+          contentType: ContentType.failure,
+        ),
+      );
 
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(snackBar);
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(snackBar);
     }
   }
 

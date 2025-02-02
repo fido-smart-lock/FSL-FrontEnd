@@ -75,6 +75,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             // if the user is logged in but currently on a page that should
             // only be visible for logged out users => redirect to profile page.
             if (onLoggedOutRoutes) {
+
               return Routes.home;
             }
         }
