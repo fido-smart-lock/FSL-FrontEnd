@@ -45,7 +45,7 @@ class LockSetting extends StatefulWidget {
   _LockSettingState createState() => _LockSettingState();
 }
 
-class _LockSettingState extends State<LockSetting> {
+class _LockSettingState extends State<LockSetting> with WidgetsBindingObserver {
   late TextEditingController _nameController;
   String? _selectedLocation;
   bool _isNameValid = true;
@@ -58,20 +58,28 @@ class _LockSettingState extends State<LockSetting> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _initializeData();
+  }
+
+  void _initializeData() {
     fetchUserLockLocation();
-    // Initialize the controller with the passed name or leave it empty
     _nameController = TextEditingController(
         text: widget.name?.isNotEmpty == true ? widget.name : "");
     _selectedLocation = widget.location;
 
-    // Listener to reset name validity when user starts typing
     _nameController.addListener(() {
       setState(() {
-        _isNameValid = _nameController.text
-            .trim()
-            .isNotEmpty; // Reset to valid when typing
+        _isNameValid = _nameController.text.trim().isNotEmpty;
       });
     });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      fetchUserLockLocation();
+    }
   }
 
   Future<void> fetchUserLockLocation() async {
@@ -286,6 +294,7 @@ class _LockSettingState extends State<LockSetting> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _nameController.dispose();
     super.dispose();
   }
@@ -444,7 +453,10 @@ class _LockSettingState extends State<LockSetting> {
                                         builder: (context) =>
                                             LockLocationCustomize(),
                                       ),
-                                    );
+                                    ).then((_) {
+                                      // Refresh the location list when returning from LockLocationCustomize
+                                      fetchUserLockLocation();
+                                    });
                                   },
                                   child: Row(
                                     children: const <Widget>[

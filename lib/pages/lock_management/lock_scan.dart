@@ -32,7 +32,7 @@ class LockScan extends StatefulWidget {
   State<LockScan> createState() => _LockScanState();
 }
 
-class _LockScanState extends State<LockScan> {
+class _LockScanState extends State<LockScan> with WidgetsBindingObserver {
   bool? isInDatabase;
 
   Future<void> checkExistingLock(String lockId) async {
@@ -77,6 +77,7 @@ class _LockScanState extends State<LockScan> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     startNfcScan(); // Start scanning as soon as the page is built
   }
 
@@ -96,7 +97,9 @@ class _LockScanState extends State<LockScan> {
                 lockId: widget.lockId!,
               ),
             ),
-          );
+          ).then((_) {
+          startNfcScan();
+        });
         } else if (widget.option == 'inLockFinal') {
           await getToken();
 
@@ -105,7 +108,6 @@ class _LockScanState extends State<LockScan> {
             'Authorization': 'Bearer $token',
           };
 
-
           if (widget.lockId == uid) {
             isTokenValid = await postJsonDataWithoutBody(
                 apiUri:
@@ -113,10 +115,12 @@ class _LockScanState extends State<LockScan> {
                 headers: header);
             if (isTokenValid) {
               await http.get(Uri.parse('http://172.20.10.6/set-state'));
-              Navigator.pushReplacement(context,
+              Navigator.pushReplacement(
+                context,
                 MaterialPageRoute(
                   builder: (context) => const Home(initialIndex: 0),
-                ),);
+                ),
+              );
             }
           }
         }
@@ -147,7 +151,9 @@ class _LockScanState extends State<LockScan> {
               option: isInDatabase == true ? 'request' : 'register',
             ),
           ),
-        );
+        ).then((_) {
+          startNfcScan();
+        });
       }
     } catch (e) {
       debugPrint('Error: $e');
@@ -166,6 +172,12 @@ class _LockScanState extends State<LockScan> {
         ..hideCurrentSnackBar()
         ..showSnackBar(snackBar);
     }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
